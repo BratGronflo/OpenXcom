@@ -22,6 +22,7 @@
 #include "Mod.h"
 #include "RuleSoldier.h"
 #include "../Savegame/BattleUnit.h"
+#include "../Engine/Logger.h"
 
 namespace OpenXcom
 {
@@ -355,6 +356,15 @@ void Armor::afterLoad(const Mod* mod)
 			//clean unused layers
 			Collections::removeIf(version.second, [](const std::string& s) { return s.empty(); });
 			version.second.shrink_to_fit();
+
+			for (auto& xyz : version.second)
+			{
+				if (xyz.empty())
+				{
+					Log(LOG_INFO) << "armor = " << _type;
+					Log(LOG_INFO) << "version.first = " << version.first;
+				}
+			}
 		}
 	}
 
