@@ -81,7 +81,6 @@ BattleUnit::BattleUnit(const Mod *mod, Soldier *soldier, int depth) :
 	_standHeight = _armor->getStandHeight() == -1 ? soldier->getRules()->getStandHeight() : _armor->getStandHeight();
 	_kneelHeight = _armor->getKneelHeight() == -1 ? soldier->getRules()->getKneelHeight() : _armor->getKneelHeight();
 	_floatHeight = _armor->getFloatHeight() == -1 ? soldier->getRules()->getFloatHeight() : _armor->getFloatHeight();
-
 	_intelligence = 2;
 	_aggression = 1;
 	_specab = (SpecialAbility)_armor->getSpecialAbility();
@@ -108,9 +107,6 @@ BattleUnit::BattleUnit(const Mod *mod, Soldier *soldier, int depth) :
 			_movementType = MT_WALK;
 		}
 	}
-	_moveTimeCostPercent = _armor->getMoveTimeCostPercent();
-	_moveEnergyCostPercent = _armor->getMoveEnergyCostPercent();
-
 	// armor and soldier bonuses may modify effective stats
 	{
 		soldier->prepareStatsWithBonuses(mod); // refresh all bonuses
@@ -232,8 +228,6 @@ void BattleUnit::updateArmorFromSoldier(const Mod *mod, Soldier *soldier, Armor 
 	} else if (_movementType == MT_SINK) {
 		if (depth == 0) { _movementType = MT_FLY; } else { _movementType = MT_WALK; }
 	}
-	_moveTimeCostPercent = _armor->getMoveTimeCostPercent();
-	_moveEnergyCostPercent = _armor->getMoveEnergyCostPercent();
 
 	// armor and soldier bonuses may modify effective stats
 	{
@@ -514,8 +508,6 @@ BattleUnit::BattleUnit(const Mod *mod, Unit *unit, UnitFaction faction, int id, 
 			_movementType = MT_WALK;
 		}
 	}
-	_moveTimeCostPercent = _armor->getMoveTimeCostPercent();
-	_moveEnergyCostPercent = _armor->getMoveEnergyCostPercent();
 
 	_stats += *_armor->getStats();	// armors may modify effective stats
 	_stats = UnitStats::obeyFixedMinimum(_stats); // don't allow to go into minus!
@@ -625,8 +617,6 @@ void BattleUnit::updateArmorFromNonSoldier(const Mod* mod, Armor* newArmor, int 
 	} else if (_movementType == MT_SINK) {
 		if (depth == 0) { _movementType = MT_FLY; } else { _movementType = MT_WALK; }
 	}
-	_moveTimeCostPercent = _armor->getMoveTimeCostPercent();
-	_moveEnergyCostPercent = _armor->getMoveEnergyCostPercent();
 
 	_stats = *_unitRules->getStats();
 	_stats += *_armor->getStats();	// armors may modify effective stats
@@ -758,13 +748,6 @@ void BattleUnit::load(const YAML::Node &node, const Mod *mod, const ScriptGlobal
 	_resummonedFakeCivilian = node["resummonedFakeCivilian"].as<bool>(_resummonedFakeCivilian);
 	_pickUpWeaponsMoreActively = node["pickUpWeaponsMoreActively"].as<bool>(_pickUpWeaponsMoreActively);
 	_disableIndicators = node["disableIndicators"].as<bool>(_disableIndicators);
-	if (const YAML::Node& p = node["moveCost"])
-	{
-		if (const YAML::Node& base = p["basePercent"])
-		{
-			std::tie(_moveTimeCostPercent, _moveEnergyCostPercent) = base.as<std::pair<int, int>>();
-		}
-	}
 	_vip = node["vip"].as<bool>(_vip);
 	_meleeAttackedBy = node["meleeAttackedBy"].as<std::vector<int> >(_meleeAttackedBy);
 
@@ -797,8 +780,8 @@ YAML::Node BattleUnit::save(const ScriptGlobal *shared) const
 	node["morale"] = _morale;
 	node["kneeled"] = _kneeled;
 	node["floating"] = _floating;
-	node["armor"].SetStyle(YAML::EmitterStyle::Flow); for (int i=0; i < SIDE_MAX; i++) node["armor"].push_back(_currentArmor[i]);
-	node["fatalWounds"].SetStyle(YAML::EmitterStyle::Flow); for (int i=0; i < BODYPART_MAX; i++) node["fatalWounds"].push_back(_fatalWounds[i]);
+	for (int i=0; i < SIDE_MAX; i++) node["armor"].push_back(_currentArmor[i]);
+	for (int i=0; i < BODYPART_MAX; i++) node["fatalWounds"].push_back(_fatalWounds[i]);
 	node["fire"] = _fire;
 	node["expBravery"] = _exp.bravery;
 	node["expReactions"] = _exp.reactions;
@@ -850,7 +833,6 @@ YAML::Node BattleUnit::save(const ScriptGlobal *shared) const
 	for (size_t i = 0; i < _recolor.size(); ++i)
 	{
 		YAML::Node p;
-		p.SetStyle(YAML::EmitterStyle::Flow);
 		p.push_back((int)_recolor[i].first);
 		p.push_back((int)_recolor[i].second);
 		node["recolor"].push_back(p);
@@ -863,18 +845,6 @@ YAML::Node BattleUnit::save(const ScriptGlobal *shared) const
 		node["pickUpWeaponsMoreActively"] = _pickUpWeaponsMoreActively;
 	if (_disableIndicators)
 		node["disableIndicators"] = _disableIndicators;
-	{
-		YAML::Node p;
-		if (_moveTimeCostPercent != _armor->getMoveTimeCostPercent() || _moveEnergyCostPercent != _armor->getMoveEnergyCostPercent())
-		{
-			p["basePercent"] = std::pair<int, int>(_moveTimeCostPercent, _moveEnergyCostPercent);
-		}
-		if (!p.IsNull())
-		{
-			p.SetStyle(YAML::EmitterStyle::Flow);
-			node["moveCost"] = p;
-		}
-	}
 	if (_vip)
 		node["vip"] = _vip;
 	if (!_meleeAttackedBy.empty())
@@ -2710,7 +2680,7 @@ void BattleUnit::prepareNewTurn(bool fullProcess)
 	if (_faction != _originalFaction)
 	{
 		_faction = _originalFaction;
-		if (_faction == FACTION_PLAYER && _currentAIState)
+		if ((_faction == FACTION_PLAYER && _currentAIState) || (_faction == FACTION_ALIEN_PLAYER && _currentAIState))
 		{
 			delete _currentAIState;
 			_currentAIState = 0;
@@ -3086,7 +3056,7 @@ bool BattleUnit::addItem(BattleItem *item, const Mod *mod, bool allowSecondClip,
 			FALLTHROUGH;
 		}
 	default:
-		if (rule->getBattleType() == BT_PSIAMP && getFaction() == FACTION_HOSTILE)
+		if (rule->getBattleType() == BT_PSIAMP && (getFaction() == FACTION_HOSTILE||getFaction() == FACTION_ALIEN_PLAYER))
 		{
 			if (fitItemToInventory(rightHand, item) || fitItemToInventory(leftHand, item))
 			{
@@ -3166,9 +3136,15 @@ void BattleUnit::setVisible(bool flag)
  * Get whether this unit is visible.
  * @return flag
  */
-bool BattleUnit::getVisible() const
+bool BattleUnit::getVisible() const 
 {
+	// host
 	if (getFaction() == FACTION_PLAYER || _armor->isAlwaysVisible())
+	{
+		return true;
+	}
+	// client
+	else if (getFaction() == FACTION_ALIEN_PLAYER || _armor->isAlwaysVisible())
 	{
 		return true;
 	}
@@ -3375,7 +3351,7 @@ BattleItem *BattleUnit::getMainHandWeapon(bool quickest) const
 	int tuLeftHand = getActionTUs(BA_SNAPSHOT, weaponLeftHand).Time;
 	BattleItem *weaponCurrentHand = const_cast<BattleItem*>(getActiveHand(weaponLeftHand, weaponRightHand));
 	//prioritize blaster
-	if (!quickest && _faction != FACTION_PLAYER)
+	if (!quickest && _faction != FACTION_PLAYER && _faction != FACTION_ALIEN_PLAYER)
 	{
 		if (weaponRightHand->getCurrentWaypoints() != 0)
 		{
@@ -3400,7 +3376,7 @@ BattleItem *BattleUnit::getMainHandWeapon(bool quickest) const
 			{
 				return weaponRightHand;
 			}
-			else if (_faction == FACTION_PLAYER)
+			else if (_faction == FACTION_PLAYER || _faction == FACTION_ALIEN_PLAYER)
 			{
 				return weaponCurrentHand;
 			}
@@ -3415,7 +3391,7 @@ BattleItem *BattleUnit::getMainHandWeapon(bool quickest) const
 			{
 				return weaponLeftHand;
 			}
-			else if (_faction == FACTION_PLAYER)
+			else if (_faction == FACTION_PLAYER || _faction == FACTION_ALIEN_PLAYER)
 			{
 				return weaponCurrentHand;
 			}
@@ -4076,7 +4052,7 @@ void BattleUnit::setName(const std::string &name)
  * @param debugAppendId Append unit ID to name for debug purposes.
  * @return name String of the unit's name.
  */
-std::string BattleUnit::getName(Language *lang, bool debugAppendId) const
+std::string BattleUnit::getName(Language *lang, bool debugAppendId) const //joper
 {
 	if (_type != "SOLDIER" && lang != 0)
 	{
@@ -5974,7 +5950,7 @@ void getListSizeHackScript(BattleUnit* bu, int& i)
 }
 
 
-std::string debugDisplayScript(const BattleUnit* bu)
+std::string debugDisplayScript(const BattleUnit* bu) // JOPPER !!!! IMPORTANT SHIT
 {
 	if (bu)
 	{
@@ -6120,9 +6096,6 @@ void BattleUnit::ScriptRegister(ScriptParserBase* parser)
 	UnitStats::addSetStatsWithCurrScript<&BattleUnit::_stats, &BattleUnit::_tu, &BattleUnit::_energy, &BattleUnit::_health, &BattleUnit::_mana>(bu, "Stats.");
 
 	UnitStats::addGetStatsScript<&BattleUnit::_exp>(bu, "Exp.", true);
-
-	bu.addField<&BattleUnit::_moveTimeCostPercent>("MoveCost.getBaseTimePercent", "MoveCost.setBaseTimePercent");
-	bu.addField<&BattleUnit::_moveEnergyCostPercent>("MoveCost.getBaseEnergyPercent", "MoveCost.setBaseEnergyPercent");
 
 	bu.add<&getVisibleUnitsCountScript>("getVisibleUnitsCount");
 	bu.add<&getFactionScript>("getFaction", "get current faction of unit");

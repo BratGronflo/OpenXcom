@@ -821,12 +821,12 @@ bool TileEngine::calculateUnitsInFOV(BattleUnit* unit, const Position eventPos, 
 						else if (visible(unit, _save->getTile(posToCheck))) // (distance is checked here)
 						{
 							//Unit (or part thereof) visible to one or more eyes of this unit.
-							if (unit->getFaction() == FACTION_PLAYER)
+							if ((unit->getFaction() == FACTION_PLAYER) || (unit->getFaction() == FACTION_PLAYER))
 							{
 								(*i)->setVisible(true);
 							}
-							if ((( (*i)->getFaction() == FACTION_HOSTILE && unit->getFaction() == FACTION_PLAYER )
-								|| ( (*i)->getFaction() != FACTION_HOSTILE && unit->getFaction() == FACTION_HOSTILE ))
+							if (((((*i)->getFaction() == FACTION_HOSTILE || (*i)->getFaction() == FACTION_ALIEN_PLAYER) && unit->getFaction() == FACTION_PLAYER)
+								|| ( (*i)->getFaction() != FACTION_HOSTILE && unit->getFaction() == FACTION_HOSTILE )||((*i)->getFaction() != FACTION_ALIEN_PLAYER && unit->getFaction() == FACTION_ALIEN_PLAYER ))
 								&& !unit->hasVisibleUnit((*i)))
 							{
 								unit->addToVisibleUnits((*i));
@@ -883,11 +883,18 @@ void TileEngine::calculateTilesInFOV(BattleUnit *unit, const Position eventPos, 
 	{
 		direction = unit->getDirection();
 	}
-	if (unit->getFaction() != FACTION_PLAYER || (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
+	// HOST (FOR MUTLIPLAYER REMOVE  "&& unit->getFaction() != FACTION_ALIEN_PLAYER")
+	if ((unit->getFaction() != FACTION_PLAYER && unit->getFaction() != FACTION_ALIEN_PLAYER)|| (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
 	{
 		//The event wasn't meant for us and/or visible for us.
 		return;
 	}
+	// CLIENT (remove "//")
+	//else if (unit->getFaction() != FACTION_ALIEN_PLAYER)
+	//{
+	//	
+	//	return;
+	//}
 	else if (unit->isOut())
 	{
 		unit->clearVisibleTiles();
@@ -1207,7 +1214,7 @@ bool TileEngine::isTileInLOS(BattleAction *action, Tile *tile)
 	std::vector<Position> _trajectory;
 	bool seen = false;
 
-	bool forceFire = Options::forceFire && _save->isCtrlPressed(true) && _save->getSide() == FACTION_PLAYER;
+	bool forceFire = Options::forceFire && _save->isCtrlPressed(true) &&( _save->getSide() == FACTION_PLAYER || _save->getSide() == FACTION_ALIEN_PLAYER);
 
 	// Primary LOF check
 	if (forceFire)
@@ -1882,7 +1889,7 @@ std::vector<TileEngine::ReactionScore> TileEngine::getSpottingUnits(BattleUnit* 
 					// can actually see the unit
 					visible(*i, tile))
 				{
-					if ((*i)->getFaction() == FACTION_PLAYER)
+					if (((*i)->getFaction() == FACTION_PLAYER) || (*i)->getFaction() == FACTION_ALIEN_PLAYER)
 					{
 						unit->setVisible(true);
 					}
@@ -2014,7 +2021,7 @@ TileEngine::ReactionScore TileEngine::determineReactionType(BattleUnit *unit, Ba
 	BattleItem *weapon = unit->getWeaponForReactions(false);
 	if (!weapon)
 	{
-		weapon = unit->getMainHandWeapon(unit->getFaction() != FACTION_PLAYER);
+		weapon = unit->getMainHandWeapon(unit->getFaction() != FACTION_PLAYER && unit->getFaction() != FACTION_ALIEN_PLAYER);
 	}
 	if (_save->canUseWeapon(weapon, unit, false, BA_HIT))
 	{
@@ -4229,7 +4236,7 @@ bool TileEngine::medikitUse(BattleAction *action, BattleUnit *target, BattleMedi
 			{
 				action->actor->getStatistics()->revivedSoldier++;
 			}
-			else if(target->getOriginalFaction() == FACTION_HOSTILE)
+			else if(target->getOriginalFaction() == FACTION_HOSTILE || target->getOriginalFaction() == FACTION_ALIEN_PLAYER)
 			{
 				action->actor->getStatistics()->revivedHostile++;
 			}
@@ -4929,7 +4936,7 @@ bool TileEngine::validateThrow(BattleAction &action, Position originVoxel, Posit
 		else
 		{
 			curvature += 0.5;
-			if (test != V_OUTOFBOUNDS && action.actor->getFaction() == FACTION_PLAYER) //obstacle indicator is only for player
+			if (test != V_OUTOFBOUNDS && (action.actor->getFaction() == FACTION_PLAYER || action.actor->getFaction() == FACTION_ALIEN_PLAYER)) //obstacle indicator is only for player and alien player
 			{
 				Tile* hitTile = _save->getTile(hitPos);
 				if (hitTile)

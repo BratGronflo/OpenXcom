@@ -2435,7 +2435,7 @@ bool RuleItem::isTargetAllowed(UnitFaction targetFaction) const
 	{
 		return _targetMatrix & 1;
 	}
-	else if (targetFaction == FACTION_HOSTILE)
+	else if (targetFaction == FACTION_HOSTILE || targetFaction == FACTION_ALIEN_PLAYER)
 	{
 		return _targetMatrix & 2;
 	}
