@@ -964,7 +964,7 @@ bool NextTurnState::deployReinforcements(const ReinforcementsData &wave)
  */
 BattleUnit* NextTurnState::addReinforcement(const ReinforcementsData &wave, Unit *rules, int alienRank, bool civilian)
 {
-	BattleUnit* unit = _battleGame->createTempUnit(rules, civilian ? FACTION_NEUTRAL : FACTION_HOSTILE);
+	BattleUnit* unit = _battleGame->createTempUnit(rules, civilian ? FACTION_NEUTRAL : FACTION_ALIEN_PLAYER);
 
 	// 1. try nodes first
 	bool unitPlaced = false;

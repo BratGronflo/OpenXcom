@@ -529,7 +529,7 @@ BattleUnit::BattleUnit(const Mod *mod, Unit *unit, UnitFaction faction, int id, 
 	_maxArmor[SIDE_REAR] = _armor->getRearArmor();
 	_maxArmor[SIDE_UNDER] = _armor->getUnderArmor();
 
-	if (faction == FACTION_HOSTILE)
+	if (faction == FACTION_HOSTILE || faction == FACTION_ALIEN_PLAYER)
 	{
 		adjustStats(*adjustment);
 	}
@@ -559,7 +559,7 @@ BattleUnit::BattleUnit(const Mod *mod, Unit *unit, UnitFaction faction, int id, 
 	_statistics = new BattleUnitStatistics();
 
 	int generalRank = 0;
-	if (faction == FACTION_HOSTILE)
+	if (faction == FACTION_HOSTILE || faction == FACTION_ALIEN_PLAYER)
 	{
 		const int max = 7;
 		const char* rankList[max] =
@@ -1686,6 +1686,7 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 		&& getArmor()->getZombiImmune() == false)
 	{
 		specialDamageTransformChance = getOriginalFaction() != FACTION_HOSTILE ? specialDamageTransform->getSpecialChance() : 0;
+		specialDamageTransformChance = getOriginalFaction() != FACTION_ALIEN_PLAYER ? specialDamageTransform->getSpecialChance() : 0; // delete this to allow chryssalid to make zombies from alien faction.
 	}
 	else
 	{
@@ -1859,7 +1860,8 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 		{
 			// converts the victim to a zombie on death
 			setRespawn(true);
-			setSpawnUnitFaction(FACTION_HOSTILE);
+			//setSpawnUnitFaction(FACTION_HOSTILE);
+			setSpawnUnitFaction(FACTION_ALIEN_PLAYER);
 			setSpawnUnit(save->getMod()->getUnit(specialDamageTransform->getZombieUnit(this)));
 		}
 
@@ -3056,7 +3058,7 @@ bool BattleUnit::addItem(BattleItem *item, const Mod *mod, bool allowSecondClip,
 			FALLTHROUGH;
 		}
 	default:
-		if (rule->getBattleType() == BT_PSIAMP && (getFaction() == FACTION_HOSTILE||getFaction() == FACTION_ALIEN_PLAYER))
+		if (rule->getBattleType() == BT_PSIAMP && (getFaction() == FACTION_HOSTILE || getFaction() == FACTION_ALIEN_PLAYER))
 		{
 			if (fitItemToInventory(rightHand, item) || fitItemToInventory(leftHand, item))
 			{
@@ -3912,6 +3914,11 @@ int BattleUnit::getMiniMapSpriteIndex() const
 			return 3;
 		else
 			return 24;
+	case FACTION_ALIEN_PLAYER:
+		if (_armor->getSize() == 1)
+			return 3;
+		else
+			return 24;
 	case FACTION_NEUTRAL:
 		if (_armor->getSize() == 1)
 			return 6;
@@ -4316,7 +4323,8 @@ void BattleUnit::setSpawnUnit(const Unit *spawnUnit)
 void BattleUnit::clearSpawnUnit()
 {
 	setSpawnUnit(nullptr);
-	setSpawnUnitFaction(FACTION_HOSTILE);
+	//setSpawnUnitFaction(FACTION_HOSTILE);
+	setSpawnUnitFaction(FACTION_ALIEN_PLAYER);
 	setRespawn(false);
 }
 
@@ -4938,7 +4946,7 @@ void BattleUnit::setSpecialWeapon(SavedBattleGame *save, bool updateFromSave)
 
 	addItem(getArmor()->getSpecialWeapon());
 
-	if (getBaseStats()->psiSkill > 0 && getOriginalFaction() == FACTION_HOSTILE)
+	if (getBaseStats()->psiSkill > 0 && (getOriginalFaction() == FACTION_HOSTILE || getOriginalFaction() == FACTION_ALIEN_PLAYER))
 	{
 		addItem(mod->getItem(getUnitRules()->getPsiWeapon()));
 	}
@@ -5816,7 +5824,8 @@ void setSpawnUnitScript(BattleUnit *bu, const Unit* unitType)
 	{
 		bu->setSpawnUnit(unitType);
 		bu->setRespawn(true);
-		bu->setSpawnUnitFaction(FACTION_HOSTILE);
+		//bu->setSpawnUnitFaction(FACTION_HOSTILE);
+		bu->setSpawnUnitFaction(FACTION_ALIEN_PLAYER);
 	}
 	else if (bu)
 	{
@@ -5950,7 +5959,7 @@ void getListSizeHackScript(BattleUnit* bu, int& i)
 }
 
 
-std::string debugDisplayScript(const BattleUnit* bu) // JOPPER !!!! IMPORTANT SHIT
+std::string debugDisplayScript(const BattleUnit* bu) // JOPPER !!!! IMPORTANT SHIT (later note... 
 {
 	if (bu)
 	{
@@ -5976,6 +5985,7 @@ std::string debugDisplayScript(const BattleUnit* bu) // JOPPER !!!! IMPORTANT SH
 		switch (bu->getFaction())
 		{
 		case FACTION_HOSTILE: s += "Hostile"; break;
+		case FACTION_ALIEN_PLAYER: s += "Hostile"; break;
 		case FACTION_NEUTRAL: s += "Neutral"; break;
 		case FACTION_PLAYER: s += "Player"; break;
 		}

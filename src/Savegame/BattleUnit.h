@@ -86,7 +86,8 @@ private:
 
 	UnitFaction _faction, _originalFaction;
 	UnitFaction _killedBy;
-	UnitFaction _spawnUnitFaction = FACTION_HOSTILE; // Affects units spawned from items it seems, JOPER
+	//UnitFaction _spawnUnitFaction = FACTION_HOSTILE; // Affects units spawned from items it seems, JOPER
+	UnitFaction _spawnUnitFaction = FACTION_ALIEN_PLAYER;
 	int _id;
 	Position _pos;
 	Tile *_tile;

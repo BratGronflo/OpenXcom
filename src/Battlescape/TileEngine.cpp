@@ -1790,7 +1790,7 @@ bool TileEngine::checkReactionFire(BattleUnit *unit, const BattleAction &origina
 
 	// not mind controlled, or controlled by the player
 	if (unit->getFaction() == unit->getOriginalFaction()
-		|| unit->getFaction() != FACTION_HOSTILE)
+		|| (unit->getFaction() != FACTION_HOSTILE & unit->getFaction() != FACTION_ALIEN_PLAYER))
 	{
 		// get the first man up to bat.
 		ReactionScore *reactor = getReactor(spotters, unit);
@@ -1847,7 +1847,7 @@ std::vector<TileEngine::ReactionScore> TileEngine::getSpottingUnits(BattleUnit* 
 				// not a friend
 				(*i)->getFaction() != _save->getSide() &&
 				// not a civilian, or a civilian shooting at bad non-ignored guys
-				((*i)->getFaction() != FACTION_NEUTRAL || (unit->getFaction() == FACTION_HOSTILE && !unit->isIgnoredByAI())) &&
+					((*i)->getFaction() != FACTION_NEUTRAL || ((unit->getFaction() == FACTION_HOSTILE || unit->getFaction() == FACTION_ALIEN_PLAYER) && !unit->isIgnoredByAI())) && // possibly bug.
 				// closer than 20 tiles
 				Position::distance2dSq(unit->getPosition(), (*i)->getPosition()) <= getMaxViewDistanceSq())
 			{
@@ -2324,10 +2324,11 @@ bool TileEngine::awardExperience(BattleActionAttack attack, BattleUnit *target, 
 	if (weapon->getRules()->getBattleType() != BT_MEDIKIT)
 	{
 		// only enemies count, not friends or neutrals
-		if (target->getOriginalFaction() != FACTION_HOSTILE) expMultiply = 0;
+		if (target->getOriginalFaction() != FACTION_HOSTILE & target->getOriginalFaction() != FACTION_ALIEN_PLAYER) expMultiply = 0;
 
 		// mind-controlled enemies don't count though!
-		if (target->getFaction() != FACTION_HOSTILE) expMultiply = 0;
+		if (target->getFaction() != FACTION_HOSTILE & target->getFaction() != FACTION_ALIEN_PLAYER)
+			expMultiply = 0;
 	}
 
 	expMultiply = ModScript::scriptFunc2<ModScript::AwardExperience>(

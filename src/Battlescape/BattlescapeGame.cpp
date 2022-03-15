@@ -851,7 +851,7 @@ void BattlescapeGame::checkForCasualties(const RuleDamageType *damageType, Battl
 						if (!victim->isCosmetic())
 						{
 							(*i)->getStatistics()->kills.push_back(new BattleUnitKills(killStat));
-							if (victim->getFaction() == FACTION_HOSTILE)
+							if (victim->getFaction() == FACTION_HOSTILE || victim->getFaction() == FACTION_ALIEN_PLAYER)
 							{
 								(*i)->getStatistics()->slaveKills++;
 							}
@@ -915,8 +915,8 @@ void BattlescapeGame::checkForCasualties(const RuleDamageType *damageType, Battl
 				if (victim->getFaction() != FACTION_NEUTRAL)
 				{
 					int modifier = _save->getUnitMoraleModifier(victim);
-					int loserMod =  _save->getFactionMoraleModifier(victim->getOriginalFaction() != FACTION_HOSTILE);
-					int winnerMod = _save->getFactionMoraleModifier(victim->getOriginalFaction() == FACTION_HOSTILE);
+					int loserMod = _save->getFactionMoraleModifier(victim->getOriginalFaction() != FACTION_HOSTILE & victim->getOriginalFaction() != FACTION_ALIEN_PLAYER);
+					int winnerMod = _save->getFactionMoraleModifier(victim->getOriginalFaction() == FACTION_HOSTILE || victim->getOriginalFaction() == FACTION_ALIEN_PLAYER);
 					for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 					{
 						if (!(*i)->isOut() && (*i)->getArmor()->getSize() == 1)
@@ -2079,7 +2079,7 @@ void BattlescapeGame::psiAttackMessage(BattleActionAttack attack, BattleUnit *vi
 	if (victim)
 	{
 		Game *game = getSave()->getBattleState()->getGame();
-		if (attack.attacker->getFaction() == FACTION_HOSTILE)
+		if (attack.attacker->getFaction() == FACTION_HOSTILE || attack.attacker->getFaction() == FACTION_ALIEN_PLAYER)
 		{
 			// show a little infobox with the name of the unit and "... is under alien control"
 			if (attack.type == BA_MINDCONTROL)
@@ -2235,13 +2235,13 @@ void BattlescapeGame::spawnNewUnit(BattleActionAttack attack, Position position)
 				faction = FACTION_PLAYER;
 				break;
 			case 1:
-				faction = FACTION_HOSTILE;
+				faction = FACTION_ALIEN_PLAYER; // Was FACTION_HOSTILE
 				break;
 			case 2:
 				faction = FACTION_NEUTRAL;
 				break;
 			default:
-				faction = FACTION_HOSTILE; // Joper. No need to touch this yet, won't be used in vanilla.Except for zombification perhabs...
+				faction = FACTION_ALIEN_PLAYER; // was FACTION_HOSTILE (old note)Joper. No need to touch this yet, won't be used in vanilla.Except for zombification perhabs...
 				break;
 		}
 	}

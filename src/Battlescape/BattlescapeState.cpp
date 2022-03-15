@@ -3640,7 +3640,7 @@ void BattlescapeState::txtTooltipInExtra(Action *action, bool leftHand, bool spe
 					tooltipExtra << tr("STR_TARGET_NEUTRAL");
 				} else if (targetUnit->getOriginalFaction() == FACTION_ALIEN_PLAYER)
 				{	_txtTooltip->setColor(Palette::blockOffset(_medikitRed));
-					tooltipExtra << tr("STR_TARGET_ENEMY_PLAYER"); //jopper Change medkit pallete i guess. NOt sure rightnow.
+					tooltipExtra << tr("STR_TARGET_ENEMY_PLAYER"); //jopper Changes medkit pallete i guess. NOt sure rightnow.
 				} else if (targetUnit->getOriginalFaction() == FACTION_PLAYER) {
 					_txtTooltip->setColor(Palette::blockOffset(_medikitGreen));
 					tooltipExtra << tr("STR_TARGET_FRIEND");

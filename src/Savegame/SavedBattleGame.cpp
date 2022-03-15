@@ -1495,6 +1495,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 		_selectedUnit =  0;
 		//_side = FACTION_HOSTILE;
 		_side = FACTION_ALIEN_PLAYER;
+		resetTiles();
 	}
 	//else if (_side == FACTION_HOSTILE)
 	//{
@@ -1507,6 +1508,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 	{
 		_selectedUnit = 0;
 		_side = FACTION_NEUTRAL;
+		resetTiles(); // Bug Neutral. Possibly no need for this line.
 		// if there is no neutral team, we skip this and instantly prepare the new turn for the player
 		//		if (selectNextPlayerUnit() == 0)
 		//		{
@@ -1532,6 +1534,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 			selectNextPlayerUnit();
 		while (_selectedUnit && _selectedUnit->getFaction() != FACTION_PLAYER)
 			selectNextPlayerUnit();
+		resetTiles();
 	}
 
 	auto tally = _battleState->getBattleGame()->tallyUnits();
@@ -2806,7 +2809,7 @@ int SavedBattleGame::getFactionMoraleModifier(bool player)
 		int number = 0;
 		for (std::vector<BattleUnit*>::iterator j = _units.begin(); j != _units.end(); ++j)
 		{
-			if ((*j)->getOriginalFaction() == FACTION_HOSTILE && !(*j)->isOut())
+			if (((*j)->getOriginalFaction() == FACTION_HOSTILE || (*j)->getOriginalFaction() == FACTION_ALIEN_PLAYER) && !(*j)->isOut())
 			{
 				++number;
 			}
