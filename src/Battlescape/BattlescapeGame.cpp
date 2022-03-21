@@ -2054,7 +2054,11 @@ void BattlescapeGame::psiButtonAction()
 		return;
 	BattleItem *item = _save->getSelectedUnit()->getSpecialWeapon(BT_PSIAMP);
 	_currentAction.type = BA_NONE;
-	if (item->getRules()->getCostPanic().Time > 0)
+    if ((item->getRules()->getCostMind().Time > 0) & _save->isCtrlPressed(true))
+	{
+		_currentAction.type = BA_MINDCONTROL;
+	}
+	else if (item->getRules()->getCostPanic().Time > 0)
 	{
 		_currentAction.type = BA_PANIC;
 	}
@@ -2084,6 +2088,8 @@ void BattlescapeGame::psiAttackMessage(BattleActionAttack attack, BattleUnit *vi
 			// show a little infobox with the name of the unit and "... is under alien control"
 			if (attack.type == BA_MINDCONTROL)
 				game->pushState(new InfoboxState(game->getLanguage()->getString("STR_IS_UNDER_ALIEN_CONTROL", victim->getGender()).arg(victim->getName(game->getLanguage()))));
+			else if (attack.type == BA_PANIC)
+				game->pushState(new InfoboxState(game->getLanguage()->getString("STR_MORALE_ATTACK_SUCCESSFUL")));
 		}
 		else
 		{

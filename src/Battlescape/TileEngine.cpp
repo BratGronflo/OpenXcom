@@ -821,10 +821,20 @@ bool TileEngine::calculateUnitsInFOV(BattleUnit* unit, const Position eventPos, 
 						else if (visible(unit, _save->getTile(posToCheck))) // (distance is checked here)
 						{
 							//Unit (or part thereof) visible to one or more eyes of this unit.
-							if ((unit->getFaction() == FACTION_PLAYER) || (unit->getFaction() == FACTION_PLAYER))
+							if ((unit->getFaction() == FACTION_PLAYER) || (unit->getFaction() == FACTION_ALIEN_PLAYER))
 							{
 								(*i)->setVisible(true);
 							}
+							// HOST
+							//if (unit->getFaction() == FACTION_PLAYER)
+							//{
+							//	(*i)->setVisible(true);
+							//}
+							// CLIENT
+							//if (unit->getFaction() == FACTION_ALIEN_PLAYER)
+							//{
+							//	(*i)->setVisible(true);
+							//}
 							if (((((*i)->getFaction() == FACTION_HOSTILE || (*i)->getFaction() == FACTION_ALIEN_PLAYER) && unit->getFaction() == FACTION_PLAYER)
 								|| ( (*i)->getFaction() != FACTION_HOSTILE && unit->getFaction() == FACTION_HOSTILE )||((*i)->getFaction() != FACTION_ALIEN_PLAYER && unit->getFaction() == FACTION_ALIEN_PLAYER ))
 								&& !unit->hasVisibleUnit((*i)))
