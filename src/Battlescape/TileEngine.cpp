@@ -801,6 +801,16 @@ bool TileEngine::calculateUnitsInFOV(BattleUnit* unit, const Position eventPos, 
 	//Loop through all units specified and figure out which ones we can actually see.
 	for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
+		if ((_save->getSide() == FACTION_PLAYER) && (unit->getFaction() == FACTION_PLAYER))
+		{
+
+			(unit)->setVisible(true); // JOPER FINALLY PROGRESS
+		}
+		else if ((_save->getSide() == FACTION_ALIEN_PLAYER) && (unit->getFaction() == FACTION_ALIEN_PLAYER))
+		{
+
+			(unit)->setVisible(true); // joper FINALLY PROGRESS
+		}
 		Position posOther = (*i)->getPosition();
 		if (!(*i)->isOut() && (unit->getId() != (*i)->getId()))
 		{
@@ -821,7 +831,7 @@ bool TileEngine::calculateUnitsInFOV(BattleUnit* unit, const Position eventPos, 
 						else if (visible(unit, _save->getTile(posToCheck))) // (distance is checked here)
 						{
 							//Unit (or part thereof) visible to one or more eyes of this unit.
-							if ((unit->getFaction() == FACTION_PLAYER) || (unit->getFaction() == FACTION_ALIEN_PLAYER))
+							if (((unit->getFaction() == FACTION_PLAYER) && (_save->getSide() == FACTION_PLAYER)) || (unit->getFaction() == FACTION_ALIEN_PLAYER) && (_save->getSide() == FACTION_ALIEN_PLAYER))
 							{
 								(*i)->setVisible(true);
 							}
@@ -894,7 +904,7 @@ void TileEngine::calculateTilesInFOV(BattleUnit *unit, const Position eventPos, 
 		direction = unit->getDirection();
 	}
 	// HOST (FOR MUTLIPLAYER REMOVE  "&& unit->getFaction() != FACTION_ALIEN_PLAYER")
-	if ((unit->getFaction() != FACTION_PLAYER && unit->getFaction() != FACTION_ALIEN_PLAYER)|| (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
+	if (((unit->getFaction() != FACTION_PLAYER && _save->getSide() == FACTION_PLAYER) || (unit->getFaction() != FACTION_ALIEN_PLAYER) && _save->getSide() == FACTION_ALIEN_PLAYER) || (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
 	{
 		//The event wasn't meant for us and/or visible for us.
 		return;
