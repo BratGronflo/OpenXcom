@@ -1508,7 +1508,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 	{
 		_selectedUnit = 0;
 		_side = FACTION_NEUTRAL;
-		resetTiles(); // Bug Neutral. Possibly no need for this line.
+		//resetTiles(); // Bug Neutral. Possibly no need for this line. // Indeed no need for this line in hotseat
 		// if there is no neutral team, we skip this and instantly prepare the new turn for the player
 		//		if (selectNextPlayerUnit() == 0)
 		//		{
@@ -3351,7 +3351,7 @@ std::string SavedBattleGame::getHiddenMovementBackground() const
  */
 void SavedBattleGame::appendToHitLog(HitLogEntryType type, UnitFaction faction)
 {
-	if (_side != FACTION_PLAYER && _side != FACTION_PLAYER)	return;
+	if (_side != FACTION_PLAYER && _side != FACTION_ALIEN_PLAYER)	return;
 	_hitLog->appendToHitLog(type, faction);
 }
 
@@ -3360,7 +3360,7 @@ void SavedBattleGame::appendToHitLog(HitLogEntryType type, UnitFaction faction)
  */
 void SavedBattleGame::appendToHitLog(HitLogEntryType type, UnitFaction faction, const std::string &text)
 {
-	if (_side != FACTION_PLAYER && _side != FACTION_PLAYER)	return;
+	if (_side != FACTION_PLAYER && _side != FACTION_ALIEN_PLAYER)	return;
 	_hitLog->appendToHitLog(type, faction, text);
 }
 

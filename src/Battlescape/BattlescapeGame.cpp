@@ -326,57 +326,16 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
 	AIModule *ai = unit->getAIModule();
 	if (!ai)
 	{
-		_parentState->debug("Idle");
-		_AIActionCounter = 0;
-		if (_save->selectNextPlayerUnit(true, _AISecondMove) == 0)
-		{
-			if (!_save->getDebugMode())
-			{
-				_endTurnRequested = true;
-				statePushBack(0); // end AI turn
-			}
-			else
-			{
-				_save->selectNextPlayerUnit();
-				_debugPlay = true;
-			}
-		}
-		if (_save->getSelectedUnit())
-		{
-			_parentState->updateSoldierInfo();
-			getMap()->getCamera()->centerOnPosition(_save->getSelectedUnit()->getPosition());
-			if (_save->getSelectedUnit()->getId() <= unit->getId())
-			{
-				_AISecondMove = true;
-			}
-		}
+		// for some reason the unit had no AI routine assigned..
+		unit->setAIModule(new AIModule(_save, unit, 0));
+		ai = unit->getAIModule();
 	}
+	_AIActionCounter++;
 	if (_AIActionCounter == 1)
 	{
-		_parentState->debug("Idle");
-		_AIActionCounter = 0;
-		if (_save->selectNextPlayerUnit(true, _AISecondMove) == 0)
-		{
-			if (!_save->getDebugMode())
-			{
-				_endTurnRequested = true;
-				statePushBack(0); // end AI turn
-			}
-			else
-			{
-				_save->selectNextPlayerUnit();
-				_debugPlay = true;
-			}
-		}
-		if (_save->getSelectedUnit())
-		{
-			_parentState->updateSoldierInfo();
-			getMap()->getCamera()->centerOnPosition(_save->getSelectedUnit()->getPosition());
-			if (_save->getSelectedUnit()->getId() <= unit->getId())
-			{
-				_AISecondMove = true;
-			}
-		}
+		_playedAggroSound = false;
+		unit->setHiding(false);
+		if (Options::traceAI) { Log(LOG_INFO) << "#" << unit->getId() << "--" << unit->getType(); }
 	}
 
 	BattleAction action;
@@ -397,83 +356,71 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
 	bool walkToItem = false;
 	if (!weapon || !weapon->haveAnyAmmo())
 	{
-		_parentState->debug("Idle");
-		_AIActionCounter = 0;
-		if (_save->selectNextPlayerUnit(true, _AISecondMove) == 0)
+		if (unit->getOriginalFaction() != FACTION_PLAYER)
 		{
-			if (!_save->getDebugMode())
+			if ((unit->getOriginalFaction() == FACTION_HOSTILE && unit->getVisibleUnits()->empty()) || pickUpWeaponsMoreActively)
 			{
-				_endTurnRequested = true;
-				statePushBack(0); // end AI turn
-			}
-			else
-			{
-				_save->selectNextPlayerUnit();
-				_debugPlay = true;
+				weaponPickedUp = findItem(&action, pickUpWeaponsMoreActively, walkToItem);
 			}
 		}
-		if (_save->getSelectedUnit())
+	}
+	if (pickUpWeaponsMoreActively && weaponPickedUp)
+	{
+		// you have just picked up a weapon... use it if you can!
+		_parentState->debug("Re-Rethink");
+		unit->getAIModule()->setWeaponPickedUp();
+		unit->think(&action);
+	}
+
+	if (unit->getCharging() != 0)
+	{
+		if (unit->hasAggroSound() && !_playedAggroSound)
 		{
-			_parentState->updateSoldierInfo();
-			getMap()->getCamera()->centerOnPosition(_save->getSelectedUnit()->getPosition());
-			if (_save->getSelectedUnit()->getId() <= unit->getId())
-			{
-				_AISecondMove = true;
-			}
+			getMod()->getSoundByDepth(_save->getDepth(), unit->getRandomAggroSound())->play(-1, getMap()->getSoundAngle(unit->getPosition()));
+			_playedAggroSound = true;
 		}
 	}
 	if (action.type == BA_WALK)
 	{
-		_parentState->debug("Idle");
-		_AIActionCounter = 0;
-		if (_save->selectNextPlayerUnit(true, _AISecondMove) == 0)
+		ss << "Walking to " << action.target;
+		_parentState->debug(ss.str());
+
+		auto* targetTile = _save->getTile(action.target);
+		if (targetTile)
 		{
-			if (!_save->getDebugMode())
-			{
-				_endTurnRequested = true;
-				statePushBack(0); // end AI turn
-			}
-			else
-			{
-				_save->selectNextPlayerUnit();
-				_debugPlay = true;
-			}
+			_save->getPathfinding()->calculate(action.actor, action.target, BAM_NORMAL);
 		}
-		if (_save->getSelectedUnit())
+		if (_save->getPathfinding()->getStartDirection() != -1)
 		{
-			_parentState->updateSoldierInfo();
-			getMap()->getCamera()->centerOnPosition(_save->getSelectedUnit()->getPosition());
-			if (_save->getSelectedUnit()->getId() <= unit->getId())
-			{
-				_AISecondMove = true;
-			}
+			statePushBack(new UnitWalkBState(this, action));
+		}
+		else if (walkToItem)
+		{
+			// impossible to walk to this tile, don't try to pick up an item from there for the rest of the turn
+			targetTile->setDangerous(true);
 		}
 	}
 
 	if (action.type == BA_SNAPSHOT || action.type == BA_AUTOSHOT || action.type == BA_AIMEDSHOT || action.type == BA_THROW || action.type == BA_HIT || action.type == BA_MINDCONTROL || action.type == BA_USE || action.type == BA_PANIC || action.type == BA_LAUNCH)
 	{
-		_parentState->debug("Idle");
-		_AIActionCounter = 0;
-		if (_save->selectNextPlayerUnit(true, _AISecondMove) == 0)
+		ss.clear();
+		ss << "Attack type=" << action.type << " target="<< action.target << " weapon=" << action.weapon->getRules()->getName();
+		_parentState->debug(ss.str());
+		action.updateTU();
+		if (action.type == BA_MINDCONTROL || action.type == BA_PANIC || action.type == BA_USE)
 		{
-			if (!_save->getDebugMode())
+			statePushBack(new PsiAttackBState(this, action));
+		}
+		else
+		{
+			statePushBack(new UnitTurnBState(this, action));
+			if (action.type == BA_HIT)
 			{
-				_endTurnRequested = true;
-				statePushBack(0); // end AI turn
+				statePushBack(new MeleeAttackBState(this, action));
 			}
 			else
 			{
-				_save->selectNextPlayerUnit();
-				_debugPlay = true;
-			}
-		}
-		if (_save->getSelectedUnit())
-		{
-			_parentState->updateSoldierInfo();
-			getMap()->getCamera()->centerOnPosition(_save->getSelectedUnit()->getPosition());
-			if (_save->getSelectedUnit()->getId() <= unit->getId())
-			{
-				_AISecondMove = true;
+				statePushBack(new ProjectileFlyBState(this, action));
 			}
 		}
 	}
