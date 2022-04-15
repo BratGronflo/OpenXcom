@@ -177,7 +177,7 @@ bool BattleActionCost::spendTU(std::string *message)
  */
 BattlescapeGame::BattlescapeGame(SavedBattleGame *save, BattlescapeState *parentState) :
 	_save(save), _parentState(parentState),
-	_playerPanicHandled(true), _AIActionCounter(0), _AISecondMove(false), _playedAggroSound(false),
+	_playerPanicHandled(true),_alienplayerPanicHandled(true), _AIActionCounter(0), _AISecondMove(false), _playedAggroSound(false),
 	_endTurnRequested(false), _endConfirmationHandled(false), _allEnemiesNeutralized(false)
 {
 	if (_save->isPreview())
@@ -260,6 +260,11 @@ void BattlescapeGame::think()
 				_playerPanicHandled = handlePanickingPlayer();
 				_save->getBattleState()->updateSoldierInfo();
 			}
+			else if (!_alienplayerPanicHandled)
+			{
+				_alienplayerPanicHandled = handlePanickingAlienPlayer();
+			    _save->getBattleState()->updateSoldierInfo();
+			}
 		}
 	}
 }
@@ -271,8 +276,13 @@ void BattlescapeGame::init()
 {
 	if (_save->getSide() == FACTION_PLAYER && _save->getTurn() > 1)
 	{
-		_playerPanicHandled = false; // BUG: PLAYER TURN 2, can't use UI button
+		_playerPanicHandled = false; // BUG: PLAYER TURN 2, can't use UI button. 4/15/2022 it's already long since it's fixed i believe, gonna keep the note though.
 	}
+	else if (_save->getSide() == FACTION_ALIEN_PLAYER && _save->getTurn() > 1)
+	{
+		_alienplayerPanicHandled = false;
+	}
+
 }
 
 
@@ -1228,7 +1238,7 @@ void BattlescapeGame::popState()
 		(action.actor && !action.result.empty() && action.actor->getFaction() == FACTION_PLAYER
 		&& _playerPanicHandled && (_save->getSide() == FACTION_PLAYER || _debugPlay)) || //jopper
 		(action.actor && !action.result.empty() && action.actor->getFaction() == FACTION_ALIEN_PLAYER
-		&& _playerPanicHandled && (_save->getSide() == FACTION_ALIEN_PLAYER || _debugPlay))
+		&& _alienplayerPanicHandled && (_save->getSide() == FACTION_ALIEN_PLAYER || _debugPlay))
 		) 
 	{
 		_parentState->warning(action.result);
@@ -1480,7 +1490,17 @@ bool BattlescapeGame::handlePanickingPlayer()
 {
 	for (std::vector<BattleUnit*>::iterator j = _save->getUnits()->begin(); j != _save->getUnits()->end(); ++j)
 	{
-		if ((((*j)->getFaction() == FACTION_PLAYER && (*j)->getOriginalFaction() == FACTION_PLAYER) || ((*j)->getFaction() == FACTION_ALIEN_PLAYER && (*j)->getOriginalFaction() == FACTION_ALIEN_PLAYER)) && handlePanickingUnit(*j))
+		if (((*j)->getFaction() == FACTION_PLAYER && (*j)->getOriginalFaction() == FACTION_PLAYER) && handlePanickingUnit(*j))
+			return false;
+	}
+	return true;
+}
+
+bool BattlescapeGame::handlePanickingAlienPlayer()
+{
+	for (std::vector<BattleUnit *>::iterator j = _save->getUnits()->begin(); j != _save->getUnits()->end(); ++j)
+	{
+		if ((((*j)->getFaction() == FACTION_ALIEN_PLAYER && (*j)->getOriginalFaction() == FACTION_ALIEN_PLAYER)) && handlePanickingUnit(*j))
 			return false;
 	}
 	return true;

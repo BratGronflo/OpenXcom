@@ -1424,7 +1424,7 @@ void BattlescapeState::btnAbortClick(Action *)
 		}
 	}
 
-	if (allowButtons())
+	if (allowButtons() & _save->getSide() == FACTION_PLAYER)
 		_game->pushState(new AbortMissionState(_save, this));
 }
 
@@ -2276,7 +2276,7 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 	{
 		// FOR HUMAN_PLAYER (HOST)
 		// first show all stunned allies with negative health regen (usually caused by high stun level)
-		for (std::vector<BattleUnit*>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && j < VISIBLE_MAX; ++i)
+		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_PLAYER && j < VISIBLE_MAX; ++i)
 		{
 			if ((*i)->getOriginalFaction() == FACTION_PLAYER && (*i)->getStatus() == STATUS_UNCONSCIOUS && (*i)->hasNegativeHealthRegen() && (*i)->indicatorsAreEnabled())
 			{
@@ -2288,7 +2288,7 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 			}
 		}
 		// FOR ALEIN_PLAYER (CLIENT)
-		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && j < VISIBLE_MAX; ++i)
+		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_ALIEN_PLAYER && j < VISIBLE_MAX; ++i)
 		{
 			if ((*i)->getOriginalFaction() == FACTION_ALIEN_PLAYER && (*i)->getStatus() == STATUS_UNCONSCIOUS && (*i)->hasNegativeHealthRegen() && (*i)->indicatorsAreEnabled())
 			{
@@ -2301,7 +2301,7 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 		}
 		// FOR HUMAN_PLAYER (HOST)
 		// then show all standing units under player's control with high stun level
-		for (std::vector<BattleUnit*>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && j < VISIBLE_MAX; ++i)
+		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_PLAYER && j < VISIBLE_MAX; ++i)
 		{
 			if ((*i)->getFaction() == FACTION_PLAYER && !((*i)->isOut()) && (*i)->getHealth() > 0 && (*i)->indicatorsAreEnabled())
 			{
@@ -2316,7 +2316,7 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 			}
 		}
 		// FOR ALEIN_PLAYER (CLIENT)
-		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && j < VISIBLE_MAX; ++i)
+		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_ALIEN_PLAYER && j < VISIBLE_MAX; ++i)
 		{
 			if ((*i)->getFaction() == FACTION_ALIEN_PLAYER && !((*i)->isOut()) && (*i)->getHealth() > 0 && (*i)->indicatorsAreEnabled())
 			{
@@ -2585,7 +2585,7 @@ std::string BattlescapeState::getMeleeDamagePreview(BattleUnit *actor, BattleIte
 		return "";
 
 	bool discovered = false;
-	if (_game->getSavedGame()->getMonthsPassed() == -1)
+	if ((_game->getSavedGame()->getMonthsPassed() == -1) || _save->getSide() == FACTION_ALIEN_PLAYER)
 	{
 		discovered = true; // new battle mode
 	}

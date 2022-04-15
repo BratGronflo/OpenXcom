@@ -165,6 +165,7 @@ private:
 	BattlescapeState *_parentState;
 	std::list<BattleState*> _states, _deleted;
 	bool _playerPanicHandled;
+	bool _alienplayerPanicHandled;
 	int _AIActionCounter;
 	BattleAction _currentAction;
 	bool _AISecondMove, _playedAggroSound;
@@ -179,6 +180,8 @@ private:
 	void endTurn();
 	/// Picks the first soldier that is panicking.
 	bool handlePanickingPlayer();
+	/// Picks the first Alien Player Soldier that is panicking.
+	bool handlePanickingAlienPlayer();
 	/// Common function for handling panicking units.
 	bool handlePanickingUnit(BattleUnit *unit);
 	/// Determines whether there are any actions pending for the given unit.

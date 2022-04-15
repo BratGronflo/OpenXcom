@@ -159,11 +159,11 @@ void MiniMapView::draw()
 					{
 						// empty
 					}
-					else if (atLeastOnePrimed)
-					{
-						// dye red
-						s->blitNShade(this, x, y, 0, false, Pathfinding::red);
-					}
+					//else if (atLeastOnePrimed) Jopper, Primed granades are NOT shown on the minimap.
+					//{
+					//	// dye red
+					//	s->blitNShade(this, x, y, 0, false, Pathfinding::red);
+					//} 
 					else
 					{
 						// vanilla
