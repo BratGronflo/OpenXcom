@@ -1338,7 +1338,7 @@ void Map::drawTerrain(Surface *surface)
 									if (_cacheActiveWeaponUfopediaArticleUnlocked == -1)
 									{
 										_cacheActiveWeaponUfopediaArticleUnlocked = 0;
-										if (_game->getSavedGame()->getMonthsPassed() == -1)
+										if ((_game->getSavedGame()->getMonthsPassed() == -1) || (_save->getSide() == FACTION_ALIEN_PLAYER))
 										{
 											_cacheActiveWeaponUfopediaArticleUnlocked = 1; // new battle mode
 										}
@@ -1782,7 +1782,7 @@ int Map::reShade(Tile *tile)
 	// HOST
 	for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
-		if ((*i)->getFaction() == FACTION_PLAYER && !(*i)->isOut())
+		if (((*i)->getFaction() == FACTION_PLAYER && !(*i)->isOut()) && _save->getSide() == FACTION_PLAYER)
 		{
 			if (Position::distance2dSq(tile->getPosition(), (*i)->getPosition()) <= (*i)->getMaxViewDistanceAtDarkSquared())
 			{
@@ -1793,7 +1793,7 @@ int Map::reShade(Tile *tile)
 	// Client
 	for (std::vector<BattleUnit *>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
-		if ((*i)->getFaction() == FACTION_ALIEN_PLAYER && !(*i)->isOut())
+		if (((*i)->getFaction() == FACTION_ALIEN_PLAYER && !(*i)->isOut()) && _save->getSide() == FACTION_ALIEN_PLAYER)
 		{
 			if (Position::distance2dSq(tile->getPosition(), (*i)->getPosition()) <= (*i)->getMaxViewDistanceAtDarkSquared())
 			{
