@@ -1482,7 +1482,7 @@ bool TileEngine::calculateUnitsInFOV(BattleUnit* unit, const Position eventPos, 
 						else if (visible(unit, _save->getTile(posToCheck))) // (distance is checked here)
 						{
 							//Unit (or part thereof) visible to one or more eyes of this unit.
-							if (((unit->getFaction() == FACTION_PLAYER) && (_save->getSide() == FACTION_PLAYER)) || (unit->getFaction() == FACTION_ALIEN_PLAYER) && (_save->getSide() == FACTION_ALIEN_PLAYER || _save->getSide() == FACTION_NEUTRAL))
+							if (((unit->getFaction() == FACTION_PLAYER) && (_save->getSide() == FACTION_PLAYER)) || (unit->getFaction() == FACTION_ALIEN_PLAYER) && (_save->getSide() == FACTION_ALIEN_PLAYER))
 							{
 								(*i)->setVisible(true);
 							}
@@ -1556,13 +1556,14 @@ void TileEngine::calculateTilesInFOV(BattleUnit *unit, const Position eventPos, 
 	{
 		direction = unit->getDirection();
 	}
-	// HOST (FOR MUTLIPLAYER REMOVE  "&& unit->getFaction() != FACTION_ALIEN_PLAYER")
-	if (((unit->getFaction() != FACTION_PLAYER && _save->getSide() == FACTION_PLAYER) || ((unit->getFaction() != FACTION_ALIEN_PLAYER) && _save->getSide() == FACTION_ALIEN_PLAYER || _save->getSide() == FACTION_NEUTRAL)) || (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
+	// FOG OF WAR,JOPPER,IMPORANT!
+	// HOST (FOR MUTLIPLAYER REMOVE  "&& unit->getFaction() != FACTION_ALIEN_PLAYER") 
+	if ((unit->getFaction() != FACTION_PLAYER && unit->getFaction() != FACTION_ALIEN_PLAYER)|| (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
 	{
 		//The event wasn't meant for us and/or visible for us.
 		return;
 	}
-	// CLIENT (remove "//")
+	// CLIENT (remove all "//")
 	//else if (unit->getFaction() != FACTION_ALIEN_PLAYER)
 	//{
 	//	
