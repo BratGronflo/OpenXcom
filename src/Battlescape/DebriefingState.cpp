@@ -461,6 +461,8 @@ void DebriefingState::init()
 	int total = 0, statsY = 0, recoveryY = 0;
 	int civiliansSaved = 0, civiliansDead = 0;
 	int aliensKilled = 0, aliensStunned = 0;
+	int turnsTaken = 0;
+
 	for (std::vector<DebriefingStat*>::iterator i = _stats.begin(); i != _stats.end(); ++i)
 	{
 		if ((*i)->qty == 0)
@@ -495,6 +497,10 @@ void DebriefingState::init()
 		if ((*i)->item == "STR_LIVE_ALIENS_RECOVERED")
 		{
 			aliensStunned += (*i)->qty;
+		}
+		if ((*i)->item == "STR_TURNS_TAKEN")
+		{
+			turnsTaken += (*i)->qty;
 		}
 		}
 		if (civiliansSaved && !civiliansDead && _missionStatistics->success == true)
@@ -987,7 +993,7 @@ void DebriefingState::prepareDebriefing()
 	}
 
 	SavedGame *save = _game->getSavedGame();
-	SavedBattleGame *battle = save->getSavedBattle();
+	SavedBattleGame *battle = save->getSavedBattle(), *turn = save->getSavedBattle();
 
 	AlienDeployment *ruleDeploy = _game->getMod()->getDeployment(battle->getMissionType());
 	// OXCE: Don't forget custom mission overrides
@@ -1022,14 +1028,19 @@ void DebriefingState::prepareDebriefing()
 	int playersInEntryArea = 0;
 	int playersMIA = 0;
 
+	_stats.push_back(new DebriefingStat("STR_TURNS_TAKEN", false));
 	_stats.push_back(new DebriefingStat("STR_ALIENS_KILLED", false));
 	_stats.push_back(new DebriefingStat("STR_ALIEN_CORPSES_RECOVERED", false));
 	_stats.push_back(new DebriefingStat("STR_LIVE_ALIENS_RECOVERED", false));
 	_stats.push_back(new DebriefingStat("STR_LIVE_ALIENS_SURRENDERED", false));
 	_stats.push_back(new DebriefingStat("STR_ALIEN_ARTIFACTS_RECOVERED", false));
+	_stats.push_back(new DebriefingStat("STR_TURNS_TAKEN", false));
 
 	std::string missionCompleteText, missionFailedText;
 	std::string objectiveCompleteText, objectiveFailedText;
+	{
+
+	}
 	int objectiveCompleteScore = 0, objectiveFailedScore = 0;
 	if (ruleDeploy)
 	{
@@ -2026,6 +2037,7 @@ void DebriefingState::prepareDebriefing()
 
 	if (base && target == "STR_BASE")
 	{
+		{
 		AlienMission* am = base->getRetaliationMission();
 		if (!am && _region)
 		{
@@ -2066,7 +2078,12 @@ void DebriefingState::prepareDebriefing()
 				}
 			}
 		}
+		}
 	}
+	else
+	{
+		addStat("STR_TURNS_TAKEN", battle->getTurn(), -battle->getTurn() * 5);
+    }
 
 	if (!_destroyBase)
 	{
