@@ -22,10 +22,10 @@
 namespace OpenXcom
 {
 	class ModListState;
+	class ModInfo;
 	class TextButton;
 	class Window;
 	class Text;
-	class ModInfo;
 
 	/**
 	 * Confirmation window when enabling
@@ -41,7 +41,7 @@ namespace OpenXcom
 		Text *_txtTitle;
 	public:
 		/// Creates the Confirm OXCE state.
-		ModConfirmExtendedState(ModListState *state, bool isMaster, const ModInfo* masterModInfo);
+		ModConfirmExtendedState(ModListState *state, const ModInfo *modInfo);
 		/// Cleans up the Confirm OXCE state.
 		~ModConfirmExtendedState();
 		/// Handler for clicking the Yes button.
