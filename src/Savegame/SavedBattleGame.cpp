@@ -1732,18 +1732,6 @@ bool SavedBattleGame::isCtrlPressed(bool considerTouchButtons) const
 }
 
 /**
- * Is ALT pressed?
- */
-bool SavedBattleGame::isAltPressed(bool considerTouchButtons) const
-{
-	if (_battleState)
-	{
-		return _battleState->getGame()->isAltPressed(considerTouchButtons);
-	}
-	return false;
-}
-
-/**
  * Is SHIFT pressed?
  */
 bool SavedBattleGame::isShiftPressed(bool considerTouchButtons) const
@@ -2616,7 +2604,7 @@ bool SavedBattleGame::setUnitPosition(BattleUnit *bu, Position position, bool te
 		getPathfinding()->setUnit(bu); //TODO: remove as was required by `isBlockedDirection`
 		for (int dir = 2; dir <= 4; ++dir)
 		{
-			if (getPathfinding()->isBlockedDirection(bu, getTile(position + zOffset), dir))
+			if (getPathfinding()->isBlockedDirection(bu, getTile(position + zOffset), dir, 0))
 				return false;
 		}
 	}
@@ -2851,7 +2839,7 @@ bool SavedBattleGame::placeUnitNearPosition(BattleUnit *unit, const Position& en
 	{
 		Position offset = Position (xArray[dir], yArray[dir], 0);
 		Tile *t = getTile(entryPoint + offset);
-		if (t && !getPathfinding()->isBlockedDirection(unit, getTile(entryPoint + (offset / 2)), dir)
+		if (t && !getPathfinding()->isBlockedDirection(unit, getTile(entryPoint + (offset / 2)), dir, 0)
 			&& setUnitPosition(unit, entryPoint + offset))
 		{
 			return true;

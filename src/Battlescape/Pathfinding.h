@@ -50,23 +50,20 @@ private:
 	BattleUnit *_unit;
 	bool _pathPreviewed;
 	bool _strafeMove;
-	bool _ctrlUsed = false;
-	bool _altUsed = false;
+	bool _modifierUsed;
 	PathfindingCost _totalTUCost;
 
 	/// Gets the node at certain position.
 	PathfindingNode *getNode(Position pos);
 
 	/// Gets movement type of unit or movment of missile.
-	MovementType getMovementType(const BattleUnit *unit, const BattleUnit *missileTarget, BattleActionMove bam) const;
+	MovementType getMovementType(const BattleUnit *unit, const BattleUnit *missileTarget) const;
 	/// Determines whether a tile blocks a certain movementType.
-	bool isBlocked(const BattleUnit *unit, const Tile *tile, const int part, BattleActionMove bam, const BattleUnit *missileTarget, int bigWallExclusion = -1) const;
-	/// Determines whether or not movement between start tile and end tile is possible in the direction.
-	bool isBlockedDirection(const BattleUnit *unit, Tile *startTile, const int direction, BattleActionMove bam, const BattleUnit *missileTarget) const;
+	bool isBlocked(const BattleUnit *unit, const Tile *tile, const int part, const BattleUnit *missileTarget, int bigWallExclusion = -1) const;
 	/// Tries to find a straight line path between two positions.
-	bool bresenhamPath(Position origin, Position target, BattleActionMove bam, const BattleUnit *missileTarget, bool sneak = false, int maxTUCost = 1000);
+	bool bresenhamPath(Position origin, Position target, BattleActionMove bam, BattleUnit *missileTarget, bool sneak = false, int maxTUCost = 1000);
 	/// Tries to find a path between two positions.
-	bool aStarPath(Position origin, Position target, BattleActionMove bam, const BattleUnit *missileTarget, bool sneak = false, int maxTUCost = 1000);
+	bool aStarPath(Position origin, Position target, BattleActionMove bam, BattleUnit *missileTarget, bool sneak = false, int maxTUCost = 1000);
 	/// Determines whether a unit can fall down from this tile.
 	bool canFallDown(Tile *destinationTile) const;
 	/// Determines whether a unit can fall down from this tile.
@@ -76,7 +73,7 @@ public:
 	/// Determines whether the unit is going up a stairs.
 	bool isOnStairs(Position startPosition, Position endPosition) const;
 	/// Determines whether or not movement between start tile and end tile is possible in the direction.
-	bool isBlockedDirection(const BattleUnit *unit, Tile *startTile, const int direction) const;
+	bool isBlockedDirection(const BattleUnit *unit, Tile *startTile, const int direction, const BattleUnit *missileTarget) const;
 
 	/// Default move cost for tile that have floor with 0 cost.
 	static constexpr int DEFAULT_MOVE_COST = 4;
@@ -100,7 +97,7 @@ public:
 	/// Cleans up the Pathfinding.
 	~Pathfinding();
 	/// Calculates the shortest path.
-	void calculate(BattleUnit *unit, Position endPosition, BattleActionMove bam, const BattleUnit *missileTarget = 0, int maxTUCost = 1000);
+	void calculate(BattleUnit *unit, Position endPosition, BattleActionMove bam, BattleUnit *missileTarget = 0, int maxTUCost = 1000);
 
 	/**
 	 * Converts direction to a vector. Direction starts north = 0 and goes clockwise.
@@ -143,26 +140,20 @@ public:
 	bool getStrafeMove() const;
 	/// Checks, for the up/down button, if the movement is valid.
 	bool validateUpDown(const BattleUnit *bu, const Position& startPosition, const int direction, bool missile = false) const;
-
 	/// Previews the path.
 	bool previewPath(bool bRemove = false);
 	/// Removes the path preview.
 	bool removePreview();
-	/// Refresh the path preview.
-	void refreshPath();
-
 	/// Sets _unit in order to abuse low-level pathfinding functions from outside the class.
 	void setUnit(BattleUnit *unit);
 	/// Gets all reachable tiles, based on cost.
-	std::vector<int> findReachable(const BattleUnit *unit, const BattleActionCost &cost);
+	std::vector<int> findReachable(BattleUnit *unit, const BattleActionCost &cost);
 	/// Gets _totalTUCost; finds out whether we can hike somewhere in this turn or not.
 	int getTotalTUCost() const { return _totalTUCost.time; }
 	/// Gets the path preview setting.
 	bool isPathPreviewed() const;
 	/// Gets the modifier setting.
-	bool isModifierCtrlUsed() const { return _ctrlUsed; }
-	/// Gets the modifier setting.
-	bool isModifierAltUsed() const { return _altUsed; }
+	bool isModifierUsed() const;
 	/// Gets a reference to the path.
 	const std::vector<int> &getPath() const;
 	/// Makes a copy to the path.
