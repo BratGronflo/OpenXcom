@@ -838,16 +838,16 @@ void updateMods()
 
 	refreshMods();
 
-	// check active mods that don't meet the enforced OXCE requirements
+	// check active mods that don't meet the OXCE requirements
 	auto activeModsList = getActiveMods();
 	bool forceQuit = false;
-	for (auto modInf : activeModsList)
+	for (auto* modInf : activeModsList)
 	{
-		if (!modInf->isEnforcedVersionOk())
+		if (!modInf->isVersionOk())
 		{
 			forceQuit = true;
 			Log(LOG_ERROR) << "- " << modInf->getId() << " v" << modInf->getVersion();
-			Log(LOG_ERROR) << "Mod '" << modInf->getName() << "' enforces at least OXCE v" << modInf->getEnforcedExtendedVersion();
+			Log(LOG_ERROR) << "Mod '" << modInf->getName() << "' requires at least OXCE v" << modInf->getRequiredExtendedVersion();
 		}
 	}
 	if (forceQuit)
@@ -863,11 +863,6 @@ void updateMods()
 	for (auto modInf : activeMods)
 	{
 		Log(LOG_INFO) << "- " << modInf->getId() << " v" << modInf->getVersion();
-		if (!modInf->isVersionOk())
-		{
-			// report active mods that don't meet the recommended OXCE requirements
-			Log(LOG_ERROR) << "Mod '" << modInf->getName() << "' requires at least OXCE v" << modInf->getRequiredExtendedVersion();
-		}
 	}
 }
 
