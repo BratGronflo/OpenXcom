@@ -1365,7 +1365,7 @@ BattleUnit *BattlescapeGenerator::addXCOMUnit(BattleUnit *unit)
 				}
 			}
 		}
-		else if (_craft && _craft->hasCustomDeployment())
+		else if (_craft && _craft->hasCustomDeployment() && _craft->getRules() == _craftRules)
 		{
 			setCustomCraftInventoryTile();
 
@@ -1672,7 +1672,7 @@ BattleUnit *BattlescapeGenerator::addAlien(Unit *rules, int alienRank, bool outs
 	{
 		int diff = _game->getSavedGame()->getDifficulty();
 		auto& custom = _game->getMod()->getAliensFacingCraftOdds();
-		if (custom.size() > diff)
+		if (custom.size() > (size_t)diff)
 		{
 			aliensFacingCraftOdds = custom[diff];
 		}
