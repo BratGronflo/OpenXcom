@@ -1558,7 +1558,7 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 	UnitBodyPart bodypart = BODYPART_TORSO;
 
 	_hitByAnything = true;
-	if (damage <= 0 || _health <= 0)
+	if (_health <= 0)
 	{
 		return 0;
 	}
@@ -1686,6 +1686,7 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 
 
 	// update state of unit stats
+	if (damage > 0)
 	{
 		constexpr int toHealth = 0;
 		constexpr int toArmor = 1;
@@ -1747,7 +1748,7 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 
 		setValueMax(_tu, - std::get<toTime>(args.data), 0, _stats.tu);
 
-		setValueMax(_health, - std::get<toHealth>(args.data), overKillMinimum, _stats.health);
+		setValueMax(_health, - std::get<toHealth>(args.data), std::min(overKillMinimum, _health), _stats.health); // `std::min` required because of script that could set `_health = -100`, if we do not have "overkill" `-100` become min value allowed by this line, if "overkill" then this line can go lower than this.
 
 		setValueMax(_mana, - std::get<toMana>(args.data), 0, _stats.mana);
 
@@ -1929,7 +1930,7 @@ void BattleUnit::knockOut(BattlescapeGame *battle)
 	}
 	else
 	{
-		_stunlevel = _health;
+		_stunlevel = std::max(_health, 1);
 	}
 }
 
@@ -3966,7 +3967,7 @@ void BattleUnit::heal(UnitBodyPart part, int woundAmount, int healthAmount)
 	}
 
 	setValueMax(_fatalWounds[part], -woundAmount, 0, 100);
-	setValueMax(_health, healthAmount, 1, getBaseStats()->health); //Hippocratic Oath: First do no harm
+	setValueMax(_health, healthAmount, std::min(_health, 1), getBaseStats()->health); //Hippocratic Oath: First do no harm
 
 }
 
@@ -4866,7 +4867,7 @@ void BattleUnit::goToTimeOut()
 	// so that they don't count as survivors when all player units in the later stage are killed.
 	if (_originalFaction == FACTION_PLAYER)
 	{
-		_stunlevel = _health;
+		_stunlevel = std::max(_health, 1);
 	}
 }
 
@@ -5678,22 +5679,22 @@ struct burnShadeScript
 	}
 };
 
-template<int BattleUnit::*StatCurr, UnitStats::Ptr StatMax>
+template<int BattleUnit::*StatCurr, UnitStats::Ptr StatMax, int NegativeLimitMult = 0>
 void setBaseStatScript(BattleUnit *bu, int val)
 {
 	if (bu)
 	{
-		(bu->*StatCurr) = Clamp(val, 0, +(bu->getBaseStats()->*StatMax));
+		(bu->*StatCurr) = Clamp(val, - NegativeLimitMult * (bu->getBaseStats()->*StatMax), +(bu->getBaseStats()->*StatMax));
 	}
 }
-template<int BattleUnit::*StatCurr, UnitStats::Ptr StatMax>
+template<int BattleUnit::*StatCurr, UnitStats::Ptr StatMax, int NegativeLimitMult = 0>
 void addBaseStatScript(BattleUnit *bu, int val)
 {
 	if (bu)
 	{
 		//limit range to prevent overflow
 		val = Clamp(val, -UnitStats::BaseStatLimit, UnitStats::BaseStatLimit);
-		setBaseStatScript<StatCurr, StatMax>(bu, val + (bu->*StatCurr));
+		setBaseStatScript<StatCurr, StatMax, NegativeLimitMult>(bu, val + (bu->*StatCurr));
 	}
 }
 
@@ -6062,8 +6063,10 @@ void BattleUnit::ScriptRegister(ScriptParserBase* parser)
 
 	bu.addField<&BattleUnit::_health>("getHealth");
 	bu.add<UnitStats::getMaxStatScript<BattleUnit, &BattleUnit::_stats, &UnitStats::health>>("getHealthMax");
-	bu.add<&setBaseStatScript<&BattleUnit::_health, &UnitStats::health>>("setHealth"); //TODO: allow overkill? now minim is 0.
+	bu.add<&setBaseStatScript<&BattleUnit::_health, &UnitStats::health>>("setHealth");
 	bu.add<&addBaseStatScript<&BattleUnit::_health, &UnitStats::health>>("addHealth");
+	bu.add<&setBaseStatScript<&BattleUnit::_health, &UnitStats::health, UnitStats::OverkillMultipler>>("setHealthWithOverkill", "same as setHealth but allow negative health values like with Overkill");
+	bu.add<&addBaseStatScript<&BattleUnit::_health, &UnitStats::health, UnitStats::OverkillMultipler>>("addHealthWithOverkill", "same as addHealth but allow negative health values like with Overkill");
 
 	bu.addField<&BattleUnit::_mana>("getMana");
 	bu.add<&UnitStats::getMaxStatScript<BattleUnit, &BattleUnit::_stats, &UnitStats::mana>>("getManaMax");

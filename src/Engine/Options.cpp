@@ -224,7 +224,6 @@ void create()
 	_info.push_back(OptionInfo("oxceAutoSell", &oxceAutoSell, false, "STR_AUTO_SELL", "STR_OXCE"));
 	_info.push_back(OptionInfo("oxceRememberDisabledCraftWeapons", &oxceRememberDisabledCraftWeapons, false, "STR_REMEMBER_DISABLED_CRAFT_WEAPONS", "STR_OXCE"));
 	_info.push_back(OptionInfo("oxceEnableOffCentreShooting", &oxceEnableOffCentreShooting, false, "STR_OFF_CENTRE_SHOOTING", "STR_OXCE"));
-	_info.push_back(OptionInfo("oxceShowEnergyInPathReview", &oxceShowEnergyInPathReview, false, "STR_SHOW_ENERGY_PATH_REVIEW", "STR_OXCE"));
 
 	// OXCE hidden
 #ifdef __MOBILE__
@@ -838,16 +837,23 @@ void updateMods()
 
 	refreshMods();
 
-	// check active mods that don't meet the OXCE requirements
+	// check active mods that don't meet the enforced OXCE requirements
 	auto activeModsList = getActiveMods();
 	bool forceQuit = false;
-	for (auto* modInf : activeModsList)
+	for (auto modInf : activeModsList)
 	{
-		if (!modInf->isVersionOk())
+		if (!modInf->isEngineOk())
 		{
 			forceQuit = true;
 			Log(LOG_ERROR) << "- " << modInf->getId() << " v" << modInf->getVersion();
-			Log(LOG_ERROR) << "Mod '" << modInf->getName() << "' requires at least OXCE v" << modInf->getRequiredExtendedVersion();
+			if (modInf->getRequiredExtendedEngine() != OPENXCOM_VERSION_ENGINE)
+			{
+				Log(LOG_ERROR) << "Mod '" << modInf->getName() << "' require OXC " << modInf->getRequiredExtendedEngine() << " engine to run";
+			}
+			else
+			{
+				Log(LOG_ERROR) << "Mod '" << modInf->getName() << "' enforces at least OXC " << OPENXCOM_VERSION_ENGINE << " v" << modInf->getRequiredExtendedVersion();
+			}
 		}
 	}
 	if (forceQuit)
