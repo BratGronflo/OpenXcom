@@ -85,6 +85,7 @@ private:
 	int _limitsEnforced;
 	MissionStatistics *_missionStatistics;
 	std::vector<Soldier*> _soldiersCommended, _deadSoldiersCommended;
+	SavedBattleGame *_battleGame;
 	/// Adds to the debriefing stats.
 	void addStat(const std::string &name, int quantity, int score);
 	/// Prepares debriefing.
