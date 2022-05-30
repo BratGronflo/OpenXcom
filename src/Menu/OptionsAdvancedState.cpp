@@ -113,9 +113,9 @@ OptionsAdvancedState::OptionsAdvancedState(OptionsOrigin origin) : OptionsBaseSt
 			{
 				_settingsOxce.push_back(*i);
 			}
+			}
 		}
 	}
-}
 
 /**
  *
@@ -300,6 +300,11 @@ void OptionsAdvancedState::lstOptionsClick(Action *action)
 		else if (i == &Options::oxceAutoNightVisionThreshold) {
 			min = 0;
 			max = 15;
+		}
+		else if (i == &Options::turnsTakenPenalty)
+		{
+			min = 0;
+			max = 100;
 		}
 		else if (i == &Options::oxceNightVisionColor)
 		{

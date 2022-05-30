@@ -248,7 +248,7 @@ struct BattleUnitKills
 			}
 		}
 		// Aliens
-		else if (unit->getOriginalFaction() == FACTION_HOSTILE)
+		else if (unit->getOriginalFaction() == FACTION_HOSTILE || unit->getOriginalFaction() == FACTION_ALIEN_PLAYER)
 		{
 			if (unit->getUnitRules() != 0 && !unit->getUnitRules()->getRank().empty())
 			{
