@@ -209,6 +209,9 @@ void create()
 	_info.push_back(OptionInfo("skipNextTurnScreen", &skipNextTurnScreen, false, "STR_SKIPNEXTTURNSCREEN", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo("noAlienPanicMessages", &noAlienPanicMessages, false, "STR_NOALIENPANICMESSAGES", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo("alienBleeding", &alienBleeding, false, "STR_ALIENBLEEDING", "STR_BATTLESCAPE"));
+	// HOTSEAT
+	_info.push_back(OptionInfo("oxceTurnsTaken", &turnsTakenPenalty, 0, "STR_TURNS_TAKEN", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("Fog Of War", &fogOfWar, false, "STR_FOGOFWAR", "STR_BATTLESCAPE"));
 
 	// OXCE GUI
 #ifdef __MOBILE__
