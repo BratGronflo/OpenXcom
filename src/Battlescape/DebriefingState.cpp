@@ -2080,11 +2080,11 @@ void DebriefingState::prepareDebriefing()
 		}
 		}
 	}
-	else
+	else if (Options::turnsTakenPenalty != 0)
 	{
-		addStat("STR_TURNS_TAKEN", battle->getTurn(), -battle->getTurn() * 5);
+		int slotIndex = Options::turnsTakenPenalty;
+		addStat("STR_TURNS_TAKEN", battle->getTurn(), -battle->getTurn() * slotIndex);
     }
-
 	if (!_destroyBase)
 	{
 		// clean up remaining armor backups

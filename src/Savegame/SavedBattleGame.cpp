@@ -1495,6 +1495,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 		_selectedUnit =  0;
 		//_side = FACTION_HOSTILE;
 		_side = FACTION_ALIEN_PLAYER;
+		if (Options::fogOfWar)
 		resetTiles();
 	}
 	//else if (_side == FACTION_HOSTILE)
@@ -1534,6 +1535,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 			selectNextPlayerUnit();
 		while (_selectedUnit && _selectedUnit->getFaction() != FACTION_PLAYER)
 			selectNextPlayerUnit();
+		if (Options::fogOfWar)
 		resetTiles();
 	}
 
