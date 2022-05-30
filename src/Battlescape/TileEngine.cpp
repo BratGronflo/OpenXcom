@@ -804,12 +804,12 @@ bool TileEngine::calculateUnitsInFOV(BattleUnit* unit, const Position eventPos, 
 		if ((_save->getSide() == FACTION_PLAYER) && (unit->getFaction() == FACTION_PLAYER))
 		{
 
-			(unit)->setVisible(true); // JOPER FINALLY PROGRESS
+			(unit)->setVisible(true); // JOPER FINALLY PROGRESS // Visibility of the controlled unit at all times (Host)
 		}
-		else if ((_save->getSide() == FACTION_ALIEN_PLAYER) && (unit->getFaction() == FACTION_ALIEN_PLAYER))
+		else if ((_save->getSide() == FACTION_ALIEN_PLAYER || _save->getSide() == FACTION_NEUTRAL) && (unit->getFaction() == FACTION_ALIEN_PLAYER))
 		{
 
-			(unit)->setVisible(true); // joper FINALLY PROGRESS
+			(unit)->setVisible(true); // joper FINALLY PROGRESS // Visibility of controlled unit at all times (Client)
 		}
 		Position posOther = (*i)->getPosition();
 		if (!(*i)->isOut() && (unit->getId() != (*i)->getId()))
