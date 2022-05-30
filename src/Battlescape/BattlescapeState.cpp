@@ -1424,6 +1424,10 @@ void BattlescapeState::btnAbortClick(Action *)
 
 	if (allowButtons() & _save->getSide() == FACTION_PLAYER)
 		_game->pushState(new AbortMissionState(_save, this));
+	else if (allowButtons() & _save->getSide() == FACTION_ALIEN_PLAYER & _game->isCtrlPressed())
+		for (std::vector<BattleUnit *>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
+
+		(*i)->damage(Position(0, 0, 0), 1000, _game->getMod()->getDamageType(DT_STUN), _save, { });
 }
 
 /**
@@ -2871,7 +2875,7 @@ inline void BattlescapeState::handle(Action *action)
 									// kill (ctrl-alt-k) or stun (ctrl-alt-j) all aliens EXCEPT the one under the cursor
 									continue;
 								}
-								if ((*i)->getOriginalFaction() == FACTION_HOSTILE && !(*i)->isOut())
+								if (((*i)->getOriginalFaction() == FACTION_HOSTILE || (*i)->getOriginalFaction() == FACTION_ALIEN_PLAYER) && !(*i)->isOut())
 								{
 									(*i)->damage(Position(0, 0, 0), 1000, _game->getMod()->getDamageType(stunOnly ? DT_STUN : DT_AP), _save, { });
 								}
