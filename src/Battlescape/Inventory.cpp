@@ -360,8 +360,16 @@ void Inventory::drawItems()
 			// grenade primer indicators
 			if ((*i)->getFuseTimer() >= 0 && (*i)->getRules()->getInventoryWidth() > 0)
 			{
+				if (Options ::hotPotato && (*i)->getSlot()->getType() == INV_HAND)
+				{
+				primers(x, y, (*i)->isFuseEnabled());	
+				}
+				else if (!Options ::hotPotato)
 				primers(x, y, (*i)->isFuseEnabled());
 			}
+
+			
+			
 		}
 		Surface stackLayer(getWidth(), getHeight(), 0, 0);
 		stackLayer.setPalette(getPalette());
@@ -397,7 +405,7 @@ void Inventory::drawItems()
 			work.executeBlit(frame, _items, x, y, 0);
 
 			// grenade primer indicators
-			if ((*i)->getFuseTimer() >= 0 && (*i)->getRules()->getInventoryWidth() > 0)
+			if ((*i)->getFuseTimer() >= 0 && (*i)->getRules()->getInventoryWidth() > 0 && !Options ::hotPotato)
 			{
 				primers(x, y, (*i)->isFuseEnabled());
 			}
