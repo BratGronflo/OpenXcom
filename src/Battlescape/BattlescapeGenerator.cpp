@@ -714,7 +714,7 @@ void BattlescapeGenerator::nextStage()
 }
 
 /**
- * Starts the generator; it fills up the battlescape savegame with data.
+ * Starts the generator; it fills up the battlescape savegame with data. Jopper
  */
 void BattlescapeGenerator::run()
 {
