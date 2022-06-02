@@ -1394,6 +1394,7 @@ void BattlescapeState::btnEndTurnClick(Action *)
 
 		_txtTooltip->setText("");
 		_battleGame->requestEndTurn(false);
+		_game->getMod()->getSound("GEO.CAT", Mod::INTERCEPTOR_EXPLODE)->play();
 	}
 }
 

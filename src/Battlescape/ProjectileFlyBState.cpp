@@ -313,7 +313,7 @@ void ProjectileFlyBState::init()
 		Tile *targetTile = _parent->getSave()->getTile(_action.target);
 		Position originVoxel = _parent->getTileEngine()->getOriginVoxel(_action, _parent->getSave()->getTile(_origin));
 		if (targetTile->getUnit() &&
-				((_unit->getFaction() != FACTION_PLAYER && _unit->getFaction() != FACTION_ALIEN_PLAYER) || // POSSIBLE BUG GRANADE LAUNCHER ARCING SHOT
+				((_unit->getFaction() != FACTION_PLAYER && _unit->getFaction() != FACTION_ALIEN_PLAYER) || // POSSIBLE BUG GRENADE LAUNCHER ARCING SHOT
 			targetTile->getUnit()->getVisible()))
 		{
 			if (_origin == _action.target || targetTile->getUnit() == _unit)

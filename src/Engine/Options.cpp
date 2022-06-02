@@ -213,6 +213,7 @@ void create()
 	// HOTSEAT
 	_info.push_back(OptionInfo("oxceTurnsTaken", &turnsTakenPenalty, 0, "STR_TURNS_TAKEN", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo("Fog Of War", &fogOfWar, false, "STR_FOGOFWAR", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("Hot Potato Grenades", &hotPotato, false, "STR_HOTPOTATOGRENADES", "STR_BATTLESCAPE"));
 
 	// OXCE GUI
 #ifdef __MOBILE__

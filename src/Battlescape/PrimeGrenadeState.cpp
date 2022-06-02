@@ -161,7 +161,7 @@ void PrimeGrenadeState::btnClick(Action *action)
 		}
 	}
 
-	if (btnID != -1)
+	if (btnID != -1 && !(btnID == 0 && Options::hotPotato))
 	{
 		if (_inInventoryView)
 		{

@@ -533,7 +533,7 @@ void BattlescapeGame::endTurn()
 				const RuleItem *rule = item->getRules();
 				const Tile *tile = item->getTile();
 				BattleUnit *unit = item->getOwner();
-				if (!tile && unit && rule->isExplodingInHands() && !_allEnemiesNeutralized)
+				if (!tile && unit && (rule->isExplodingInHands()|| Options::hotPotato) && !_allEnemiesNeutralized)
 				{
 					tile = unit->getTile();
 				}
