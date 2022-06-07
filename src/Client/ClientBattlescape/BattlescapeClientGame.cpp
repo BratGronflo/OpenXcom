@@ -619,8 +619,8 @@ void BattlescapeGame::endTurn()
 	_triggerProcessed.reset();
 	_endTurnProcessed.reset();
 
-	// JOPER HOST 
-	if ((_save->getSide() == FACTION_PLAYER) || (_save->getSide() == FACTION_ALIEN_PLAYER))
+	// Joper CLIENT
+	if (_save->getSide() == FACTION_ALIEN_PLAYER)
 	{
 		setupCursor();
 	}
@@ -628,7 +628,6 @@ void BattlescapeGame::endTurn()
 	{
 		getMap()->setCursorType(CT_NONE);
 	}
-
 
 	checkForCasualties(nullptr, BattleActionAttack{ }, false, false);
 
@@ -728,17 +727,7 @@ void BattlescapeGame::checkForCasualties(const RuleDamageType *damageType, Battl
 		}
 		if (attack.damage_item)
 		{
-			// If the secondary melee data is used, represent this by setting the ammo to "__GUNBUTT".
-			// Note: BT_MELEE items use their normal attack data rather than 'melee' data. So their 'ammo' should be the weapon itself.
-			// (The following condition should match what is used in ExplosionBState::init to choose the damage power and type.)
-			if (attack.type == BA_HIT && attack.damage_item->getRules()->getBattleType() != BT_MELEE)
-			{
-				tempAmmo = "__GUNBUTT";
-			}
-			else
-			{
-				tempAmmo = attack.damage_item->getRules()->getName();
-			}
+			tempAmmo = attack.damage_item->getRules()->getName();
 		}
 	}
 
@@ -870,7 +859,7 @@ void BattlescapeGame::checkForCasualties(const RuleDamageType *damageType, Battl
 					int winnerMod = _save->getFactionMoraleModifier(victim->getOriginalFaction() == FACTION_HOSTILE || victim->getOriginalFaction() == FACTION_ALIEN_PLAYER);
 					for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 					{
-						if (!(*i)->isOut() && (*i)->isSmallUnit())
+						if (!(*i)->isOut() && (*i)->getArmor()->getSize() == 1)
 						{
 							// the losing squad all get a morale loss
 							if ((*i)->getOriginalFaction() == victim->getOriginalFaction())
@@ -946,7 +935,7 @@ void BattlescapeGame::checkForCasualties(const RuleDamageType *damageType, Battl
 
 						for (auto winner : *_save->getUnits())
 						{
-							if (!winner->isOut() && winner->isSmallUnit() && winner->getOriginalFaction() == murderer->getOriginalFaction())
+							if (!winner->isOut() && winner->getArmor()->getSize() == 1 && winner->getOriginalFaction() == murderer->getOriginalFaction())
 							{
 								// the winning squad gets a morale increase (the losing squad is NOT affected)
 								winner->moraleChange(10);
@@ -964,7 +953,7 @@ void BattlescapeGame::checkForCasualties(const RuleDamageType *damageType, Battl
 				// piggyback of cleanup after script that change move type
 				if ((*j)->haveNoFloorBelow() && (*j)->getMovementType() != MT_FLY)
 				{
-					_save->addFallingUnit(*j);
+					_parentState->getBattleGame()->getSave()->addFallingUnit(*j);
 				}
 			}
 		}
@@ -1133,10 +1122,9 @@ void BattlescapeGame::setupCursor()
  * @return Whether a playable unit is selected.
  */
 bool BattlescapeGame::playableUnitSelected() const
-  // host
 {
-	return _save->getSelectedUnit() != 0 && (_save->getSide() == FACTION_PLAYER || _save->getDebugMode());
-
+	return _save->getSelectedUnit() != 0 && (_save->getSide() == FACTION_ALIEN_PLAYER);
+	// JOPPER FOR CLIENT 
 }
 
 /**
@@ -1946,7 +1934,7 @@ void BattlescapeGame::primaryAction(Position pos)
 				_save->getPathfinding()->removePreview();
 			}
 			_currentAction.target = pos;
-			_save->getPathfinding()->calculate(_currentAction.actor, _currentAction.target, BAM_NORMAL); // precalculate move
+			_save->getPathfinding()->calculate(_currentAction.actor, _currentAction.target, BAM_NORMAL); // precalucalte move
 
 			_currentAction.strafe = false;
 			_currentAction.run = false;
@@ -1956,19 +1944,19 @@ void BattlescapeGame::primaryAction(Position pos)
 			{
 				if (_save->getPathfinding()->getPath().size() > 1)
 				{
-					_currentAction.run = _save->getSelectedUnit()->getArmor()->allowsRunning(_save->getSelectedUnit()->isSmallUnit());
+					_currentAction.run = _save->getSelectedUnit()->getArmor()->allowsRunning(_save->getSelectedUnit()->getArmor()->getSize() == 1);
 				}
 				else
 				{
-					_currentAction.strafe = _save->getSelectedUnit()->getArmor()->allowsStrafing(_save->getSelectedUnit()->isSmallUnit());
+					_currentAction.strafe = _save->getSelectedUnit()->getArmor()->allowsStrafing(_save->getSelectedUnit()->getArmor()->getSize() == 1);
 				}
 			}
 			else if (isAltPressed)
 			{
-				_currentAction.sneak = _save->getSelectedUnit()->getArmor()->allowsSneaking(_save->getSelectedUnit()->isSmallUnit());
+				_currentAction.sneak = _save->getSelectedUnit()->getArmor()->allowsSneaking(_save->getSelectedUnit()->getArmor()->getSize() == 1);
 			}
 
-			// recalculate path after setting new move types
+			//recalucate path after setting new move types
 			if (BAM_NORMAL != _currentAction.getMoveType())
 			{
 				_save->getPathfinding()->calculate(_currentAction.actor, _currentAction.target, _currentAction.getMoveType());
@@ -2384,8 +2372,7 @@ void BattlescapeGame::removeSummonedPlayerUnits()
 			_save->getEnviroEffects(),
 			type->getArmor(),
 			nullptr,
-			getDepth(),
-			_save->getStartingCondition());
+			getDepth());
 
 		// just bare minimum, this unit will never be used for anything except recovery (not even for scoring)
 		newUnit->setTile(nullptr, _save);
@@ -2934,15 +2921,7 @@ BattlescapeTally BattlescapeGame::tallyUnits()
 						}
 						else if ((*j)->isInExitArea(END_POINT))
 						{
-							if ((*j)->isBannedInNextStage())
-							{
-								// this guy would (theoretically) go into timeout
-								tally.vipInField++;
-							}
-							else
-							{
-								tally.vipInExit++;
-							}
+							tally.vipInExit++;
 						}
 						else
 						{
@@ -2958,15 +2937,7 @@ BattlescapeTally BattlescapeGame::tallyUnits()
 				}
 				else if ((*j)->isInExitArea(END_POINT))
 				{
-					if ((*j)->isBannedInNextStage())
-					{
-						// this guy will go into timeout
-						tally.inField++;
-					}
-					else
-					{
-						tally.inExit++;
-					}
+					tally.inExit++;
 				}
 				else
 				{

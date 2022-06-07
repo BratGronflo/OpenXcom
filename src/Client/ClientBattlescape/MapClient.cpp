@@ -52,6 +52,7 @@
 #include "../Interface/NumberText.h"
 #include "../Interface/Text.h"
 #include "../fmath.h"
+#include "../fallthrough.h"
 
 
 /*
@@ -158,29 +159,7 @@ Map::Map(Game *game, int width, int height, int x, int y, int visibleMapHeight) 
 	_cacheHasLOS = -1;
 
 	_nightVisionOn = false;
-	if (Options::oxceToggleNightVisionType == 2)
-	{
-		// persisted per campaign
-		_nightVisionOn = _game->getSavedGame()->getToggleNightVision();
-	}
-	else if (Options::oxceToggleNightVisionType == 1)
-	{
-		// persisted per battle
-		_nightVisionOn = _save->getToggleNightVision();
-	}
-
 	_debugVisionMode = 0;
-	if (Options::oxceToggleBrightnessType == 2)
-	{
-		// persisted per campaign
-		_debugVisionMode = _game->getSavedGame()->getToggleBrightness();
-	}
-	else if (Options::oxceToggleBrightnessType == 1)
-	{
-		// persisted per battle
-		_debugVisionMode = _save->getToggleBrightness();
-	}
-
 	_fadeShade = 16;
 	_nvColor = 0;
 	_fadeTimer = new Timer(FADE_INTERVAL);
@@ -309,6 +288,11 @@ void Map::draw()
 		{
 			_projectileInFOV = true;
 		}
+		//CLIENT
+		if (_save->getSide() == FACTION_ALIEN_PLAYER || (t && t->getVisible()))
+		{
+			_projectileInFOV = true;
+		}
 	}
 	_explosionInFOV = _save->getDebugMode();
 	if (!_explosions.empty())
@@ -325,6 +309,11 @@ void Map::draw()
 	}
 	//HOST
 	if ((_save->getSelectedUnit() && _save->getSelectedUnit()->getVisible()) || _unitDying || _save->getSide() == FACTION_PLAYER || _save->getDebugMode() || _projectileInFOV || _explosionInFOV)
+	{
+		drawTerrain(this);
+	}
+	//CLIENT
+	else if ((_save->getSelectedUnit() && _save->getSelectedUnit()->getVisible()) || _unitDying || _save->getSide() == FACTION_ALIEN_PLAYER || _save->getDebugMode() || _projectileInFOV || _explosionInFOV)
 	{
 		drawTerrain(this);
 	}
@@ -1550,7 +1539,7 @@ void Map::drawTerrain(Surface *surface)
 							{
 								adjustment += 7;
 							}
-							if (_save->getSelectedUnit() && _save->getSelectedUnit()->isBigUnit())
+							if (_save->getSelectedUnit() && _save->getSelectedUnit()->getArmor()->getSize() > 1)
 							{
 								adjustment += 1;
 								if (!_previewSettingArrows)
@@ -1601,7 +1590,7 @@ void Map::drawTerrain(Surface *surface)
 		_camera->convertMapToScreen(selectedUnit->getPosition(), &screenPosition);
 		screenPosition += _camera->getMapOffset();
 		Position offset = calculateWalkingOffset(selectedUnit).ScreenOffset;
-		if (selectedUnit->isBigUnit())
+		if (selectedUnit->getArmor()->getSize() > 1)
 		{
 			offset.y += 4;
 		}
@@ -1630,7 +1619,7 @@ void Map::drawTerrain(Surface *surface)
 				screenPosition += _camera->getMapOffset();
 				Position offset;
 				//calculateWalkingOffset(myUnit, &offset);
-				if (myUnit->isBigUnit())
+				if (myUnit->getArmor()->getSize() > 1)
 				{
 					offset.y += 4;
 				}
@@ -1648,6 +1637,36 @@ void Map::drawTerrain(Surface *surface)
 		}
 	}
 	delete _numWaypid;
+	// CLIENT
+	if (_isAltPressed && _save->getSide() == FACTION_ALIEN_PLAYER && this->getCursorType() != CT_NONE)
+	{
+		for (auto myUnit : *_save->getUnits())
+		{
+			if (myUnit->getScannedTurn() == _save->getTurn() && myUnit->getFaction() != FACTION_ALIEN_PLAYER && !myUnit->isOut())
+			{
+				Position temp = myUnit->getPosition();
+				temp.z = _camera->getViewLevel();
+				_camera->convertMapToScreen(temp, &screenPosition);
+				screenPosition += _camera->getMapOffset();
+				Position offset;
+				//calculateWalkingOffset(myUnit, &offset);
+				if (myUnit->getArmor()->getSize() > 1)
+				{
+					offset.y += 4;
+				}
+				offset.y += 24 - myUnit->getHeight();
+				if (myUnit->isKneeled())
+				{
+					offset.y -= 2;
+				}
+				_arrow->blitNShade(
+					surface,
+					screenPosition.x + offset.x + (_spriteWidth / 2) - (_arrow->getWidth() / 2),
+					screenPosition.y + offset.y - _arrow->getHeight() + getArrowBobForFrame(_animFrame),
+					0);
+			}
+		}
+	}
 
 	// Draw craft deployment preview arrows
 	if (_isAltPressed && _save->isPreview() && this->getCursorType() != CT_NONE)
@@ -1755,50 +1774,16 @@ void Map::keyboardPress(Action *action, State *state)
  * Handles map vision toggle mode.
  */
 
-void Map::enableNightVision()
-{
-	_nightVisionOn = true;
-	_debugVisionMode = 0;
-	persistToggles();
-}
-
 void Map::toggleNightVision()
 {
 	_nightVisionOn = !_nightVisionOn;
 	_debugVisionMode = 0;
-	persistToggles();
 }
 
 void Map::toggleDebugVisionMode()
 {
 	_debugVisionMode = (_debugVisionMode + 1) % 3;
 	_nightVisionOn = false;
-	persistToggles();
-}
-
-void Map::persistToggles()
-{
-	if (Options::oxceToggleNightVisionType == 2)
-	{
-		// persisted per campaign
-		_game->getSavedGame()->setToggleNightVision(_nightVisionOn);
-	}
-	else if (Options::oxceToggleNightVisionType == 1)
-	{
-		// persisted per battle
-		_save->setToggleNightVision(_nightVisionOn);
-	}
-
-	if (Options::oxceToggleBrightnessType == 2)
-	{
-		// persisted per campaign
-		_game->getSavedGame()->setToggleBrightness(_debugVisionMode);
-	}
-	else if (Options::oxceToggleBrightnessType == 1)
-	{
-		// persisted per battle
-		_save->setToggleBrightness(_debugVisionMode);
-	}
 }
 
 /**
@@ -1837,6 +1822,17 @@ int Map::reShade(Tile *tile)
 	for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
 		if (((*i)->getFaction() == FACTION_PLAYER && !(*i)->isOut()) && _save->getSide() == FACTION_PLAYER)
+		{
+			if (Position::distance2dSq(tile->getPosition(), (*i)->getPosition()) <= (*i)->getMaxViewDistanceAtDarkSquared())
+			{
+				return tile->getShade() > _fadeShade ? _fadeShade : tile->getShade();
+			}
+		}
+	}
+	// Client
+	for (std::vector<BattleUnit *>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
+	{
+		if (((*i)->getFaction() == FACTION_ALIEN_PLAYER && !(*i)->isOut()) && _save->getSide() == FACTION_ALIEN_PLAYER)
 		{
 			if (Position::distance2dSq(tile->getPosition(), (*i)->getPosition()) <= (*i)->getMaxViewDistanceAtDarkSquared())
 			{
@@ -1969,10 +1965,8 @@ void Map::animate(bool redraw)
 	// animate certain units (large flying units have a propulsion animation)
 	for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
-		const auto pos = (*i)->getPosition();
-
 		// skip units that do not have position
-		if (pos == TileEngine::invalid)
+		if ((*i)->getPosition() == TileEngine::invalid)
 		{
 			continue;
 		}
@@ -1982,11 +1976,11 @@ void Map::animate(bool redraw)
 			(*i)->setFloorAbove(false);
 
 			// make sure this unit isn't obscured by the floor above him, otherwise it looks weird.
-			if (_camera->getViewLevel() > pos.z)
+			if (_camera->getViewLevel() > (*i)->getPosition().z)
 			{
-				for (int z = std::min(_camera->getViewLevel(), _save->getMapSizeZ() - 1); z != pos.z; --z)
+				for (int z = std::min(_camera->getViewLevel(), _save->getMapSizeZ() - 1); z != (*i)->getPosition().z; --z)
 				{
-					if (!_save->getTile(Position(pos.x, pos.y, z))->hasNoFloor(0))
+					if (!_save->getTile(Position((*i)->getPosition().x, (*i)->getPosition().y, z))->hasNoFloor(0))
 					{
 						(*i)->setFloorAbove(true);
 						break;
@@ -2067,22 +2061,19 @@ UnitWalkingOffset Map::calculateWalkingOffset(const BattleUnit *unit) const
 	// If we are walking in between tiles, interpolate it's terrain level.
 	if (unit->getStatus() == STATUS_WALKING || unit->getStatus() == STATUS_FLYING)
 	{
-		const auto posCurr = unit->getPosition();
-		const auto posDest = unit->getDestination();
-		const auto posLast = unit->getLastPosition();
 		if (phase < midphase)
 		{
-			int fromLevel = getTerrainLevel(posCurr, size);
-			int toLevel = getTerrainLevel(posDest, size);
-			if (posCurr.z > posDest.z)
+			int fromLevel = getTerrainLevel(unit->getPosition(), size);
+			int toLevel = getTerrainLevel(unit->getDestination(), size);
+			if (unit->getPosition().z > unit->getDestination().z)
 			{
 				// going down a level, so toLevel 0 becomes +24, -8 becomes  16
-				toLevel += Position::TileZ*(posCurr.z - posDest.z);
+				toLevel += Position::TileZ*(unit->getPosition().z - unit->getDestination().z);
 			}
-			else if (posCurr.z < posDest.z)
+			else if (unit->getPosition().z < unit->getDestination().z)
 			{
 				// going up a level, so toLevel 0 becomes -24, -8 becomes -16
-				toLevel = -Position::TileZ*(posDest.z - posCurr.z) + abs(toLevel);
+				toLevel = -Position::TileZ*(unit->getDestination().z - unit->getPosition().z) + abs(toLevel);
 			}
 			result.TerrainLevelOffset = Interpolate(fromLevel, toLevel, phase, endphase);
 		}
@@ -2090,17 +2081,17 @@ UnitWalkingOffset Map::calculateWalkingOffset(const BattleUnit *unit) const
 		{
 			// from phase 4 onwards the unit behind the scenes already is on the destination tile
 			// we have to get it's last position to calculate the correct offset
-			int fromLevel = getTerrainLevel(posLast, size);
-			int toLevel = getTerrainLevel(posDest, size);
-			if (posLast.z > posDest.z)
+			int fromLevel = getTerrainLevel(unit->getLastPosition(), size);
+			int toLevel = getTerrainLevel(unit->getDestination(), size);
+			if (unit->getLastPosition().z > unit->getDestination().z)
 			{
 				// going down a level, so fromLevel 0 becomes -24, -8 becomes -32
-				fromLevel -= Position::TileZ*(posLast.z - posDest.z);
+				fromLevel -= Position::TileZ*(unit->getLastPosition().z - unit->getDestination().z);
 			}
-			else if (posLast.z < posDest.z)
+			else if (unit->getLastPosition().z < unit->getDestination().z)
 			{
 				// going up a level, so fromLevel 0 becomes +24, -8 becomes 16
-				fromLevel = Position::TileZ*(posDest.z - posLast.z) - abs(fromLevel);
+				fromLevel = Position::TileZ*(unit->getDestination().z - unit->getLastPosition().z) - abs(fromLevel);
 			}
 			result.TerrainLevelOffset = Interpolate(fromLevel, toLevel, phase, endphase);
 		}

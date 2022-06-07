@@ -28,6 +28,7 @@
 #include "../Savegame/SavedBattleGame.h"
 #include "../Savegame/Tile.h"
 #include "../Mod/Mod.h"
+#include "../Engine/Sound.h"
 #include "../Mod/RuleItem.h"
 #include "../Mod/Armor.h"
 #include "../Engine/RNG.h"
@@ -359,8 +360,8 @@ void ExplosionBState::init()
 		{
 			_parent->getMap()->getCamera()->setViewLevel(_center.z / 24);
 		}
-		// host
-		if (_targetPsiOrHit && (_parent->getSave()->getSide() == FACTION_HOSTILE || _parent->getSave()->getSide() == FACTION_ALIEN_PLAYER) && _targetPsiOrHit->getFaction() == FACTION_PLAYER)
+		// client 
+		if (_targetPsiOrHit && _parent->getSave()->getSide() == FACTION_PLAYER && _targetPsiOrHit->getFaction() == FACTION_ALIEN_PLAYER)
 		{
 			_parent->getMap()->getCamera()->centerOnPosition(_center.toTile(), false);
 		}

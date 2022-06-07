@@ -313,9 +313,8 @@ void NextTurnState::init()
 		{
 			// start preview
 			_state->btnCenterClick(0);
-
-			// Try to reactivate the touch buttons at the start of the player's turn
-			if (_battleGame->getSide() == FACTION_PLAYER)
+			// Try to reactivate the touch buttons at the start of the player's turn THE CLIENT
+			if (_battleGame->getSide() == FACTION_ALIEN_PLAYER)
 			{
 				_state->toggleTouchButtons(false, true);
 			}
@@ -451,12 +450,6 @@ void NextTurnState::handle(Action *action)
 {
 	State::handle(action);
 
-	if (_battleGame->isPreview())
-	{
-		// prevent NPE on Android/iOS
-		return;
-	}
-
 	if (_btnBriefingReinforcements->getVisible() && action->getDetails()->type == SDL_MOUSEBUTTONDOWN)
 	{
 		double mx = action->getAbsoluteXMouse();
@@ -539,8 +532,8 @@ void NextTurnState::close()
 	else
 	{
 		_state->btnCenterClick(0);
-		// Try to reactivate the touch buttons at the start of the player's turn HOST
-		if (_battleGame->getSide() == FACTION_PLAYER)
+		// Try to reactivate the touch buttons at the start of the player's turn THE CLIENT
+		if (_battleGame->getSide() == FACTION_ALIEN_PLAYER)
 		{
 			_state->toggleTouchButtons(false, true);
 		}
@@ -1111,7 +1104,7 @@ bool NextTurnState::placeReinforcementNearFriend(BattleUnit *unit)
 			if (k->getFaction() == unit->getFaction() && k->getPosition() != TileEngine::invalid && k->getArmor()->getSize() >= unit->getArmor()->getSize())
 			{
 				entryPoint = k->getPosition();
-				largeUnit = k->isBigUnit();
+				largeUnit = (k->getArmor()->getSize() != 1);
 			}
 			--tries;
 		}
