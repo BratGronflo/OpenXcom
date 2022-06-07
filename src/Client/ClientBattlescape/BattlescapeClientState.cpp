@@ -2190,15 +2190,15 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 	_numberOfDirectlyVisibleUnits = j;
 
 	// go through all units on the map
-	// FOR HUMAN_PLAYER (HOST)
-	for (std::vector<BattleUnit *>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end() && _save->getSide() == FACTION_PLAYER && j < VISIBLE_MAX; ++i)
+	// FOR ALEIN_PLAYER (CLIENT)
+	for (std::vector<BattleUnit *>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end() && _save->getSide() == FACTION_ALIEN_PLAYER && j < VISIBLE_MAX; ++i)
 	{
 		// check if they are hostile and visible (by any friendly unit)
-		if (((*i)->getOriginalFaction() == FACTION_HOSTILE || (*i)->getOriginalFaction() == FACTION_ALIEN_PLAYER) && !(*i)->isOut() && (*i)->getVisible())
+		if (((*i)->getOriginalFaction() == FACTION_PLAYER) && !(*i)->isOut() && (*i)->getVisible())
 		{
 			bool alreadyShown = false;
 			// check if they are not already shown (e.g. because we see them directly)
-			for (std::vector<BattleUnit*>::iterator k = battleUnit->getVisibleUnits()->begin(); k != battleUnit->getVisibleUnits()->end(); ++k)
+			for (std::vector<BattleUnit *>::iterator k = battleUnit->getVisibleUnits()->begin(); k != battleUnit->getVisibleUnits()->end(); ++k)
 			{
 				if ((*i)->getId() == (*k)->getId())
 				{
@@ -2216,15 +2216,14 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 		}
 	}
 
-
 	// remember where green indicators turn blue
 	_numberOfEnemiesTotal = j;
 
-	{ // FOR HUMAN_PLAYER (HOST)
+		// FOR ALEIN_PLAYER (CLIENT)
 		// go through all wounded units under player's control (incl. unconscious)
-		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_PLAYER && j < VISIBLE_MAX; ++i)
+		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_ALIEN_PLAYER && j < VISIBLE_MAX; ++i)
 		{
-			if ((*i)->getFaction() == FACTION_PLAYER && (*i)->getStatus() != STATUS_DEAD && !(*i)->isIgnored() && (*i)->getFatalWounds() > 0 && (*i)->indicatorsAreEnabled())
+			if ((*i)->getFaction() == FACTION_ALIEN_PLAYER && (*i)->getStatus() != STATUS_DEAD && !(*i)->isIgnored() && (*i)->getFatalWounds() > 0 && (*i)->indicatorsAreEnabled())
 			{
 				_btnVisibleUnit[j]->setTooltip(_txtVisibleUnitTooltip[VISIBLE_MAX]);
 				_btnVisibleUnit[j]->setVisible(true);
@@ -2234,17 +2233,14 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 			}
 		}
 
-	}
-
 	// remember where blue indicators turn purple
 	_numberOfEnemiesTotalPlusWounded = j;
 
 	{
-		// FOR HUMAN_PLAYER (HOST)
-		// first show all stunned allies with negative health regen (usually caused by high stun level)
-		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_PLAYER && j < VISIBLE_MAX; ++i)
+		// FOR ALEIN_PLAYER (CLIENT)
+		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_ALIEN_PLAYER && j < VISIBLE_MAX; ++i)
 		{
-			if ((*i)->getOriginalFaction() == FACTION_PLAYER && (*i)->getStatus() == STATUS_UNCONSCIOUS && (*i)->hasNegativeHealthRegen() && (*i)->indicatorsAreEnabled())
+			if ((*i)->getOriginalFaction() == FACTION_ALIEN_PLAYER && (*i)->getStatus() == STATUS_UNCONSCIOUS && (*i)->hasNegativeHealthRegen() && (*i)->indicatorsAreEnabled())
 			{
 				_btnVisibleUnit[j]->setTooltip(_txtVisibleUnitTooltip[VISIBLE_MAX + 1]);
 				_btnVisibleUnit[j]->setVisible(true);
@@ -2253,15 +2249,14 @@ void BattlescapeState::updateSoldierInfo(bool checkFOV)
 				++j;
 			}
 		}
-		// FOR HUMAN_PLAYER (HOST)
-		// then show all standing units under player's control with high stun level
-		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_PLAYER && j < VISIBLE_MAX; ++i)
+		// FOR ALEIN_PLAYER (CLIENT)
+		for (std::vector<BattleUnit *>::iterator i = _battleGame->getSave()->getUnits()->begin(); i != _battleGame->getSave()->getUnits()->end() && _save->getSide() == FACTION_ALIEN_PLAYER && j < VISIBLE_MAX; ++i)
 		{
-			if ((*i)->getFaction() == FACTION_PLAYER && !((*i)->isOut()) && (*i)->getHealth() > 0 && (*i)->indicatorsAreEnabled())
+			if ((*i)->getFaction() == FACTION_ALIEN_PLAYER && !((*i)->isOut()) && (*i)->getHealth() > 0 && (*i)->indicatorsAreEnabled())
 			{
 				if ((*i)->getStunlevel() * 100 / (*i)->getHealth() >= 75)
 				{
-					_btnVisibleUnit[j]->setTooltip(_txtVisibleUnitTooltip[VISIBLE_MAX+1]);
+					_btnVisibleUnit[j]->setTooltip(_txtVisibleUnitTooltip[VISIBLE_MAX + 1]);
 					_btnVisibleUnit[j]->setVisible(true);
 					_numVisibleUnit[j]->setVisible(true);
 					_visibleUnit[j] = (*i);
@@ -3415,7 +3410,7 @@ bool BattlescapeState::getMouseOverIcons() const
  */
 bool BattlescapeState::allowButtons(bool allowSaving) const // Joper
 {
-	return ((allowSaving || _save->getSide() == FACTION_PLAYER || _save->getDebugMode())
+	return ((allowSaving || _save->getSide() == FACTION_ALIEN_PLAYER || _save->getDebugMode())
 		&& (_battleGame->getPanicHandled() || _firstInit )
 		&& (allowSaving || !_battleGame->isBusy() || _firstInit)
 		&& (_map->getProjectile() == 0));

@@ -442,8 +442,8 @@ void UnitWalkBState::think()
  * Aborts unit walking.
  */
 void UnitWalkBState::cancel()
-{ //host
-	if ((_parent->getSave()->getSide() == FACTION_PLAYER) && _parent->getPanicHandled())
+{ //Client
+	if ((_parent->getSave()->getSide() == FACTION_ALIEN_PLAYER) && _parent->getPanicHandled())
 	_pf->abortPath();
 }
 
