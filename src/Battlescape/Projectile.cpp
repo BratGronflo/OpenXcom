@@ -184,13 +184,18 @@ int Projectile::calculateTrajectory(double accuracy, const Position& originVoxel
 	_trajectory.clear();
 
 	bool extendLine = true;
+	int turnsTaken = 0;
 	// even guided missiles drift, but how much is based on 
 	// the shooter's faction, rather than accuracy.
 	if (_action.type == BA_LAUNCH) // BLASTER LAUCNHER ACCURACY
 	{
-		if (_action.actor->getFaction() == FACTION_PLAYER || _action.actor->getFaction() == FACTION_ALIEN_PLAYER)
+		if (Options::drunkenBlasterLaucnher)
 		{
-			accuracy = 0.60;
+			accuracy = 0.05;
+		}
+		else if (_action.actor->getFaction() == FACTION_PLAYER || _action.actor->getFaction() == FACTION_ALIEN_PLAYER)
+		{
+			accuracy = 0.60; 
 		}
 		else
 		{

@@ -211,8 +211,9 @@ void create()
 	_info.push_back(OptionInfo("alienBleeding", &alienBleeding, false, "STR_ALIENBLEEDING", "STR_BATTLESCAPE"));
 	// HOTSEAT
 	_info.push_back(OptionInfo("oxceTurnsTaken", &turnsTakenPenalty, 0, "STR_TURNS_TAKEN", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo("Fog Of War", &fogOfWar, false, "STR_FOGOFWAR", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo("Hot Potato Grenades", &hotPotato, false, "STR_HOTPOTATOGRENADES", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("FogOfWar", &fogOfWar, false, "STR_FOGOFWAR", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("HotPotatoGrenades", &hotPotato, false, "STR_HOTPOTATOGRENADES", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("Drunken Blaster Launcher", &drunkenBlasterLaucnher, false, "STR_DRUNKEN_BLASTER_LAUCNHER", "STR_BATTLESCAPE"));
 
 	// OXCE GUI
 #ifdef __MOBILE__
