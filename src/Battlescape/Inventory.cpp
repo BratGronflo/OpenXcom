@@ -823,7 +823,7 @@ void Inventory::mouseClick(Action *action, State *state)
 					else
 					{
 						setSelectedItem(item);
-						if (item->getFuseTimer() >= 0)
+						if (item->getFuseTimer() >= 0 && !Options ::hotPotato)
 						{
 							_warning->showMessage(_game->getLanguage()->getString(item->getRules()->getPrimeActionMessage()));
 						}
