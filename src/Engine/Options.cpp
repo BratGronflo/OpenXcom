@@ -213,7 +213,9 @@ void create()
 	_info.push_back(OptionInfo("oxceTurnsTaken", &turnsTakenPenalty, 0, "STR_TURNS_TAKEN", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo("FogOfWar", &fogOfWar, false, "STR_FOGOFWAR", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo("HotPotatoGrenades", &hotPotato, false, "STR_HOTPOTATOGRENADES", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo("Drunken Blaster Launcher", &drunkenBlasterLaucnher, false, "STR_DRUNKEN_BLASTER_LAUCNHER", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("DrunkenBlasterLauncher", &drunkenBlasterLaucnher, false, "STR_DRUNKEN_BLASTER_LAUCNHER", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("allowBugHuntMode", &allowBugHunt, false, "STR_ALLOWBUGHUNT", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo("SilentWalking", &silentWalk, false, "STR_SILENTWALK", "STR_BATTLESCAPE"));
 
 	// OXCE GUI
 #ifdef __MOBILE__

@@ -128,7 +128,10 @@ void UnitWalkBState::think()
 		{
 			bool onScreenBoundary = (_unit->getVisible() && _parent->getMap()->getCamera()->isOnScreen(_unit->getPosition(), true, size, true));
 			_unit->keepWalking(_parent->getSave(), onScreenBoundary); // advances the phase
-			playMovementSound();
+			if (_action.run || _action.ignoreSpottedEnemies || !Options::silentWalk) // Jopper somewhat portable to multiplayer, i'll need to make sure that the sound plays even during hidden movement.
+				{
+					playMovementSound();
+				}
 			if (_parent->getSave()->isPreview())
 			{
 				_unit->resetTimeUnitsAndEnergy();
@@ -529,7 +532,7 @@ void UnitWalkBState::setNormalWalkSpeed()
 /**
  * Handles the stepping sounds.
  */
-void UnitWalkBState::playMovementSound()
+void UnitWalkBState::playMovementSound() //  Jopper for multiplayer remove "!_unit->getVisible()"  ... i think.
 {
 	int size = _unit->getArmor()->getSize() - 1;
 	if ((!_unit->getVisible() && !_parent->getSave()->getDebugMode()) || !_parent->getMap()->getCamera()->isOnScreen(_unit->getPosition(), true, size, false)) return;

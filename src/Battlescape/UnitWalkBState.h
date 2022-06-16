@@ -44,6 +44,8 @@ private:
 	void postPathProcedures();
 	/// Handles some calculations when the walking is finished.
 	void setNormalWalkSpeed();
+	/// Determines if the unit is sprinting
+	bool const isSprinting();
 	/// Handles the stepping sounds.
 	void playMovementSound();
 	std::size_t _numUnitsSpotted;

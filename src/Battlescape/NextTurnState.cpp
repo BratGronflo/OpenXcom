@@ -257,7 +257,7 @@ NextTurnState::NextTurnState(SavedBattleGame *battleGame, BattlescapeState *stat
 		_battleGame->appendToHitLog(HITLOG_NEW_TURN_WITH_MESSAGE, _battleGame->getSide(), message);
 	}
 
-	if (_battleGame->getSide() == FACTION_PLAYER)
+	if (_battleGame->getSide() == FACTION_PLAYER && Options ::allowBugHunt)
 	{
 		checkBugHuntMode();
 		_state->bugHuntMessage();
@@ -370,7 +370,7 @@ void NextTurnState::checkBugHuntMode()
 			}
 		}
 	}
-
+	if (Options ::allowBugHunt);
 	_battleGame->setBughuntMode(true); // if we made it this far, turn on the bug hunt!
 }
 

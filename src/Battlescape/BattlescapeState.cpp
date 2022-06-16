@@ -1426,9 +1426,15 @@ void BattlescapeState::btnAbortClick(Action *)
 	if (allowButtons() & _save->getSide() == FACTION_PLAYER)
 		_game->pushState(new AbortMissionState(_save, this));
 	else if (allowButtons() & _save->getSide() == FACTION_ALIEN_PLAYER & _game->isCtrlPressed())
+	{
 		for (std::vector<BattleUnit *>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
-
+		{
+        if (((*i)->getOriginalFaction() == FACTION_HOSTILE || (*i)->getOriginalFaction() == FACTION_ALIEN_PLAYER) && !(*i)->isOut())
+			{
 		(*i)->damage(Position(0, 0, 0), 1000, _game->getMod()->getDamageType(DT_STUN), _save, { });
+			}
+		}
+	}
 }
 
 /**
