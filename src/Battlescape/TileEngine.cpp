@@ -2544,7 +2544,7 @@ std::vector<TileEngine::ReactionScore> TileEngine::getSpottingUnits(BattleUnit* 
 					// can actually see the unit
 					visible(*i, tile))
 				{
-					if (((*i)->getFaction() == FACTION_PLAYER) || (*i)->getFaction() == FACTION_ALIEN_PLAYER)
+					if (((*i)->getFaction() == FACTION_PLAYER))
 					{
 						unit->setVisible(true);
 					}
