@@ -36,6 +36,7 @@
 #include "../Engine/FileMap.h"
 #include "../Engine/SDL2Helpers.h"
 #include <fstream>
+#include "../Menu/NewBattleStateMultiplayer.h"
 
 namespace OpenXcom
 {
@@ -71,6 +72,7 @@ MainMenuState::MainMenuState(bool updateCheck)
 	_window = new Window(this, 256, 160, 32, 20, POPUP_BOTH);
 	_btnNewGame = new TextButton(92, 20, 64, 90);
 	_btnNewBattle = new TextButton(92, 20, 164, 90);
+	_btnNewMultiplayerBattle = new TextButton(102, 50, 220, 120);
 	_btnLoad = new TextButton(92, 20, 64, 118);
 	_btnOptions = new TextButton(92, 20, 164, 118);
 	_btnMods = new TextButton(92, 20, 64, 146);
@@ -85,6 +87,7 @@ MainMenuState::MainMenuState(bool updateCheck)
 	add(_window, "window", "mainMenu");
 	add(_btnNewGame, "button", "mainMenu");
 	add(_btnNewBattle, "button", "mainMenu");
+	add(_btnNewMultiplayerBattle, "button", "mainMenu");
 	add(_btnLoad, "button", "mainMenu");
 	add(_btnOptions, "button", "mainMenu");
 	add(_btnMods, "button", "mainMenu");
@@ -103,6 +106,9 @@ MainMenuState::MainMenuState(bool updateCheck)
 
 	_btnNewBattle->setText(tr("STR_NEW_BATTLE"));
 	_btnNewBattle->onMouseClick((ActionHandler)&MainMenuState::btnNewBattleClick);
+
+	_btnNewMultiplayerBattle->setText(tr("STR_Multiplayer"));
+	_btnNewMultiplayerBattle->onMouseClick((ActionHandler)&MainMenuState::btnNewMultiplayerBattleClick);
 
 	_btnLoad->setText(tr("STR_LOAD_SAVED_GAME"));
 	_btnLoad->onMouseClick((ActionHandler)&MainMenuState::btnLoadClick);
@@ -232,6 +238,14 @@ void MainMenuState::btnNewBattleClick(Action *)
 	_game->pushState(new NewBattleState);
 }
 
+/**
+ * Opens the New Multiplayer Battle screen.
+ * @param action Pointer to an action.
+ */
+void MainMenuState::btnNewMultiplayerBattleClick(Action*)
+{
+	_game->pushState(new NewBattleStateMultiplayer);
+}
 /**
  * Opens the Load Game screen.
  * @param action Pointer to an action.

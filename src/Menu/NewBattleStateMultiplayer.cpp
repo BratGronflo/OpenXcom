@@ -550,45 +550,6 @@ void NewBattleStateMultiplayer::initSave()
  */
 void NewBattleStateMultiplayer::btnOkClick(Action*)
 {
-	WSADATA wsaData;
-
-	int iResult;
-
-	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
-		printf("WSAStartup failed: %d\n", iResult);
-		return;
-	}
-
-	char recvbuf[4096];
-	char sendbuf[4096];
-	int sendbuflen[DEFAULT_BUFLEN];
-    int recvbuflen[DEFAULT_BUFLEN];
-
-	SOCKADDR_IN addr;
-	int sizeofaddr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("192.168.1.89");
-	addr.sin_port = htons(27015);
-	addr.sin_family = AF_INET;
-
-	SOCKET SListen = socket(AF_INET, SOCK_STREAM, NULL);
-	bind(SListen, (SOCKADDR*)&addr, sizeof(addr));
-	listen(SListen, SOMAXCONN);
-
-	SOCKET Client;
-	Client = accept(SListen, (SOCKADDR*)&addr, &sizeofaddr);
-
-	if (Client == 0)
-	{
-		std::cout << "Client can't connect!";
-		return;
-	}
-	else
-	{
-		std::cout << "Client Connected!\n";
-		return;
-	}
 	if (_craft)
 	{
 		// just in case somebody manually edited battle.cfg
@@ -677,12 +638,6 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 	_game->popState();
 	_game->pushState(new BriefingState(_craft, base));
 	_craft = 0;
-
-
-
-
-
-
 }
 /**
  * Returns to the previous screen.
@@ -706,33 +661,7 @@ void NewBattleStateMultiplayer::btnCancelClick(Action*)
  */
 void NewBattleStateMultiplayer::btnJoinClick(Action*)
 {
-	WSADATA wsaData;
 
-	int iResult;
-
-	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
-		printf("WSAStartup failed: %d\n", iResult);
-		return;
-	}
-	SOCKADDR_IN addr;
-	int sizeofaddr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("192.168.1.89");
-	addr.sin_port = htons(27015);
-	addr.sin_family = AF_INET;
-
-	SOCKET Connection = socket(AF_INET, SOCK_STREAM, NULL);
-	if (connect(Connection, (SOCKADDR*)&addr, sizeof(addr)) != 0)
-	{
-		std::cout << "Error: Failed connect to server.\n";
-		return;
-	}
-	else
-	{
-		std::cout << "Connected!\n";
-		return;
-	}
 }
 /**
  * Randomize the state
