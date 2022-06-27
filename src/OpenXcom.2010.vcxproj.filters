@@ -1127,6 +1127,12 @@
     <ClCompile Include="Menu\NewBattleStateMultiplayer.cpp">
       <Filter>Menu</Filter>
     </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

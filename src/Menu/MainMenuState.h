@@ -44,7 +44,7 @@ public:
 class MainMenuState : public State
 {
 private:
-	TextButton *_btnNewGame, *_btnNewBattle, *_btnLoad, *_btnOptions, *_btnMods, *_btnQuit, *_btnUpdate;
+	TextButton *_btnNewGame, *_btnNewBattle, *_btnLoad, *_btnOptions, *_btnMods, *_btnQuit, *_btnUpdate, *_btnNewMultiplayerBattle;
 	Window *_window;
 	Text *_txtTitle, *_txtUpdateInfo;
 #ifdef _WIN32
@@ -60,6 +60,8 @@ public:
 	void btnNewGameClick(Action *action);
 	/// Handler for clicking the New Battle button.
 	void btnNewBattleClick(Action *action);
+	/// Handler for clicking the New Multiplayer Battle button.
+	void btnNewMultiplayerBattleClick(Action* action);
 	/// Handler for clicking the Load Saved Game button.
 	void btnLoadClick(Action *action);
 	/// Handler for clicking the Options button.
