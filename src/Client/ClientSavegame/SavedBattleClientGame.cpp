@@ -64,7 +64,7 @@ SavedBattleGame::SavedBattleGame(Mod *rule, Language *lang, bool isPreview) :
 	_battleState(0), _rule(rule), _mapsize_x(0), _mapsize_y(0), _mapsize_z(0), _selectedUnit(0),
 	_lastSelectedUnit(0), _pathfinding(0), _tileEngine(0),
 	_reinforcementsItemLevel(0), _enviroEffects(nullptr), _ecEnabledFriendly(false), _ecEnabledHostile(false), _ecEnabledNeutral(false),
-	_globalShade(0), _side(FACTION_PLAYER), _turn(0), _bughuntMinTurn(20), _animFrame(0), _nameDisplay(false),
+	_globalShade(0), _side(FACTION_ALIEN_PLAYER), _turn(0), _bughuntMinTurn(20), _animFrame(0), _nameDisplay(false),
 	_debugMode(false), _bughuntMode(false), _aborted(false), _itemId(0),
 	_vipEscapeType(ESCAPE_NONE), _vipSurvivalPercentage(0), _vipsSaved(0), _vipsLost(0), _vipsWaitingOutside(0), _vipsSavedScore(0), _vipsLostScore(0), _vipsWaitingOutsideScore(0),
 	_objectiveType(-1), _objectivesDestroyed(0), _objectivesNeeded(0),
@@ -258,7 +258,7 @@ void SavedBattleGame::load(const YAML::Node &node, Mod *mod, SavedGame* savedGam
 		// Handling of special built-in weapons will be done during and after the load of items
 		// unit->setSpecialWeapon(this, true);
 		_units.push_back(unit);
-		if ((faction == FACTION_PLAYER) || (faction == FACTION_ALIEN_PLAYER))
+		if (faction == FACTION_ALIEN_PLAYER)
 		{
 			if ((unit->getId() == selectedUnit) || (_selectedUnit == 0 && !unit->isOut()))
 				_selectedUnit = unit;
@@ -643,7 +643,7 @@ YAML::Node SavedBattleGame::save() const
 	node["turnLimit"] = _turnLimit;
 	node["chronoTrigger"] = int(_chronoTrigger);
 	node["cheatTurn"] = _cheatTurn;
-	node["playingside"] = int (_side);
+	node["playingside"] = int(_side);
 	_scriptValues.save(node, _rule->getScriptGlobal());
 
 	return node;
@@ -1228,7 +1228,7 @@ void SavedBattleGame::startFirstTurn()
 	}
 
 
-	// initialize xcom units for battle
+	// initialize xcom units for battle // jopper. Try Faction_alien_player lol?
 	for (auto u : *getUnits())
 	{
 		if (u->getOriginalFaction() != FACTION_PLAYER || u->isOut())
@@ -1589,7 +1589,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 		{
 			(*i)->updateUnitStats(false, true);
 		}
-		if ((*i)->getFaction() != FACTION_PLAYER) // Joper Possible bug, no idea what this will do. //update. CLIENT HOST!
+		if ((*i)->getFaction() != FACTION_ALIEN_PLAYER) // Joper Possible bug, no idea what this will do
 		{
 			(*i)->setVisible(false);
 		}
@@ -1600,7 +1600,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 
 	//fov check will be done by `BattlescapeGame::endTurn`
 
-	if (_side != FACTION_PLAYER || _side != FACTION_ALIEN_PLAYER)
+	if (_side != FACTION_PLAYER || _side != FACTION_ALIEN_PLAYER) // jopper WTF is this? 
 		selectNextPlayerUnit();
 }
 
@@ -1770,7 +1770,7 @@ void SavedBattleGame::resetUnitTiles()
 		{
 			(*i)->setTile(getTile((*i)->getPosition()), this);
 		}
-		if ((*i)->getFaction() == FACTION_PLAYER)
+		if ((*i)->getFaction() == FACTION_ALIEN_PLAYER)
 		{
 			(*i)->setVisible(true);
 		}
