@@ -461,6 +461,7 @@ void SavedBattleGame::load(const YAML::Node &node, Mod *mod, SavedGame* savedGam
 	_turnLimit = node["turnLimit"].as<int>(_turnLimit);
 	_chronoTrigger = ChronoTrigger(node["chronoTrigger"].as<int>(_chronoTrigger));
 	_cheatTurn = node["cheatTurn"].as<int>(_cheatTurn);
+	_side = UnitFaction (node["playingside"].as<int>(_side));
 	_scriptValues.load(node, _rule->getScriptGlobal());
 }
 
@@ -642,6 +643,7 @@ YAML::Node SavedBattleGame::save() const
 	node["turnLimit"] = _turnLimit;
 	node["chronoTrigger"] = int(_chronoTrigger);
 	node["cheatTurn"] = _cheatTurn;
+	node["playingside"] = int (_side);
 	_scriptValues.save(node, _rule->getScriptGlobal());
 
 	return node;
@@ -1587,7 +1589,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 		{
 			(*i)->updateUnitStats(false, true);
 		}
-		if ((*i)->getFaction() != FACTION_PLAYER || (*i)->getFaction() != FACTION_ALIEN_PLAYER) // Joper Possible bug, no idea what this will do
+		if ((*i)->getFaction() != FACTION_PLAYER || (*i)->getFaction() != FACTION_ALIEN_PLAYER) // Joper Possible bug, no idea what this will do. //update. CLIENT HOST!
 		{
 			(*i)->setVisible(false);
 		}
@@ -1768,7 +1770,8 @@ void SavedBattleGame::resetUnitTiles()
 		{
 			(*i)->setTile(getTile((*i)->getPosition()), this);
 		}
-		if ((*i)->getFaction() == FACTION_PLAYER || (*i)->getFaction() == FACTION_PLAYER)
+		// Jopper, looks ideal, but i feel like.... i'll be back here. ALSO CLIENT HOST
+		if ((getSide() == FACTION_PLAYER && (*i)->getFaction() == FACTION_PLAYER) || (getSide() == FACTION_ALIEN_PLAYER && (*i)->getFaction() == FACTION_ALIEN_PLAYER)) 
 		{
 			(*i)->setVisible(true);
 		}
