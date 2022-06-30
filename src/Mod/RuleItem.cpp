@@ -2438,11 +2438,12 @@ int RuleItem::getMeleePower() const
  */
 bool RuleItem::isTargetAllowed(UnitFaction targetFaction) const 
 {
-	// HOST
+	// CLIENT
 	if (targetFaction == FACTION_PLAYER)
 	{
 		return _targetMatrix & 1;
 	}
+
 	else if (targetFaction == FACTION_NEUTRAL)
 	{
 		return _targetMatrix & 4;

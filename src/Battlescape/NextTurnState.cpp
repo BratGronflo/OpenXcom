@@ -313,9 +313,8 @@ void NextTurnState::init()
 		{
 			// start preview
 			_state->btnCenterClick(0);
-
-			// Try to reactivate the touch buttons at the start of the player's turn
-			if (_battleGame->getSide() == FACTION_PLAYER)
+			// Try to reactivate the touch buttons at the start of the player's turn THE CLIENT
+			if (_battleGame->getSide() == FACTION_ALIEN_PLAYER)
 			{
 				_state->toggleTouchButtons(false, true);
 			}
@@ -539,8 +538,8 @@ void NextTurnState::close()
 	else
 	{
 		_state->btnCenterClick(0);
-		// Try to reactivate the touch buttons at the start of the player's turn HOST
-		if (_battleGame->getSide() == FACTION_PLAYER)
+		// Try to reactivate the touch buttons at the start of the player's turn THE CLIENT
+		if (_battleGame->getSide() == FACTION_ALIEN_PLAYER)
 		{
 			_state->toggleTouchButtons(false, true);
 		}

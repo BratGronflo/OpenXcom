@@ -3196,9 +3196,8 @@ void BattleUnit::setVisible(bool flag)
  * @return flag
  */
 bool BattleUnit::getVisible() const
-{
-	// host
-	if (getFaction() == FACTION_PLAYER || _armor->isAlwaysVisible())
+{   // Client
+	if (getFaction() == FACTION_ALIEN_PLAYER || _armor->isAlwaysVisible())
 	{
 		return true;
 	}

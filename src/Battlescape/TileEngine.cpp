@@ -1472,8 +1472,8 @@ bool TileEngine::calculateUnitsInFOV(BattleUnit* unit, const Position eventPos, 
 						else if (visible(unit, _save->getTile(posToCheck))) // (distance is checked here)
 						{
 							//Unit (or part thereof) visible to one or more eyes of this unit.
-							// Host 
-							if (unit->getFaction() == FACTION_PLAYER)
+							// Client 
+							if (unit->getFaction() == FACTION_ALIEN_PLAYER)
 							{
 								(*i)->setVisible(true);
 							}
@@ -1539,8 +1539,8 @@ void TileEngine::calculateTilesInFOV(BattleUnit *unit, const Position eventPos, 
 		direction = unit->getDirection();
 	}
 	// FOG OF WAR,JOPPER,IMPORANT!
-	// HOST 
-	if ((unit->getFaction() != FACTION_PLAYER)|| (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
+	// Client 
+	if ((unit->getFaction() != FACTION_ALIEN_PLAYER)|| (eventRadius == 1 && !unit->checkViewSector(eventPos, useTurretDirection)))
 	{
 		//The event wasn't meant for us and/or visible for us.
 		return;
@@ -2544,7 +2544,7 @@ std::vector<TileEngine::ReactionScore> TileEngine::getSpottingUnits(BattleUnit* 
 					// can actually see the unit
 					visible(*i, tile))
 				{
-					if (((*i)->getFaction() == FACTION_PLAYER))
+					if (((*i)->getFaction() == FACTION_ALIEN_PLAYER)) // jopper Could be Buggu, double check later, bug?
 					{
 						unit->setVisible(true);
 					}

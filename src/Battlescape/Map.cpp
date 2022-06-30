@@ -309,6 +309,11 @@ void Map::draw()
 		{
 			_projectileInFOV = true;
 		}
+		//CLIENT
+		if (_save->getSide() == FACTION_ALIEN_PLAYER || (t && t->getVisible()))
+		{
+			_projectileInFOV = true;
+		}
 	}
 	_explosionInFOV = _save->getDebugMode();
 	if (!_explosions.empty())
@@ -325,6 +330,11 @@ void Map::draw()
 	}
 	//HOST
 	if ((_save->getSelectedUnit() && _save->getSelectedUnit()->getVisible()) || _unitDying || _save->getSide() == FACTION_PLAYER || _save->getDebugMode() || _projectileInFOV || _explosionInFOV)
+	{
+		drawTerrain(this);
+	}
+	//CLIENT
+	else if ((_save->getSelectedUnit() && _save->getSelectedUnit()->getVisible()) || _unitDying || _save->getSide() == FACTION_ALIEN_PLAYER || _save->getDebugMode() || _projectileInFOV || _explosionInFOV)
 	{
 		drawTerrain(this);
 	}
@@ -1594,9 +1604,9 @@ void Map::drawTerrain(Surface *surface)
 			_numWaypid->setBordered(false); // make sure we remove the border in case it's being used for missile waypoints.
 		}
 	}
-	// HOST AND CLIENT (BUG. Arrow might be visible for the other side in mutliplayer, can't check right now, no multiplayer code.)
+	// HOST AND CLIENT (BUG. Arrow might be visible for the other side in mutliplayer, can't check right now, no multiplayer code.) //( later fixed)
 	auto selectedUnit = _save->getSelectedUnit();
-	if (selectedUnit && (_save->getSide() == FACTION_PLAYER || _save->getSide() == FACTION_ALIEN_PLAYER || _save->getDebugMode()) && selectedUnit->getPosition().z <= _camera->getViewLevel())
+	if (selectedUnit && (_save->getSide() == FACTION_ALIEN_PLAYER || _save->getDebugMode()) && selectedUnit->getPosition().z <= _camera->getViewLevel())
 	{
 		_camera->convertMapToScreen(selectedUnit->getPosition(), &screenPosition);
 		screenPosition += _camera->getMapOffset();
@@ -1648,6 +1658,36 @@ void Map::drawTerrain(Surface *surface)
 		}
 	}
 	delete _numWaypid;
+	// CLIENT
+	if (_isAltPressed && _save->getSide() == FACTION_ALIEN_PLAYER && this->getCursorType() != CT_NONE)
+	{
+		for (auto myUnit : *_save->getUnits())
+		{
+			if (myUnit->getScannedTurn() == _save->getTurn() && myUnit->getFaction() != FACTION_ALIEN_PLAYER && !myUnit->isOut())
+			{
+				Position temp = myUnit->getPosition();
+				temp.z = _camera->getViewLevel();
+				_camera->convertMapToScreen(temp, &screenPosition);
+				screenPosition += _camera->getMapOffset();
+				Position offset;
+				//calculateWalkingOffset(myUnit, &offset);
+				if (myUnit->getArmor()->getSize() > 1)
+				{
+					offset.y += 4;
+				}
+				offset.y += 24 - myUnit->getHeight();
+				if (myUnit->isKneeled())
+				{
+					offset.y -= 2;
+				}
+				_arrow->blitNShade(
+					surface,
+					screenPosition.x + offset.x + (_spriteWidth / 2) - (_arrow->getWidth() / 2),
+					screenPosition.y + offset.y - _arrow->getHeight() + getArrowBobForFrame(_animFrame),
+					0);
+			}
+		}
+	}
 
 	// Draw craft deployment preview arrows
 	if (_isAltPressed && _save->isPreview() && this->getCursorType() != CT_NONE)
@@ -1837,6 +1877,17 @@ int Map::reShade(Tile *tile)
 	for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
 		if (((*i)->getFaction() == FACTION_PLAYER && !(*i)->isOut()) && _save->getSide() == FACTION_PLAYER)
+		{
+			if (Position::distance2dSq(tile->getPosition(), (*i)->getPosition()) <= (*i)->getMaxViewDistanceAtDarkSquared())
+			{
+				return tile->getShade() > _fadeShade ? _fadeShade : tile->getShade();
+			}
+		}
+	}
+	// Client
+	for (std::vector<BattleUnit *>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
+	{
+		if (((*i)->getFaction() == FACTION_ALIEN_PLAYER && !(*i)->isOut()) && _save->getSide() == FACTION_ALIEN_PLAYER)
 		{
 			if (Position::distance2dSq(tile->getPosition(), (*i)->getPosition()) <= (*i)->getMaxViewDistanceAtDarkSquared())
 			{

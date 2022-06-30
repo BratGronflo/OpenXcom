@@ -264,7 +264,7 @@ void SavedBattleGame::load(const YAML::Node &node, Mod *mod, SavedGame* savedGam
 		// Handling of special built-in weapons will be done during and after the load of items
 		// unit->setSpecialWeapon(this, true);
 		_units.push_back(unit);
-		if ((faction == FACTION_PLAYER) || (faction == FACTION_ALIEN_PLAYER))
+		if (faction == FACTION_ALIEN_PLAYER)
 		{
 			if ((unit->getId() == selectedUnit) || (_selectedUnit == 0 && !unit->isOut()))
 				_selectedUnit = unit;
@@ -1208,7 +1208,7 @@ void SavedBattleGame::startFirstTurn()
 	}
 
 
-	// initialize xcom units for battle
+	// initialize xcom units for battle // jopper. Try Faction_alien_player lol?
 	for (auto u : *getUnits())
 	{
 		if (u->getOriginalFaction() != FACTION_PLAYER || u->isOut())
@@ -1569,7 +1569,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 		{
 			(*i)->updateUnitStats(false, true);
 		}
-		if ((*i)->getFaction() != FACTION_PLAYER) // Joper Possible bug, no idea what this will do. //update. CLIENT HOST!
+		if ((*i)->getFaction() != FACTION_ALIEN_PLAYER) // Joper Possible bug, no idea what this will do
 		{
 			(*i)->setVisible(false);
 		}
@@ -1580,7 +1580,7 @@ void SavedBattleGame::endTurn() //JOPER THIS HANDLES WHO"S TURN IT IS.
 
 	//fov check will be done by `BattlescapeGame::endTurn`
 
-	if (_side != FACTION_PLAYER || _side != FACTION_ALIEN_PLAYER)
+	if (_side != FACTION_PLAYER || _side != FACTION_ALIEN_PLAYER) // jopper WTF is this? 
 		selectNextPlayerUnit();
 }
 
@@ -1750,7 +1750,7 @@ void SavedBattleGame::resetUnitTiles()
 		{
 			(*i)->setTile(getTile((*i)->getPosition()), this);
 		}
-		if ((*i)->getFaction() == FACTION_PLAYER)
+		if ((*i)->getFaction() == FACTION_ALIEN_PLAYER)
 		{
 			(*i)->setVisible(true);
 		}
