@@ -619,8 +619,8 @@ void BattlescapeGame::endTurn()
 	_triggerProcessed.reset();
 	_endTurnProcessed.reset();
 
-	// JOPER HOST 
-	if ((_save->getSide() == FACTION_PLAYER) || (_save->getSide() == FACTION_ALIEN_PLAYER))
+	// Joper CLIENT
+	if (_save->getSide() == FACTION_ALIEN_PLAYER)
 	{
 		setupCursor();
 	}
@@ -628,7 +628,6 @@ void BattlescapeGame::endTurn()
 	{
 		getMap()->setCursorType(CT_NONE);
 	}
-
 
 	checkForCasualties(nullptr, BattleActionAttack{ }, false, false);
 
@@ -1123,10 +1122,9 @@ void BattlescapeGame::setupCursor()
  * @return Whether a playable unit is selected.
  */
 bool BattlescapeGame::playableUnitSelected() const
-  // host
 {
-	return _save->getSelectedUnit() != 0 && (_save->getSide() == FACTION_PLAYER || _save->getDebugMode());
-
+	return _save->getSelectedUnit() != 0 && (_save->getSide() == FACTION_ALIEN_PLAYER);
+	// JOPPER FOR CLIENT 
 }
 
 /**
