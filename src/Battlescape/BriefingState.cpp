@@ -62,11 +62,12 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_screen = true;
 	// Create objects
 	_window = new Window(this, 320, 200, 0, 0);
-	_btnOk = new TextButton(120, 18, 100, 164);
+	_btnOk = new TextButton(120, 18, 160, 164);
 	_txtTitle = new Text(300, 32, 16, 24);
 	_txtTarget = new Text(300, 17, 16, 40);
 	_txtCraft = new Text(300, 17, 16, 56);
 	_txtBriefing = new Text(274, 94, 16, 72);
+	_btnHost = new TextButton(120, 18, 40, 164);
 
 	// set random hidden movement/next turn background for this mission
 	auto battleSave = _game->getSavedGame()->getSavedBattle();
@@ -122,6 +123,7 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 
 	add(_window, "window", "briefing");
 	add(_btnOk, "button", "briefing");
+	add(_btnHost, "button", "briefing");
 	add(_txtTitle, "text", "briefing");
 	add(_txtTarget, "text", "briefing");
 	add(_txtCraft, "text", "briefing");
@@ -134,6 +136,11 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_btnOk->onMouseClick((ActionHandler)&BriefingState::btnOkClick);
 	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyOk);
 	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyCancel);
+
+	_btnHost->setText(tr("STR_HOST"));
+	_btnHost->onMouseClick((ActionHandler)&BriefingState::btnHostClick);
+	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyOk);
+	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyCancel);
 
 	_txtTitle->setBig();
 	_txtTarget->setBig();
@@ -289,5 +296,8 @@ void BriefingState::btnOkClick(Action *)
 		_game->pushState(new AliensCrashState);
 	}
 }
-
+void BriefingState::btnHostClick(Action *)
+    {
+	return;
+    }
 }
