@@ -36,7 +36,7 @@ struct BriefingData;
 class BriefingState : public State
 {
 private:
-	TextButton *_btnOk;
+	TextButton *_btnOk, *_btnHost;
 	Window *_window;
 	Text *_txtTitle, *_txtTarget, *_txtCraft, *_txtBriefing;
 	std::string _cutsceneId, _musicId;
@@ -51,6 +51,8 @@ public:
 	void init() override;
 	/// Handler for clicking the Ok button.
 	void btnOkClick(Action *action);
+	/// Handler for clicking the Host button.
+	void btnHostClick(Action *action);
 };
 
 }
