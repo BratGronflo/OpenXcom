@@ -41,6 +41,8 @@
 #include "../Menu/CutsceneState.h"
 #include "../Savegame/AlienMission.h"
 #include "../Mod/RuleAlienMission.h"
+#include "../Server.h"
+#include "../Client.h"
 
 namespace OpenXcom
 {
@@ -294,6 +296,6 @@ void BriefingState::btnOkClick(Action *)
 }
 void BriefingState::btnHostClick(Action *)
     {
-	return;
+
     }
 }

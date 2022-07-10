@@ -10,6 +10,8 @@
 #pragma warning(disable : 4996)
 #include <thread>
 #include <string>
+#include "Server.h"
+#include "Client.h"
 
 using namespace std;
 

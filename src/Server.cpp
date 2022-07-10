@@ -8,7 +8,10 @@
 #include <stdio.h>
 #include <vector>
 #pragma warning(disable : 4996)
+#include "Server.h"
+#include "Client.h"
 
+using namespace std;
 
 int Server(int argc, char* argv[])
 {
@@ -56,7 +59,7 @@ int Server(int argc, char* argv[])
 				ntohs(client.sin_port) << std::endl;
 		}
 
-		//TEST Feature LOOP: accept and echo message to client
+		//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
 		char buf[4096];
 
 		while (true)
@@ -75,7 +78,7 @@ int Server(int argc, char* argv[])
 				std::cout << "Client disconnected " << std::endl;
 				break;
 			}
-
+			
 			// Echo message back to client
 			send(s, buf, bytesReceived + 1, 0);
 		}

@@ -2321,6 +2321,12 @@
     <ClInclude Include="Menu\NewBattleStateMultiplayer.h">
       <Filter>Menu</Filter>
     </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geoscape">

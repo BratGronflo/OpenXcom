@@ -723,6 +723,7 @@
     <ClInclude Include="Battlescape\UnitWalkBState.h" />
     <ClInclude Include="Battlescape\Particle.h" />
     <ClInclude Include="Battlescape\WarningMessage.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="Engine\Action.h" />
     <ClInclude Include="Engine\AdlibMusic.h" />
     <ClInclude Include="Engine\Adlib\adlplayer.h" />
@@ -981,6 +982,7 @@
     <ClInclude Include="Savegame\Vehicle.h" />
     <ClInclude Include="Savegame\Waypoint.h" />
     <ClInclude Include="Savegame\WeightedOptions.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Ufopaedia\ArticleState.h" />
     <ClInclude Include="Ufopaedia\ArticleStateArmor.h" />
     <ClInclude Include="Ufopaedia\ArticleStateBaseFacility.h" />
