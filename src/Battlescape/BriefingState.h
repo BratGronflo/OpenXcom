@@ -18,6 +18,7 @@
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "../Engine/State.h"
+#include "../Server.h"
 
 namespace OpenXcom
 {
@@ -27,6 +28,7 @@ class Window;
 class Text;
 class Craft;
 class Base;
+class ServerHost;
 struct BriefingData;
 
 /**
@@ -36,6 +38,8 @@ struct BriefingData;
 class BriefingState : public State
 {
 private:
+	// _clientConnected is undefined and unused in .cpp for now.
+	ServerHost *_clientConnected;
 	TextButton *_btnOk, *_btnHost;
 	Window *_window;
 	Text *_txtTitle, *_txtTarget, *_txtCraft, *_txtBriefing;
@@ -52,7 +56,7 @@ public:
 	/// Handler for clicking the Ok button.
 	void btnOkClick(Action *action);
 	/// Handler for clicking the Host button.
-	void btnHostClick(Action *action);
+	void btnHostClick(Action *action, ServerHost *clienthasconnected);
 };
 
 }

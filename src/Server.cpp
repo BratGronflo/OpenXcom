@@ -11,10 +11,11 @@
 #include "Server.h"
 #include "Client.h"
 
-using namespace std;
+using namespace OpenXcom;
 
-int Server(int argc, char* argv[])
+int ServerHost::Server(int argc, char* argv[])
 {
+	_connectionEstablished = false;
 	WSADATA wsaData;
 
 	int iResult;
@@ -51,13 +52,17 @@ int Server(int argc, char* argv[])
 		if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
 		{
 			std::cout << host << " connected on port " << service << std::endl;
+			_connectionEstablished = true;
 		}
 		else
 		{
 			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
 			std::cout << host << " connected on port " <<
 				ntohs(client.sin_port) << std::endl;
+			_connectionEstablished = true;
+
 		}
+
 
 		//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
 		char buf[4096];
@@ -76,6 +81,7 @@ int Server(int argc, char* argv[])
 			if (bytesReceived == 0)
 			{
 				std::cout << "Client disconnected " << std::endl;
+				_connectionEstablished = false;
 				break;
 			}
 			
@@ -88,5 +94,14 @@ int Server(int argc, char* argv[])
 
 		// Clean Winsock
 		WSACleanup();
+}
+bool ServerHost::isClientConnected()
+{
+	if (_connectionEstablished == false)
+	{
+		return false;
+	}
+	return true;
+
 }
 
