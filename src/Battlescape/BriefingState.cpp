@@ -64,7 +64,6 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_screen = true;
 	// Create objects
 	_window = new Window(this, 320, 200, 0, 0);
-	_btnOk = new TextButton(120, 18, 160, 164);
 	_txtTitle = new Text(300, 32, 16, 24);
 	_txtTarget = new Text(300, 17, 16, 40);
 	_txtCraft = new Text(300, 17, 16, 56);
@@ -124,7 +123,6 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_disableCutsceneAndMusic = _infoOnly && !customBriefing;
 
 	add(_window, "window", "briefing");
-	add(_btnOk, "button", "briefing");
 	add(_btnHost, "button", "briefing");
 	add(_txtTitle, "text", "briefing");
 	add(_txtTarget, "text", "briefing");
@@ -134,10 +132,6 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	centerAllSurfaces();
 
 	// Set up objects
-	_btnOk->setText(tr("STR_OK"));
-	_btnOk->onMouseClick((ActionHandler)&BriefingState::btnOkClick);
-	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyOk);
-	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyCancel);
 
 	_btnHost->setText(tr("STR_HOST"));
 	_btnHost->onMouseClick((ActionHandler)&BriefingState::btnHostClick);
@@ -260,44 +254,11 @@ void BriefingState::init()
  * Closes the window.
  * @param action Pointer to an action.
  */
-void BriefingState::btnOkClick(Action *)
+
+void BriefingState::btnHostClick(Action *)
 {
-	_game->popState();
-	Options::baseXResolution = Options::baseXBattlescape;
-	Options::baseYResolution = Options::baseYBattlescape;
-	_game->getScreen()->resetDisplay(false);
-	if (_infoOnly) return;
-
-	BattlescapeState *bs = new BattlescapeState;
-	bs->getBattleGame()->spawnFromPrimedItems();
-	auto tally = bs->getBattleGame()->tallyUnits();
-	bool isPreview = _game->getSavedGame()->getSavedBattle()->isPreview();
-	if (tally.liveAliens > 0 || tally.liveSentientAliens > 0 | isPreview)
-	{
-		_game->pushState(bs);
-		_game->getSavedGame()->getSavedBattle()->setBattleState(bs);
-		_game->pushState(new NextTurnState(_game->getSavedGame()->getSavedBattle(), bs));
-		if (isPreview)
-		{
-			// skip InventoryState
-			_game->getSavedGame()->getSavedBattle()->startFirstTurn();
-			return;
-		}
-		_game->pushState(new InventoryState(false, bs, 0));
-	}
-	else
-	{
-		Options::baseXResolution = Options::baseXGeoscape;
-		Options::baseYResolution = Options::baseYGeoscape;
-		_game->getScreen()->resetDisplay(false);
-		delete bs;
-		_game->pushState(new AliensCrashState);
-	}
-}
-
-void BriefingState::btnHostClick(Action *,ServerHost *clienthasconnected)
-{ 
-	if (clienthasconnected->isClientConnected())
+	ServerHost *sh = new ServerHost;
+	if (sh->isClientConnected())
 	{
 		_game->popState();
 		Options::baseXResolution = Options::baseXBattlescape;
@@ -331,7 +292,8 @@ void BriefingState::btnHostClick(Action *,ServerHost *clienthasconnected)
 			delete bs;
 			_game->pushState(new AliensCrashState);
 		}
+
 	}
 }
-// open x-com namespace end
+	// open x-com namespace end
 }

@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <vector>
 #pragma warning(disable : 4996)
-#include "Server.h"
-#include "Client.h"
+#include "../src/Server.h"
+#include "../src/Client.h"
 
 using namespace OpenXcom;
 
@@ -37,9 +37,8 @@ int ServerHost::Server(int argc, char* argv[])
 
 		bind(s, (SOCKADDR*)&hint, sizeof(hint));
 		// This socket is for listening
-		listen(s, SOMAXCONN);
+		listen(s, SOMAXCONN); //Wait for a connection
 		
-		//Wait for a connection
 		sockaddr_in client;
 		int clientsize = sizeof(client);
 		SOCKET Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
@@ -52,14 +51,14 @@ int ServerHost::Server(int argc, char* argv[])
 		if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
 		{
 			std::cout << host << " connected on port " << service << std::endl;
-			_connectionEstablished = true;
+			_connectionEstablished = true; // jopper
 		}
 		else
 		{
 			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
 			std::cout << host << " connected on port " <<
 				ntohs(client.sin_port) << std::endl;
-			_connectionEstablished = true;
+			_connectionEstablished = false; //jopper
 
 		}
 
@@ -97,11 +96,15 @@ int ServerHost::Server(int argc, char* argv[])
 }
 bool ServerHost::isClientConnected()
 {
-	if (_connectionEstablished == false)
+
+	if (_connectionEstablished == true)
 	{
-		return false;
-	}
 	return true;
+	}
+	else
+	{
+	return false;
+	}
 
 }
 
