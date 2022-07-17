@@ -16,6 +16,7 @@ using namespace OpenXcom;
 int ServerHost::Server(int argc, char* argv[])
 {
 	_connectionEstablished = false;
+	_gameHosted = false;
 	WSADATA wsaData;
 
 	int iResult;
@@ -38,7 +39,10 @@ int ServerHost::Server(int argc, char* argv[])
 		bind(s, (SOCKADDR*)&hint, sizeof(hint));
 		// This socket is for listening
 		listen(s, SOMAXCONN); //Wait for a connection
-		
+		if (listen(s, SOMAXCONN))
+		{
+			_gameHosted = true;
+		}
 		sockaddr_in client;
 		int clientsize = sizeof(client);
 		SOCKET Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
@@ -50,16 +54,9 @@ int ServerHost::Server(int argc, char* argv[])
 
 		if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
 		{
-			std::cout << host << " connected on port " << service << std::endl;
-			_connectionEstablished = true; // jopper
-		}
-		else
-		{
 			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-			std::cout << host << " connected on port " <<
-				ntohs(client.sin_port) << std::endl;
-			_connectionEstablished = false; //jopper
-
+			std::cout << host << " connected on port " << service << ntohs(client.sin_port) << std::endl;;
+			_connectionEstablished = true; // jopper
 		}
 
 
@@ -105,6 +102,15 @@ bool ServerHost::isClientConnected()
 	{
 	return false;
 	}
-
 }
-
+bool ServerHost::isGameHosted()
+{
+	if (_gameHosted == true)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

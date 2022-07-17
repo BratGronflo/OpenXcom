@@ -11,13 +11,15 @@ class ServerHost : public State
 {
   private:
 	bool _connectionEstablished; //placeholder
+	bool _gameHosted;			 //placeholder
 
   public:
 	// Initialize the Server
 	int Server(int argc, char* argv[]);
 	// is the Client  connected
 	bool isClientConnected();
-
+	// is game hosted
+	bool isGameHosted();
 };
 
 }

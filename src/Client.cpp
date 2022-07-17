@@ -10,14 +10,15 @@
 #pragma warning(disable : 4996)
 #include <thread>
 #include <string>
-#include "Server.h"
-#include "Client.h"
+#include "../src/Server.h"
+#include "../src/Client.h"
 
-using namespace std;
+using namespace OpenXcom;
 
-int Client(int argc, char* argv[])
+int ServerClient::Client(int argc, char* argv[])
 {
 	// Initialize WinSock
+	_connectedToHost = false;
 	WSAData data;
 	WORD ver = MAKEWORD(2, 2);
 	int wsResult = WSAStartup(ver, &data);
@@ -50,6 +51,12 @@ int Client(int argc, char* argv[])
 		closesocket(s);
 		WSACleanup();
 		return 3;
+	}
+	else
+	{
+		std::cerr << "Connection to server successfull!" << std::endl;
+		 _connectedToHost = true;
+		return 10;
 	}
 
 	// Do-while loop to send and receive data
@@ -84,4 +91,16 @@ int Client(int argc, char* argv[])
 	//close down everything
 	closesocket(s);
 	WSACleanup();
+}
+bool ServerClient::isConnectedToHost()
+{
+
+	if (_connectedToHost == true)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

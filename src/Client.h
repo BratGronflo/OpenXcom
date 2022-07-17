@@ -9,10 +9,11 @@ namespace OpenXcom
 	class ServerClient : public State
 	{
 	  private:
-		bool _connectedToHost;
+		bool _connectedToHost; //placeholder
 
 	  public:
 		// Initialize the Client
 		int Client(int argc, char *argv[]);
+		bool isConnectedToHost();
 	};
  }
