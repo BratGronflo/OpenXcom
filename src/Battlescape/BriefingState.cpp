@@ -68,6 +68,7 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_txtTarget = new Text(300, 17, 16, 40);
 	_txtCraft = new Text(300, 17, 16, 56);
 	_txtBriefing = new Text(274, 94, 16, 72);
+	_btnOk = new TextButton(120, 18, 160, 164);
 	_btnHost = new TextButton(120, 18, 40, 164);
 
 	// set random hidden movement/next turn background for this mission
@@ -124,6 +125,7 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 
 	add(_window, "window", "briefing");
 	add(_btnHost, "button", "briefing");
+	add(_btnOk, "button", "briefing");
 	add(_txtTitle, "text", "briefing");
 	add(_txtTarget, "text", "briefing");
 	add(_txtCraft, "text", "briefing");
@@ -137,6 +139,11 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_btnHost->onMouseClick((ActionHandler)&BriefingState::btnHostClick);
 	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyOk);
 	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyCancel);
+	_btnOk->setText(tr("STR_OK"));
+	_btnOk->onMouseClick((ActionHandler)&BriefingState::btnOkClick);
+	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyOk);
+	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyCancel);
+
 
 	_txtTitle->setBig();
 	_txtTarget->setBig();
@@ -293,6 +300,41 @@ void BriefingState::btnHostClick(Action *)
 			_game->pushState(new AliensCrashState);
 		}
 
+	}
+}
+void BriefingState::btnOkClick(Action *)
+{
+	_game->popState();
+	Options::baseXResolution = Options::baseXBattlescape;
+	Options::baseYResolution = Options::baseYBattlescape;
+	_game->getScreen()->resetDisplay(false);
+	if (_infoOnly)
+		return;
+
+	BattlescapeState *bs = new BattlescapeState;
+	bs->getBattleGame()->spawnFromPrimedItems();
+	auto tally = bs->getBattleGame()->tallyUnits();
+	bool isPreview = _game->getSavedGame()->getSavedBattle()->isPreview();
+	if (tally.liveAliens > 0 || isPreview)
+	{
+		_game->pushState(bs);
+		_game->getSavedGame()->getSavedBattle()->setBattleState(bs);
+		_game->pushState(new NextTurnState(_game->getSavedGame()->getSavedBattle(), bs));
+		if (isPreview)
+		{
+			// skip InventoryState
+			_game->getSavedGame()->getSavedBattle()->startFirstTurn();
+			return;
+		}
+		_game->pushState(new InventoryState(false, bs, 0));
+	}
+	else
+	{
+		Options::baseXResolution = Options::baseXGeoscape;
+		Options::baseYResolution = Options::baseYGeoscape;
+		_game->getScreen()->resetDisplay(false);
+		delete bs;
+		_game->pushState(new AliensCrashState);
 	}
 }
 	// open x-com namespace end
