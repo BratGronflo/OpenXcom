@@ -22,6 +22,8 @@
 #include <vector>
 #include <string>
 #include "NewBattleState.h"
+#include "../Server.h"
+#include "../Client.h"
 
 namespace OpenXcom
 {

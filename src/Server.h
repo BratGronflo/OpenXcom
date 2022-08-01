@@ -16,6 +16,7 @@ class ServerHost : public State
   public:
 	// Initialize the Server
 	int Server(int argc, char* argv[]);
+	int TransferData(int argc, char* argv[]);
 	// is the Client  connected
 	bool isClientConnected();
 	// is game hosted

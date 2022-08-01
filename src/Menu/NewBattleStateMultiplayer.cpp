@@ -550,6 +550,80 @@ void NewBattleStateMultiplayer::initSave()
  */
 void NewBattleStateMultiplayer::btnOkClick(Action*)
 {
+		WSADATA wsaData;
+
+		int iResult;
+
+		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if (iResult != 0)
+		{
+			printf("WSAStartup failed: %d\n", iResult);
+			return;
+		}
+		SOCKET s = socket(AF_INET, SOCK_STREAM, NULL);
+
+
+		SOCKADDR_IN hint;
+		int sizeofaddr = sizeof(hint);
+		hint.sin_addr.s_addr = inet_addr("192.168.1.89");
+		hint.sin_port = htons(30000);
+		hint.sin_family = AF_INET;
+
+		bind(s, (SOCKADDR*)&hint, sizeof(hint));
+		// This socket is for listening
+		listen(s, SOMAXCONN); //Wait for a connection
+		if (listen(s, SOMAXCONN))
+		{
+		}
+		sockaddr_in client;
+		int clientsize = sizeof(client);
+		SOCKET Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
+		char host[NI_MAXHOST];	  // Client's remote name
+		char service[NI_MAXHOST]; // Service (i.e. port) the client is connect on
+
+		ZeroMemory(host, NI_MAXHOST); // same as memset
+		ZeroMemory(service, NI_MAXHOST);
+
+		if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
+		{
+			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
+			std::cout << host << " connected on port " << service << ntohs(client.sin_port) << std::endl;;
+		}
+
+		int TransferData(int argc, char* argv[]);
+		{
+			//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
+			char buf[4096];
+
+			while (true)
+			{
+				ZeroMemory(buf, 4096);
+
+				//Wait for client to send data
+				int bytesReceived = recv(s, buf, 4096, 0);
+				if (bytesReceived == SOCKET_ERROR)
+				{
+					std::cerr << "Error in recv()" << std::endl;
+					break;
+				}
+				if (bytesReceived == 0)
+				{
+					std::cout << "Client disconnected " << std::endl;
+					break;
+				}
+
+				// Echo message back to client
+				send(s, buf, bytesReceived + 1, 0);
+			}
+		}
+
+		// this also belongs to Server func //
+
+			// Close listening socket
+		closesocket(s);
+
+		// Clean Winsock
+		WSACleanup();
 	if (_craft)
 	{
 		// just in case somebody manually edited battle.cfg
@@ -661,7 +735,78 @@ void NewBattleStateMultiplayer::btnCancelClick(Action*)
  */
 void NewBattleStateMultiplayer::btnJoinClick(Action*)
 {
+		// Initialize WinSock
+		WSAData data;
+		WORD ver = MAKEWORD(2, 2);
+		int wsResult = WSAStartup(ver, &data);
+		if (wsResult != 0)
+		{
+			std::cerr << "Can't start Winsock, Err #" << wsResult << std::endl;
+			return;
+		}
 
+		// Create socket
+		SOCKET s = socket(AF_INET, SOCK_STREAM, 0);
+		if (s == INVALID_SOCKET)
+		{
+			std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
+			WSACleanup();
+			return;
+		}
+
+		// Fill in a hint structure
+		sockaddr_in hint;
+		hint.sin_addr.s_addr = inet_addr("192.168.1.89");
+		hint.sin_port = htons(30000);
+		hint.sin_family = AF_INET;
+
+		// Connect to server
+		int Connection = connect(s, (sockaddr*)&hint, sizeof(hint));
+		if (Connection == SOCKET_ERROR)
+		{
+			std::cerr << "Can't connect to server, Err #" << WSAGetLastError() << std::endl;
+			closesocket(s);
+			WSACleanup();
+			return;
+		}
+		else
+		{
+			std::cerr << "Connection to server successfull!" << std::endl;
+			return;
+		}
+
+		// Do-while loop to send and receive data
+		char buf[4096];
+		std::string userInput;
+
+		do
+		{
+			// Prompt the user for some text
+			std::cout << "> ";
+			getline(std::cin, userInput);
+
+			if (userInput.size() > 0)		// Make sure the user has typed in something
+			{
+				// Send the text
+				int sendResult = send(s, userInput.c_str(), userInput.size() + 1, 0);
+				if (sendResult != SOCKET_ERROR)
+				{
+					// Wait for response
+					ZeroMemory(buf, 4096);
+					int bytesReceived = recv(s, buf, 4096, 0);
+					if (bytesReceived > 0)
+					{
+						// Echo response to console
+						std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
+					}
+				}
+			}
+
+		} while (userInput.size() > 0);
+
+		//close down everything
+		closesocket(s);
+		WSACleanup();
 }
 /**
  * Randomize the state

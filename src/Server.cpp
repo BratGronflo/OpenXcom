@@ -7,6 +7,8 @@
 #pragma comment(lib, "ws2_32.lib")
 #include <stdio.h>
 #include <vector>
+#include <thread>
+#include <string>
 #pragma warning(disable : 4996)
 #include "../src/Server.h"
 #include "../src/Client.h"
@@ -59,8 +61,9 @@ int ServerHost::Server(int argc, char* argv[])
 			_connectionEstablished = true; // jopper
 		}
 
-
-		//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
+int TransferData(int argc, char* argv[]);
+{
+	//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
 		char buf[4096];
 
 		while (true)
@@ -80,10 +83,13 @@ int ServerHost::Server(int argc, char* argv[])
 				_connectionEstablished = false;
 				break;
 			}
-			
+
 			// Echo message back to client
 			send(s, buf, bytesReceived + 1, 0);
 		}
+}
+
+// this also belongs to Server func //
 
 		// Close listening socket
 		closesocket(s);
