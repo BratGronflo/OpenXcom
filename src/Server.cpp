@@ -17,55 +17,85 @@ using namespace OpenXcom;
 
 int ServerHost::Server(int argc, char* argv[])
 {
-	_connectionEstablished = false;
-	_gameHosted = false;
-	WSADATA wsaData;
-
-	int iResult;
-
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0)
+	void initiate();
 	{
-		printf("WSAStartup failed: %d\n", iResult);
-		return 1;
-	}
-	SOCKET s = socket(AF_INET, SOCK_STREAM, NULL);
-	
+		_connectionEstablished = false;
+		_gameHosted = false;
+		WSADATA wsaData;
 
+		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if (iResult != 0)
+		{
+			printf("WSAStartup failed: %d\n", iResult);
+			return 1;
+		}
+		else
+		{
+			printf("WSAStartup successful");
+			return 2;
+		}
+	}
 		SOCKADDR_IN hint;
 		int sizeofaddr = sizeof(hint);
-		hint.sin_addr.s_addr = INADDR_ANY;
+		hint.sin_addr.s_addr = inet_addr("127.0.0.1");
 		hint.sin_port = htons(30000);
 		hint.sin_family = AF_INET;
-
+		SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+		if (s == INVALID_SOCKET)
+		{
+			printf("Socket creation failed");
+			return 5;
+		}
+		else
+		{
+			printf("Socket creation successful");
+			return 6;
+	}
+	void binding();
+	{
 		bind(s, (SOCKADDR*)&hint, sizeof(hint));
+		if (s == INVALID_SOCKET)
+		{
+			printf("bind failed");
+			return 7;
+		}
+	}
+	void waitforconnection();
+	{
 		// This socket is for listening
 		listen(s, SOMAXCONN); //Wait for a connection
 		if (listen(s, SOMAXCONN))
 		{
+			printf("listen started wait for client!");
 			_gameHosted = true;
 		}
+	}
+	SOCKET Client;
+	void acceptclient();
+	{
+
 		sockaddr_in client;
 		int clientsize = sizeof(client);
-		SOCKET Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
-		char host[NI_MAXHOST];	  // Client's remote name
-		char service[NI_MAXHOST]; // Service (i.e. port) the client is connect on
-
-		ZeroMemory(host, NI_MAXHOST); // same as memset
-		ZeroMemory(service, NI_MAXHOST);
-
-		if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
+		Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
+		if (s == INVALID_SOCKET)
 		{
-			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-			std::cout << host << " connected on port " << service << ntohs(client.sin_port) << std::endl;;
-			_connectionEstablished = true; // jopper
+			printf("failed to accept client!");
+			return 8;
 		}
+		else
+		{
+			printf("Client connected!");
+			return 9;
+		}
+	}
+	Sleep(1500);
 
-int TransferData(int argc, char* argv[]);
+void TransferData(int argc, char* argv[]);
 {
 	//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
 		char buf[4096];
-
+		std::string str = ("HELLO!");
+		const char* cstr = str.c_str();
 		while (true)
 		{
 			ZeroMemory(buf, 4096);
@@ -93,9 +123,11 @@ int TransferData(int argc, char* argv[]);
 
 		// Close listening socket
 		closesocket(s);
+		closesocket(Client);
 
 		// Clean Winsock
 		WSACleanup();
+		return 0;
 }
 bool ServerHost::isClientConnected()
 {

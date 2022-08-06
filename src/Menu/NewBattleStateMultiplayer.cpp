@@ -68,6 +68,8 @@
 #ifndef UNICODE
 #define UNICODE
 #endif
+#include "../Server.h"
+#include"../Client.h"
 
 namespace OpenXcom
 {
@@ -550,168 +552,113 @@ void NewBattleStateMultiplayer::initSave()
  */
 void NewBattleStateMultiplayer::btnOkClick(Action*)
 {
+	void initiate();
+	{
 		WSADATA wsaData;
-
 		int iResult;
-
 		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (iResult != 0)
 		{
 			printf("WSAStartup failed: %d\n", iResult);
 			return;
 		}
-		SOCKET s = socket(AF_INET, SOCK_STREAM, NULL);
-
-
-		SOCKADDR_IN hint;
-		int sizeofaddr = sizeof(hint);
-		hint.sin_addr.s_addr = inet_addr("192.168.1.89");
-		hint.sin_port = htons(30000);
-		hint.sin_family = AF_INET;
-
+		else
+		{
+			printf("WSAStartup successful");
+		}
+	}
+	SOCKADDR_IN hint;
+	int sizeofaddr = sizeof(hint);
+	hint.sin_addr.s_addr = inet_addr("127.0.0.1");
+	hint.sin_port = htons(30000);
+	hint.sin_family = AF_INET;
+	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (s == INVALID_SOCKET)
+	{
+		printf("Socket creation failed");
+		return;
+	}
+	else
+	{
+		printf("Socket creation successful");
+	}
+	void binding();
+	{
 		bind(s, (SOCKADDR*)&hint, sizeof(hint));
+		if (s == INVALID_SOCKET)
+		{
+			printf("bind failed");
+			return;
+		}
+	}
+	void waitforconnection();
+	{
 		// This socket is for listening
 		listen(s, SOMAXCONN); //Wait for a connection
 		if (listen(s, SOMAXCONN))
 		{
+			printf("listen started wait for client!");
 		}
+	}
+	SOCKET Client;
+	void acceptclient();
+	{
+
 		sockaddr_in client;
 		int clientsize = sizeof(client);
-		SOCKET Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
-		char host[NI_MAXHOST];	  // Client's remote name
-		char service[NI_MAXHOST]; // Service (i.e. port) the client is connect on
-
-		ZeroMemory(host, NI_MAXHOST); // same as memset
-		ZeroMemory(service, NI_MAXHOST);
-
-		if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
+		Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
+		if (s == INVALID_SOCKET)
 		{
-			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-			std::cout << host << " connected on port " << service << ntohs(client.sin_port) << std::endl;;
-		}
-
-		int TransferData(int argc, char* argv[]);
-		{
-			//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
-			char buf[4096];
-
-			while (true)
-			{
-				ZeroMemory(buf, 4096);
-
-				//Wait for client to send data
-				int bytesReceived = recv(s, buf, 4096, 0);
-				if (bytesReceived == SOCKET_ERROR)
-				{
-					std::cerr << "Error in recv()" << std::endl;
-					break;
-				}
-				if (bytesReceived == 0)
-				{
-					std::cout << "Client disconnected " << std::endl;
-					break;
-				}
-
-				// Echo message back to client
-				send(s, buf, bytesReceived + 1, 0);
-			}
-		}
-
-		// this also belongs to Server func //
-
-			// Close listening socket
-		closesocket(s);
-
-		// Clean Winsock
-		WSACleanup();
-	if (_craft)
-	{
-		// just in case somebody manually edited battle.cfg
-		_craft->resetCustomDeployment();
-	}
-	save();
-	if (_missionTypes[_cbxMission->getSelected()] != "STR_BASE_DEFENSE" && _craft->getNumTotalUnits() == 0)
-	{
-		return;
-	}
-
-	SavedBattleGame* bgame = new SavedBattleGame(_game->getMod(), _game->getLanguage());
-	_game->getSavedGame()->setBattleGame(bgame);
-	bgame->setMissionType(_missionTypes[_cbxMission->getSelected()]);
-	BattlescapeGenerator bgen = BattlescapeGenerator(_game);
-	Base* base = 0;
-
-	bgen.setTerrain(_game->getMod()->getTerrain(_terrainTypes[_cbxTerrain->getSelected()]));
-
-	// base defense
-	if (_missionTypes[_cbxMission->getSelected()] == "STR_BASE_DEFENSE")
-	{
-		base = _craft->getBase();
-		bgen.setBase(base);
-		_craft = 0;
-	}
-	// alien base
-	else if (_game->getMod()->getDeployment(bgame->getMissionType())->isAlienBase())
-	{
-		AlienBase* b = new AlienBase(_game->getMod()->getDeployment(bgame->getMissionType()), -1);
-		b->setId(1);
-		b->setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
-		_craft->setDestination(b);
-		bgen.setAlienBase(b);
-		_game->getSavedGame()->getAlienBases()->push_back(b);
-	}
-	// ufo assault
-	else if (_craft && _game->getMod()->getUfo(_missionTypes[_cbxMission->getSelected()]))
-	{
-		Ufo* u = new Ufo(_game->getMod()->getUfo(_missionTypes[_cbxMission->getSelected()]), 1);
-		u->setId(1);
-		_craft->setDestination(u);
-		bgen.setUfo(u);
-		// either ground assault or ufo crash
-		if (RNG::generate(0, 1) == 1)
-		{
-			u->setStatus(Ufo::LANDED);
-			bgame->setMissionType("STR_UFO_GROUND_ASSAULT");
+			printf("failed to accept client!");
+			return;
 		}
 		else
 		{
-			u->setStatus(Ufo::CRASHED);
-			bgame->setMissionType("STR_UFO_CRASH_RECOVERY");
+			printf("Client connected!");
 		}
-		_game->getSavedGame()->getUfos()->push_back(u);
 	}
-	// mission site
-	else
+	Sleep(1500);
+
+	void TransferData(int argc, char* argv[]);
 	{
-		const AlienDeployment* deployment = _game->getMod()->getDeployment(bgame->getMissionType());
-		const RuleAlienMission* mission = _game->getMod()->getAlienMission(_game->getMod()->getAlienMissionList().front()); // doesn't matter
-		MissionSite* m = new MissionSite(mission, deployment, nullptr);
-		m->setId(1);
-		m->setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
-		_craft->setDestination(m);
-		bgen.setMissionSite(m);
-		_game->getSavedGame()->getMissionSites()->push_back(m);
+		//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
+		char buf[4096];
+		std::string str = ("HELLO!");
+		const char* cstr = str.c_str();
+		while (true)
+		{
+			ZeroMemory(buf, 4096);
+
+			//Wait for client to send data
+			int bytesReceived = recv(Client, buf, 4096, 0);
+			if (bytesReceived == SOCKET_ERROR)
+			{
+				std::cerr << "Error in recv()" << WSAGetLastError() << std::endl;
+				break;
+			}
+			else
+			{
+				std::cerr << "recv successfull" << std::endl;
+			}
+			if (bytesReceived == 0)
+			{
+				std::cout << "Client disconnected " << std::endl;
+				break;
+			}
+
+			// Echo message back to client
+			send(Client, buf, bytesReceived + 1, 0);
+		}
 	}
+	// this also belongs to Server func //
 
-	if (_craft)
-	{
-		_craft->setSpeed(0);
-		bgen.setCraft(_craft);
-	}
+	// Close listening socket
+//	closesocket(s);
+//	closesocket(Client);
 
-	_game->getSavedGame()->setDifficulty((GameDifficulty)_cbxDifficulty->getSelected());
-
-	bgen.setWorldShade(_slrDarkness->getValue());
-	bgen.setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
-	bgen.setAlienItemlevel(_slrAlienTech->getValue());
-	bgame->setDepth(_slrDepth->getValue());
-
-	bgen.run();
-
-	_game->popState();
-	_game->popState();
-	_game->pushState(new BriefingState(_craft, base));
-	_craft = 0;
+	// Clean Winsock
+//	WSACleanup();
+//  return;
 }
 /**
  * Returns to the previous screen.
@@ -735,6 +682,8 @@ void NewBattleStateMultiplayer::btnCancelClick(Action*)
  */
 void NewBattleStateMultiplayer::btnJoinClick(Action*)
 {
+	void initiate();
+	{
 		// Initialize WinSock
 		WSAData data;
 		WORD ver = MAKEWORD(2, 2);
@@ -744,22 +693,43 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 			std::cerr << "Can't start Winsock, Err #" << wsResult << std::endl;
 			return;
 		}
+		else
+		{
+			std::cerr << "WSAStartup successfull" << std::endl;
+		}
+	}
 
-		// Create socket
-		SOCKET s = socket(AF_INET, SOCK_STREAM, 0);
+
+	// Fill in a hint structure
+	SOCKADDR_IN hint;
+	int sizeofaddr = sizeof(hint);
+	hint.sin_addr.s_addr = inet_addr("127.0.0.1");
+	hint.sin_port = htons(30000);
+	hint.sin_family = AF_INET;
+
+	// Create socket
+	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (s == INVALID_SOCKET)
+	{
+		std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
+		WSACleanup();
+		return;
+	}
+	else
+	{
+		std::cerr << "Socket Creation Successfull!" << std::endl;
+	}
+	void binding();
+	{
+		bind(s, (SOCKADDR*)&hint, sizeof(hint));
 		if (s == INVALID_SOCKET)
 		{
-			std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
-			WSACleanup();
+			printf("bind failed");
 			return;
 		}
-
-		// Fill in a hint structure
-		sockaddr_in hint;
-		hint.sin_addr.s_addr = inet_addr("192.168.1.89");
-		hint.sin_port = htons(30000);
-		hint.sin_family = AF_INET;
-
+	}
+	void connectiontoserv();
+	{
 		// Connect to server
 		int Connection = connect(s, (sockaddr*)&hint, sizeof(hint));
 		if (Connection == SOCKET_ERROR)
@@ -772,41 +742,31 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 		else
 		{
 			std::cerr << "Connection to server successfull!" << std::endl;
-			return;
 		}
 
-		// Do-while loop to send and receive data
-		char buf[4096];
-		std::string userInput;
+	}
 
-		do
+	char buf[4096];
+	std::string str = ("HELLO!");
+	const char* cstr = str.c_str();
+	{
+
+		// Send the text
+		int sendResult = send(s, cstr, DEFAULT_BUFLEN, NULL);
+		if (sendResult != SOCKET_ERROR)
 		{
-			// Prompt the user for some text
-			std::cout << "> ";
-			getline(std::cin, userInput);
-
-			if (userInput.size() > 0)		// Make sure the user has typed in something
-			{
-				// Send the text
-				int sendResult = send(s, userInput.c_str(), userInput.size() + 1, 0);
-				if (sendResult != SOCKET_ERROR)
-				{
-					// Wait for response
-					ZeroMemory(buf, 4096);
-					int bytesReceived = recv(s, buf, 4096, 0);
-					if (bytesReceived > 0)
-					{
-						// Echo response to console
-						std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
-					}
-				}
-			}
-
-		} while (userInput.size() > 0);
-
-		//close down everything
-		closesocket(s);
-		WSACleanup();
+			printf("send successfull");
+			// Wait for response
+			ZeroMemory(buf, 4096);
+			int bytesReceived = recv(s, buf, 4096, 0);
+				// Echo response to console
+				std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
+		}
+	}
+	//close down everything
+//	closesocket(s);
+//	WSACleanup();
+//	return;
 }
 /**
  * Randomize the state
