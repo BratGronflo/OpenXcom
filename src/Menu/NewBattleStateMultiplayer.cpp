@@ -70,6 +70,7 @@
 #endif
 #include "../Server.h"
 #include"../Client.h"
+#include <thread>
 
 namespace OpenXcom
 {
@@ -593,9 +594,11 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 	}
 	void waitforconnection();
 	{
+		int Max_Clients;
+		Max_Clients = 1;
 		// This socket is for listening
-		listen(s, SOMAXCONN); //Wait for a connection
-		if (listen(s, SOMAXCONN))
+		listen(s, 1); //Wait for a connection
+		if (listen(s, 1))
 		{
 			printf("listen started wait for client!");
 		}
@@ -614,6 +617,8 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 		}
 		else
 		{
+
+			std::thread(Client);
 			printf("Client connected!");
 		}
 	}
@@ -648,8 +653,97 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 
 			// Echo message back to client
 			send(Client, buf, bytesReceived + 1, 0);
+			break;
 		}
 	}
+	if (_craft)
+	{
+		// just in case somebody manually edited battle.cfg
+		_craft->resetCustomDeployment();
+	}
+	save();
+	if (_missionTypes[_cbxMission->getSelected()] != "STR_BASE_DEFENSE" && _craft->getNumTotalUnits() == 0)
+	{
+		return;
+	}
+
+	SavedBattleGame* bgame = new SavedBattleGame(_game->getMod(), _game->getLanguage());
+	_game->getSavedGame()->setBattleGame(bgame);
+	bgame->setMissionType(_missionTypes[_cbxMission->getSelected()]);
+	BattlescapeGenerator bgen = BattlescapeGenerator(_game);
+	Base* base = 0;
+
+	bgen.setTerrain(_game->getMod()->getTerrain(_terrainTypes[_cbxTerrain->getSelected()]));
+
+	// base defense
+	if (_missionTypes[_cbxMission->getSelected()] == "STR_BASE_DEFENSE")
+	{
+		base = _craft->getBase();
+		bgen.setBase(base);
+		_craft = 0;
+	}
+	// alien base
+	else if (_game->getMod()->getDeployment(bgame->getMissionType())->isAlienBase())
+	{
+		AlienBase* b = new AlienBase(_game->getMod()->getDeployment(bgame->getMissionType()), -1);
+		b->setId(1);
+		b->setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
+		_craft->setDestination(b);
+		bgen.setAlienBase(b);
+		_game->getSavedGame()->getAlienBases()->push_back(b);
+	}
+	// ufo assault
+	else if (_craft && _game->getMod()->getUfo(_missionTypes[_cbxMission->getSelected()]))
+	{
+		Ufo* u = new Ufo(_game->getMod()->getUfo(_missionTypes[_cbxMission->getSelected()]), 1);
+		u->setId(1);
+		_craft->setDestination(u);
+		bgen.setUfo(u);
+		// either ground assault or ufo crash
+		if (RNG::generate(0, 1) == 1)
+		{
+			u->setStatus(Ufo::LANDED);
+			bgame->setMissionType("STR_UFO_GROUND_ASSAULT");
+		}
+		else
+		{
+			u->setStatus(Ufo::CRASHED);
+			bgame->setMissionType("STR_UFO_CRASH_RECOVERY");
+		}
+		_game->getSavedGame()->getUfos()->push_back(u);
+	}
+	// mission site
+	else
+	{
+		const AlienDeployment* deployment = _game->getMod()->getDeployment(bgame->getMissionType());
+		const RuleAlienMission* mission = _game->getMod()->getAlienMission(_game->getMod()->getAlienMissionList().front()); // doesn't matter
+		MissionSite* m = new MissionSite(mission, deployment, nullptr);
+		m->setId(1);
+		m->setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
+		_craft->setDestination(m);
+		bgen.setMissionSite(m);
+		_game->getSavedGame()->getMissionSites()->push_back(m);
+	}
+
+	if (_craft)
+	{
+		_craft->setSpeed(0);
+		bgen.setCraft(_craft);
+	}
+
+	_game->getSavedGame()->setDifficulty((GameDifficulty)_cbxDifficulty->getSelected());
+
+	bgen.setWorldShade(_slrDarkness->getValue());
+	bgen.setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
+	bgen.setAlienItemlevel(_slrAlienTech->getValue());
+	bgame->setDepth(_slrDepth->getValue());
+
+	bgen.run();
+
+	_game->popState();
+	_game->popState();
+	_game->pushState(new BriefingState(_craft, base));
+	_craft = 0;
 	// this also belongs to Server func //
 
 	// Close listening socket
@@ -763,6 +857,94 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 				std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
 		}
 	}
+	if (_craft)
+	{
+		// just in case somebody manually edited battle.cfg
+		_craft->resetCustomDeployment();
+	}
+	save();
+	if (_missionTypes[_cbxMission->getSelected()] != "STR_BASE_DEFENSE" && _craft->getNumTotalUnits() == 0)
+	{
+		return;
+	}
+
+	SavedBattleGame* bgame = new SavedBattleGame(_game->getMod(), _game->getLanguage());
+	_game->getSavedGame()->setBattleGame(bgame);
+	bgame->setMissionType(_missionTypes[_cbxMission->getSelected()]);
+	BattlescapeGenerator bgen = BattlescapeGenerator(_game);
+	Base* base = 0;
+
+	bgen.setTerrain(_game->getMod()->getTerrain(_terrainTypes[_cbxTerrain->getSelected()]));
+
+	// base defense
+	if (_missionTypes[_cbxMission->getSelected()] == "STR_BASE_DEFENSE")
+	{
+		base = _craft->getBase();
+		bgen.setBase(base);
+		_craft = 0;
+	}
+	// alien base
+	else if (_game->getMod()->getDeployment(bgame->getMissionType())->isAlienBase())
+	{
+		AlienBase* b = new AlienBase(_game->getMod()->getDeployment(bgame->getMissionType()), -1);
+		b->setId(1);
+		b->setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
+		_craft->setDestination(b);
+		bgen.setAlienBase(b);
+		_game->getSavedGame()->getAlienBases()->push_back(b);
+	}
+	// ufo assault
+	else if (_craft && _game->getMod()->getUfo(_missionTypes[_cbxMission->getSelected()]))
+	{
+		Ufo* u = new Ufo(_game->getMod()->getUfo(_missionTypes[_cbxMission->getSelected()]), 1);
+		u->setId(1);
+		_craft->setDestination(u);
+		bgen.setUfo(u);
+		// either ground assault or ufo crash
+		if (RNG::generate(0, 1) == 1)
+		{
+			u->setStatus(Ufo::LANDED);
+			bgame->setMissionType("STR_UFO_GROUND_ASSAULT");
+		}
+		else
+		{
+			u->setStatus(Ufo::CRASHED);
+			bgame->setMissionType("STR_UFO_CRASH_RECOVERY");
+		}
+		_game->getSavedGame()->getUfos()->push_back(u);
+	}
+	// mission site
+	else
+	{
+		const AlienDeployment* deployment = _game->getMod()->getDeployment(bgame->getMissionType());
+		const RuleAlienMission* mission = _game->getMod()->getAlienMission(_game->getMod()->getAlienMissionList().front()); // doesn't matter
+		MissionSite* m = new MissionSite(mission, deployment, nullptr);
+		m->setId(1);
+		m->setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
+		_craft->setDestination(m);
+		bgen.setMissionSite(m);
+		_game->getSavedGame()->getMissionSites()->push_back(m);
+	}
+
+	if (_craft)
+	{
+		_craft->setSpeed(0);
+		bgen.setCraft(_craft);
+	}
+
+	_game->getSavedGame()->setDifficulty((GameDifficulty)_cbxDifficulty->getSelected());
+
+	bgen.setWorldShade(_slrDarkness->getValue());
+	bgen.setAlienRace(_alienRaces[_cbxAlienRace->getSelected()]);
+	bgen.setAlienItemlevel(_slrAlienTech->getValue());
+	bgame->setDepth(_slrDepth->getValue());
+
+	bgen.run();
+
+	_game->popState();
+	_game->popState();
+	_game->pushState(new BriefingState(_craft, base));
+	_craft = 0;
 	//close down everything
 //	closesocket(s);
 //	WSACleanup();
