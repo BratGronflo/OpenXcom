@@ -55,6 +55,7 @@
 #include "../Mod/RuleAlienMission.h"
 #include "../Mod/AlienRace.h"
 #include "../Mod/RuleGlobe.h"
+#include "../Menu/MainMenuState.h"
 #define WIN32_LEAN_AND_MEAN
 #define DEFAULT_BUFLEN 4096
 #include <WS2tcpip.h>
@@ -573,6 +574,7 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 	hint.sin_addr.s_addr = inet_addr("127.0.0.1");
 	hint.sin_port = htons(30000);
 	hint.sin_family = AF_INET;
+
 	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (s == INVALID_SOCKET)
 	{
@@ -739,13 +741,26 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 	bgame->setDepth(_slrDepth->getValue());
 
 	bgen.run();
+	char buf[8096];
+	int bytessend = send(Client, buf, 8096, 0);
+	if (bytessend == SOCKET_ERROR)
+	{
+		std::cerr << "Error in send" << WSAGetLastError() << std::endl;
+		_game->setState(new MainMenuState);
+	}
+	else
+	{
+		std::cerr << "Send Successfull - Start Game...." << std::endl;
+		_game->popState();
+		_game->popState();
+		_game->pushState(new BriefingState(_craft, base));
+		_craft = 0;
+	}
+	// SEND SAVE
+	// Wait respond for successfull send save and read save
+	// Start Game
 
-	_game->popState();
-	_game->popState();
-	_game->pushState(new BriefingState(_craft, base));
-	_craft = 0;
-	// this also belongs to Server func //
-
+	
 	// Close listening socket
 //	closesocket(s);
 //	closesocket(Client);
@@ -941,10 +956,26 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 
 	bgen.run();
 
-	_game->popState();
-	_game->popState();
-	_game->pushState(new BriefingState(_craft, base));
-	_craft = 0;
+	char buf[8096];
+	int bytesreceived = recv(s, buf, 8096, 0);
+	if (bytesreceived == SOCKET_ERROR)
+	{
+		std::cerr << "Error in receive" << WSAGetLastError() << std::endl;
+	}
+	else
+	{
+		std::cerr << "Receive successfull - Start Game..." << std::endl;
+		_game->popState();
+		_game->popState();
+		_game->pushState(new BriefingState(_craft, base));
+		_craft = 0;
+	}
+
+	// instead of running bgen, receive data from server
+	// Read data and respond for successful receive
+	// Start Game
+
+
 	//close down everything
 //	closesocket(s);
 //	WSACleanup();
