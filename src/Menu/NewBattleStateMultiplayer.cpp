@@ -956,8 +956,8 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 
 	bgen.run();
 
-	char buf[8096];
-	int bytesreceived = recv(s, buf, 8096, 0);
+	char buffer[8096];
+	int bytesreceived = recv(s, buffer, 8096, 0);
 	if (bytesreceived == SOCKET_ERROR)
 	{
 		std::cerr << "Error in receive" << WSAGetLastError() << std::endl;
