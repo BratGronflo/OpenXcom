@@ -951,6 +951,8 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 	bgen.setAlienItemlevel(_slrAlienTech->getValue());
 	bgame->setDepth(_slrDepth->getValue());
 
+	bgen.run();
+
 	char buffer[40000];
 	int bytesreceived = recv(s, buffer, 40000, 0);
 	if (bytesreceived == SOCKET_ERROR)
