@@ -630,8 +630,8 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 	{
 		//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
 		char buf[4096];
-		std::string str = ("HELLO!");
-		const char* cstr = str.c_str();
+		strcpy(buf, "Hello I am Server");
+		send(Client, buf, 4096, 0);
 		while (true)
 		{
 			ZeroMemory(buf, 4096);
@@ -646,16 +646,14 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 			else
 			{
 				std::cerr << "recv successfull" << std::endl;
+				std::cout << "Client> " << std::string(buf, 0, bytesReceived) << std::endl;
+				break;
 			}
 			if (bytesReceived == 0)
 			{
 				std::cout << "Client disconnected " << std::endl;
 				break;
 			}
-
-			// Echo message back to client
-			send(Client, buf, bytesReceived + 1, 0);
-			break;
 		}
 	}
 	if (_craft)
@@ -741,8 +739,8 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 	bgame->setDepth(_slrDepth->getValue());
 
 	bgen.run();
-	char buf[8096];
-	int bytessend = send(Client, buf, 8096, 0);
+	char buf[40000];
+	int bytessend = send(Client, buf, 40000, 0);
 	if (bytessend == SOCKET_ERROR)
 	{
 		std::cerr << "Error in send" << WSAGetLastError() << std::endl;
@@ -856,12 +854,11 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 	}
 
 	char buf[4096];
-	std::string str = ("HELLO!");
-	const char* cstr = str.c_str();
+	strcpy(buf, "Hello I am Client");
 	{
 
 		// Send the text
-		int sendResult = send(s, cstr, DEFAULT_BUFLEN, NULL);
+		int sendResult = send(s, buf, DEFAULT_BUFLEN, NULL);
 		if (sendResult != SOCKET_ERROR)
 		{
 			printf("send successfull");
@@ -871,11 +868,6 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 				// Echo response to console
 				std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
 		}
-	}
-	if (_craft)
-	{
-		// just in case somebody manually edited battle.cfg
-		_craft->resetCustomDeployment();
 	}
 	save();
 	if (_missionTypes[_cbxMission->getSelected()] != "STR_BASE_DEFENSE" && _craft->getNumTotalUnits() == 0)
@@ -954,10 +946,8 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 	bgen.setAlienItemlevel(_slrAlienTech->getValue());
 	bgame->setDepth(_slrDepth->getValue());
 
-	bgen.run();
-
-	char buffer[8096];
-	int bytesreceived = recv(s, buffer, 8096, 0);
+	char buffer[40000];
+	int bytesreceived = recv(s, buffer, 40000, 0);
 	if (bytesreceived == SOCKET_ERROR)
 	{
 		std::cerr << "Error in receive" << WSAGetLastError() << std::endl;
