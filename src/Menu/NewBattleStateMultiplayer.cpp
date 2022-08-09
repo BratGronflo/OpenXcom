@@ -571,7 +571,7 @@ void NewBattleStateMultiplayer::btnOkClick(Action*)
 	}
 	SOCKADDR_IN hint;
 	int sizeofaddr = sizeof(hint);
-	hint.sin_addr.s_addr = inet_addr("127.0.0.1");
+	hint.sin_addr.s_addr = inet_addr("26.173.27.236");
 	hint.sin_port = htons(30000);
 	hint.sin_family = AF_INET;
 
@@ -868,6 +868,11 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 				// Echo response to console
 				std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
 		}
+	}
+	if (_craft)
+	{
+		// just in case somebody manually edited battle.cfg
+		_craft->resetCustomDeployment();
 	}
 	save();
 	if (_missionTypes[_cbxMission->getSelected()] != "STR_BASE_DEFENSE" && _craft->getNumTotalUnits() == 0)
