@@ -30,6 +30,24 @@
 #include "LoadGameState.h"
 #include "ListLoadOriginalState.h"
 #include "../Interface/TextEdit.h"
+#define WIN32_LEAN_AND_MEAN
+#define DEFAULT_BUFLEN 4096
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <WS2tcpip.h>
+#include <WinSock2.h>
+#include <winsock.h>
+#include <iostream>
+#include <fstream>
+#include <experimental/filesystem>
+#pragma comment(lib, "ws2_32.lib")
+#include <stdio.h>
+#include <vector>
+#include <thread>
+#include <string>
+#include <source_location>
+#pragma warning(disable : 4996)
+#include "../Client.h"
+#include "../Server.h"
 
 namespace OpenXcom
 {
@@ -91,6 +109,8 @@ void ListLoadState::btnConnectClick(Action *)
 {
 
 }
+
+
 
 /**
  * Loads the selected save.

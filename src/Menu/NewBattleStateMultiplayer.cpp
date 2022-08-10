@@ -868,8 +868,11 @@ void NewBattleStateMultiplayer::btnJoinClick(Action*)
 			// Wait for response
 			ZeroMemory(buf, 4096);
 			int bytesReceived = recv(s, buf, 4096, 0);
+			if (bytesReceived > 0)
+			{
 				// Echo response to console
 				std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
+			}
 		}
 	}
 	if (_craft)

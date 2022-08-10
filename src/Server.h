@@ -19,12 +19,14 @@ class ServerHost : public State
 	  char buf[];
 
 	// Initialize the Server
-	int Server(int argc, char* argv[]);
-	void TransferData(int argc, char* argv[]);
-	void initiate();
-	void binding();
+	void initiate_s();
+	void hintstruct();
+	void socketcreate();
+	void binding_s();
 	void waitforconnection();
 	void acceptclient();
+	void TransferData_s();
+	void send_file();
 	// is the Client  connected
 	bool isClientConnected();
 	// is game hosted
