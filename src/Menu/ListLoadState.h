@@ -18,6 +18,7 @@
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "ListGamesState.h"
+#include "../Interface/TextEdit.h"
 
 namespace OpenXcom
 {
@@ -30,6 +31,8 @@ class ListLoadState : public ListGamesState
 {
 private:
 	TextButton *_btnOld,*_btnConnect;
+    TextEdit *_btnEnterIP;
+
 public:
 	/// Creates the Load Game state.
 	ListLoadState(OptionsOrigin origin);
@@ -43,6 +46,9 @@ public:
 	void lstSavesPress(Action *action) override;
 	void init() override;
 	void loadSave(size_t list_idx);
+	/// Handlers for IP.
+	void btnEnterIPToggle(Action *action);
+	void btnEnterIPApply(Action *action);
 };
 
 }

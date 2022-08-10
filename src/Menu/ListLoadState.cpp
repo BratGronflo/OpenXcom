@@ -29,6 +29,7 @@
 #include "ConfirmLoadState.h"
 #include "LoadGameState.h"
 #include "ListLoadOriginalState.h"
+#include "../Interface/TextEdit.h"
 
 namespace OpenXcom
 {
@@ -57,6 +58,11 @@ ListLoadState::ListLoadState(OptionsOrigin origin) : ListGamesState(origin, 0, t
 	_btnConnect->onMouseClick((ActionHandler)&ListLoadState::btnConnectClick);
 
 	centerAllSurfaces();
+	_btnEnterIP = new TextEdit(this, 80, 16, 280, 300);
+	add(_btnEnterIP, "confirmLoad", "saveMenus");
+	_btnEnterIP->setText(""); // redraw
+	_btnEnterIP->onEnter((ActionHandler)&ListLoadState::btnEnterIPApply);
+	_btnEnterIP->setVisible(true);
 }
 
 /**
@@ -146,6 +152,24 @@ void ListLoadState::init()
 			loadSave(idx);
 		}
 	}
+}
+void ListLoadState::btnEnterIPToggle(Action *action)
+{
+	if (_btnEnterIP->getVisible())
+	{
+		_btnEnterIP->setText("");
+		_btnEnterIP->setVisible(false);
+		btnEnterIPApply(action);
+	}
+	else
+	{
+		_btnEnterIP->setVisible(true);
+		_btnEnterIP->setFocus(true);
+	}
+}
+void ListLoadState::btnEnterIPApply(Action *)
+{
+	// do shit here
 }
 
 }
