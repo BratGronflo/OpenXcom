@@ -42,14 +42,18 @@ ListLoadState::ListLoadState(OptionsOrigin origin) : ListGamesState(origin, 0, t
 	// Create objects
 	_btnOld = new TextButton(80, 16, 60, 172);
 	_btnCancel->setX(180);
+	_btnConnect = new TextButton(80, 16, 120, 200);
 
 	add(_btnOld, "button", "saveMenus");
+	add(_btnConnect, "button", "saveMenus");
 
 	// Set up objects
 	_txtTitle->setText(tr("STR_SELECT_GAME_TO_LOAD"));
 
 	_btnOld->setText(tr("STR_ORIGINAL_XCOM"));
+	_btnConnect->setText(tr("STR_CONNECT"));
 	_btnOld->onMouseClick((ActionHandler)&ListLoadState::btnOldClick);
+	_btnConnect->onMouseClick((ActionHandler)&ListLoadState::btnConnectClick);
 
 	centerAllSurfaces();
 }
@@ -69,6 +73,16 @@ ListLoadState::~ListLoadState()
 void ListLoadState::btnOldClick(Action *)
 {
 	_game->pushState(new ListLoadOriginalState(_origin));
+}
+
+
+/**
+ * Switches to Original X-Com saves.
+ * @param action Pointer to an action.
+ */
+void ListLoadState::btnConnectClick(Action *)
+{
+
 }
 
 /**
