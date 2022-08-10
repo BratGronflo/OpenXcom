@@ -29,7 +29,7 @@ namespace OpenXcom
 class ListLoadState : public ListGamesState
 {
 private:
-	TextButton *_btnOld;
+	TextButton *_btnOld,*_btnConnect;
 public:
 	/// Creates the Load Game state.
 	ListLoadState(OptionsOrigin origin);
@@ -37,6 +37,8 @@ public:
 	~ListLoadState();
 	/// Handler for clicking the Original X-Com button.
 	void btnOldClick(Action *action);
+	/// Handler for clicking the Original X-Com button.
+	void btnConnectClick(Action *action);
 	/// Handler for clicking the Saves list.
 	void lstSavesPress(Action *action) override;
 	void init() override;
