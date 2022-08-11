@@ -14,12 +14,11 @@ namespace OpenXcom
 	  public:
 		// Initialize the Client
 		  void initiate_c();
-		  void hintstruct();
+		  void hintstruct_c();
 		  void binding_c();
+		  void socketcreate_c();
 		  void connectiontoserv();
-		  void TransferData_c(int argc, char* argv[]);
 		  void recv_file();
-		int Client(int argc, char *argv[]);
 		bool isConnectedToHost();
 	};
  }

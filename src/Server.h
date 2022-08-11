@@ -13,19 +13,18 @@ class ServerHost : public State
   private:
 	bool _connectionEstablished; //placeholder
 	bool _gameHosted;			 //placeholder
-
   public:
 	  int iResult;
 	  char buf[];
 
 	// Initialize the Server
+	ServerHost();
 	void initiate_s();
-	void hintstruct();
+	void hintstruct_s();
 	void socketcreate();
 	void binding_s();
 	void waitforconnection();
 	void acceptclient();
-	void TransferData_s();
 	void send_file();
 	// is the Client  connected
 	bool isClientConnected();

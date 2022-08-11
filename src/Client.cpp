@@ -19,10 +19,11 @@
 
 using namespace OpenXcom;
 
+SOCKET serv;
+SOCKADDR_IN hint_c;
+bool _connectedToHost;
 
-int ServerClient::Client(int argc, char* argv[])
-{
-	void initiate_c();
+	void ServerClient::initiate_c()
 	{
 		// Initialize WinSock
 		_connectedToHost = false;
@@ -32,53 +33,52 @@ int ServerClient::Client(int argc, char* argv[])
 		if (wsResult != 0)
 		{
 			std::cerr << "Can't start Winsock, Err #" << wsResult << std::endl;
-			return 1;
+			return;
 		}
 		else
 		{
 			std::cerr << "WSAStartup successfull" << std::endl;
 		}
 	}
-	
-
-	// Fill in a hint structure
-	sockaddr_in hint;
-	hint.sin_addr.s_addr = inet_addr("127.0.0.1");
-	hint.sin_port = htons(30000);
-	hint.sin_family = AF_INET;
-
-
-	// Create socket
-	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (s == INVALID_SOCKET)
+	void ServerClient::hintstruct_c()
 	{
-		std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
-		WSACleanup();
-		return 2;
+		hint_c.sin_addr.s_addr = inet_addr("127.0.0.1");
+		hint_c.sin_port = htons(30000);
+		hint_c.sin_family = AF_INET;
 	}
-	else
+	void ServerClient::socketcreate_c()
 	{
-		std::cerr << "Socket Creation Successfull!" << std::endl;
-	}
-	void binding();
-	{
-		bind(s, (SOCKADDR*)&hint, sizeof(hint));
-		if (s == INVALID_SOCKET)
+		SOCKET serv = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+		if (serv == INVALID_SOCKET)
 		{
-			printf("bind failed");
-			return 3;
+			std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
+			WSACleanup();
+			return;
+		}
+		else
+		{
+			std::cerr << "Socket Creation Successfull!" << std::endl;
 		}
 	}
-	void connectiontoserv();
+	void ServerClient::binding_c()
+	{
+		bind(serv, (SOCKADDR*)&hint_c, sizeof(hint_c));
+		if (serv == INVALID_SOCKET)
+		{
+			printf("bind failed");
+			return;
+		}
+	}
+	void ServerClient::connectiontoserv()
 	{
 		// Connect to server
-		int Connection = connect(s, (sockaddr*)&hint, sizeof(hint));
+		int Connection = connect(serv, (sockaddr*)&hint_c, sizeof(hint_c));
 		if (Connection == SOCKET_ERROR)
 		{
 			std::cerr << "Can't connect to server, Err #" << WSAGetLastError() << std::endl;
-			closesocket(s);
+			closesocket(serv);
 			WSACleanup();
-			return 4;
+			return;
 		}
 		else
 		{
@@ -87,38 +87,16 @@ int ServerClient::Client(int argc, char* argv[])
 		}
 
 	}
-	void TransferData_c(int argc, char* argv[]);
-	{
-		char buf[4096];
-		std::string str = ("HELLO!");
-		const char* cstr = str.c_str();
-
-		// Send the text
-		int sendResult = send(s, cstr, DEFAULT_BUFLEN, NULL);
-		if (sendResult != SOCKET_ERROR)
-		{
-			// Wait for response
-			ZeroMemory(buf, 4096);
-			int bytesReceived = recv(s, buf, 4096, 0);
-			if (bytesReceived > 0)
-			{
-				// Echo response to console
-				std::cout << "SERVER> " << std::string(buf, 0, bytesReceived) << std::endl;
-			}
-		}
-	}
-	
-}
-void recv_file(SOCKET s)
+	void ServerClient::recv_file()
 {
 	char file_size_str[16];
 	char file_name[32];
 
-	recv(s, file_size_str, 16, 0);
+	recv(serv, file_size_str, 16, 0);
 	int file_size = std::atoi(file_size_str);
 	char* bytes = new char[file_size];
 
-	recv(s, file_name, 32, 0);
+	recv(serv, file_name, 32, 0);
 
 	std::fstream file;
 	file.open(file_name, std::ios_base::out | std::ios_base::binary);
@@ -128,7 +106,7 @@ void recv_file(SOCKET s)
 
 	if (file.is_open())
 	{
-		recv(s, bytes, file_size, 0);
+		recv(serv, bytes, file_size, 0);
 		std::cout << "data: " << bytes << std::endl;
 
 		file.write(bytes, file_size);
@@ -142,15 +120,15 @@ void recv_file(SOCKET s)
 	}
 }
 
-bool ServerClient::isConnectedToHost()
-{
+	bool ServerClient::isConnectedToHost()
+	{
 
-	if (_connectedToHost == true)
-	{
-		return true;
+		if (_connectedToHost == true)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
-	{
-		return false;
-	}
-}

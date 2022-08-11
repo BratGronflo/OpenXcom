@@ -19,8 +19,16 @@
 #include "../src/Engine/Options.h"
 
 using namespace OpenXcom;
+OpenXcom::ServerHost::ServerHost()
+{
+}
+SOCKET Client;
+SOCKET s;
+SOCKADDR_IN hint_s;
+int sizeofaddr;
+const std::string file_name;
 
-void send_file(SOCKET Client, const std::string& file_name)
+void ServerHost::send_file()
 {
 	std::string fullpath;
 	fullpath = Options::getMasterUserFolder();
@@ -64,17 +72,16 @@ void ServerHost::initiate_s()
 		printf("WSAStartup successful");
 	}
 }
-		void ServerHost::hintstruct()
+		void ServerHost::hintstruct_s()
 		{
-			SOCKADDR_IN hint;
-			int sizeofaddr = sizeof(hint);
-			hint.sin_addr.s_addr = inet_addr("127.0.0.1");
-			hint.sin_port = htons(30000);
-			hint.sin_family = AF_INET;
+			int sizeofaddr = sizeof(hint_s);
+			hint_s.sin_addr.s_addr = inet_addr("127.0.0.1");
+			hint_s.sin_port = htons(30000);
+			hint_s.sin_family = AF_INET;
 		}
 		void ServerHost::socketcreate()
 		{
-			SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+			s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 			if (s == INVALID_SOCKET)
 			{
 				printf("Socket creation failed");
@@ -85,10 +92,9 @@ void ServerHost::initiate_s()
 				printf("Socket creation successful");
 			}
 		}
-
 	void ServerHost::binding_s()
 	{
-		bind(s, (SOCKADDR*)&hint, sizeof(hint));
+		bind(s, (SOCKADDR*)&hint_s, sizeof(hint_s));
 		if (s == INVALID_SOCKET)
 		{
 			printf("bind failed");
@@ -107,10 +113,9 @@ void ServerHost::initiate_s()
 	}
 	void ServerHost::acceptclient()
 	{
-		SOCKET Client;
 		sockaddr_in client;
 		int clientsize = sizeof(client);
-		Client = accept(s, (SOCKADDR*)&hint, &sizeofaddr);
+		Client = accept(s, (SOCKADDR*)&hint_s, &sizeofaddr);
 		if (s == INVALID_SOCKET)
 		{
 			printf("failed to accept client!");
@@ -122,34 +127,6 @@ void ServerHost::initiate_s()
 			std::thread Client_c;
 		}
 	}
-	void ServerHost::TransferData_s()
-{
-	//TEST Feature LOOP: accept and echo message to client, there will be feature like sending game Seed and other network actions.
-		char buf[4096];
-		std::string str = ("HELLO!");
-		const char* cstr = str.c_str();
-		while (true)
-		{
-			ZeroMemory(buf, 4096);
-
-			//Wait for client to send data
-			int bytesReceived = recv(s, buf, 4096, 0);
-			if (bytesReceived == SOCKET_ERROR)
-			{
-				std::cerr << "Error in recv()" << std::endl;
-				break;
-			}
-			if (bytesReceived == 0)
-			{
-				std::cout << "Client disconnected " << std::endl;
-				_connectionEstablished = false;
-				break;
-			}
-
-			// Echo message back to client
-			send(Client, buf, bytesReceived + 1, 0);
-		}
-}
 
 bool ServerHost::isClientConnected()
 {
