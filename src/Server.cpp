@@ -26,28 +26,31 @@ SOCKET Client;
 SOCKET s;
 SOCKADDR_IN hint_s;
 int sizeofaddr;
-const std::string file_name;
 
 void ServerHost::send_file()
 {
+	std::string fullpathtest;
 	std::string fullpath;
-	fullpath = Options::getMasterUserFolder();
+	fullpath = "F:\\save1.sav";
+	//= Options::getUserFolder()
+	//= Options::getMasterUserFolder()
+	fullpathtest = "F:/Мои документы/Documents/OpenXcom/xcom1/_autobattle_.asav";
 	std::fstream file;
-	file.open(file_name, std::ios_base::in | std::ios_base::binary);
+	file.open(fullpathtest, std::ios_base::in | std::ios_base::binary);
 	if (file.is_open())
 	{
-		int file_size = std::experimental::filesystem::file_size(file_name) + 1;
+		int file_size = std::experimental::filesystem::file_size(fullpathtest) + 1;
 
 		char* bytes = new char[file_size];
 
 		file.read(bytes, file_size);
 
 		std::cout << "size: " << file_size << std::endl;
-		std::cout << "name: " << file_name << std::endl;
+		std::cout << "name: " << fullpathtest << std::endl;
 		std::cout << "data: " << bytes << std::endl;
 
 		send(Client, std::to_string(file_size).c_str(), 16, 0);
-		send(Client, file_name.c_str(), 32, 0);
+		send(Client, fullpathtest.c_str(), 32, 0);
 		send(Client, bytes, file_size, 0);
 		delete[] bytes;
 	}
@@ -125,17 +128,18 @@ void ServerHost::initiate_s()
 		{
 			printf("Client connected!");
 			std::thread Client_c;
+			_connectionEstablished == true;
 		}
 	}
 
-bool ServerHost::isClientConnected()
-{
+bool ServerHost::isClientConnected() const
+	{
 
 	if (_connectionEstablished == true)
 	{
 	return true;
 	}
-	else
+	else if (_connectionEstablished == false)
 	{
 	return false;
 	}

@@ -281,42 +281,18 @@ void BriefingState::init()
 void BriefingState::btnHostClick(Action *)
 {
 	ServerHost *sh = new ServerHost;
+
+	sh->initiate_s();
+
 	if (sh->isClientConnected())
 	{
-		_game->popState();
-		Options::baseXResolution = Options::baseXBattlescape;
-		Options::baseYResolution = Options::baseYBattlescape;
-		_game->getScreen()->resetDisplay(false);
-		if (_infoOnly)
-			return;
-
-		BattlescapeState *bs = new BattlescapeState;
-		bs->getBattleGame()->spawnFromPrimedItems();
-		auto tally = bs->getBattleGame()->tallyUnits();
-		bool isPreview = _game->getSavedGame()->getSavedBattle()->isPreview();
-		if (tally.liveAliens > 0 || tally.liveSentientAliens > 0 | isPreview)
 		{
-			_game->pushState(bs);
-			_game->getSavedGame()->getSavedBattle()->setBattleState(bs);
-			_game->pushState(new NextTurnState(_game->getSavedGame()->getSavedBattle(), bs));
-			if (isPreview)
-			{
-				// skip InventoryState
-				_game->getSavedGame()->getSavedBattle()->startFirstTurn();
-				return;
-			}
-			_game->pushState(new InventoryState(false, bs, 0));
-		}
-		else
-		{
-			Options::baseXResolution = Options::baseXGeoscape;
-			Options::baseYResolution = Options::baseYGeoscape;
-			_game->getScreen()->resetDisplay(false);
-			delete bs;
-			_game->pushState(new AliensCrashState);
+			sh->send_file();
 		}
 
 	}
+	else
+		std::cout << "Client is not connected" << std::endl;
 }
 void BriefingState::btnOkClick(Action *)
 {

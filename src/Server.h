@@ -7,7 +7,7 @@ namespace OpenXcom
 // Initialize the Server
 {
 
-
+class BriefingState;
 class ServerHost : public State
 {
   private:
@@ -27,7 +27,7 @@ class ServerHost : public State
 	void acceptclient();
 	void send_file();
 	// is the Client  connected
-	bool isClientConnected();
+	bool isClientConnected() const;
 	// is game hosted
 	bool isGameHosted();
 };
