@@ -490,8 +490,21 @@ std::string searchDataFolder(const std::string &foldername)
 	// Give up
 	return foldername;
 }
+std::string searchAutoSave(const std::string &filename)
+{
+	// Correct folder separator
+	std::string name = filename;
 
-/**
+	// Check current data path
+	std::string path = Options::getMasterUserFolder() + name;
+	if (fileExists(path))
+	{
+		return path;
+	}
+	// Give up
+	return filename;
+}
+	/**
  * Creates a folder at the specified path.
  * @note Only creates the last folder on the path.
  * @param path Full path.

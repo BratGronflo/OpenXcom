@@ -25,7 +25,7 @@ class ServerHost : public State
 	void binding_s();
 	void waitforconnection();
 	void acceptclient();
-	void send_file();
+	void send_file(const std::string &filename);
 	// is the Client  connected
 	bool isClientConnected() const;
 	// is game hosted

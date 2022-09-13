@@ -284,15 +284,15 @@ void BriefingState::btnHostClick(Action *)
 
 	sh->initiate_s();
 
-	if (sh->isClientConnected())
+	//if (sh->isClientConnected())
 	{
 		{
-			sh->send_file();
+			sh->send_file(CrossPlatform::searchAutoSave("_autobattle_.asav"));
 		}
 
 	}
-	else
-		std::cout << "Client is not connected" << std::endl;
+	//else
+	//	std::cout << "Client is not connected" << std::endl;
 }
 void BriefingState::btnOkClick(Action *)
 {

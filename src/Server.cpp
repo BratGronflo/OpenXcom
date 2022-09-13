@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <experimental/filesystem>
+#include <SHLOBJ.H>
 #pragma comment(lib, "ws2_32.lib")
 #include <stdio.h>
 #include <vector>
@@ -17,6 +18,7 @@
 #include "../src/Server.h"
 #include "../src/Client.h"
 #include "../src/Engine/Options.h"
+#include "../src/Engine/CrossPlatform.h"
 
 using namespace OpenXcom;
 OpenXcom::ServerHost::ServerHost()
@@ -27,35 +29,36 @@ SOCKET s;
 SOCKADDR_IN hint_s;
 int sizeofaddr;
 
-void ServerHost::send_file()
+void ServerHost::send_file(const std::string &filename)
 {
-	std::string fullpathtest;
-	std::string fullpath;
-	fullpath = "F:\\save1.sav";
+
 	//= Options::getUserFolder()
 	//= Options::getMasterUserFolder()
-	fullpathtest = "F:/Мои документы/Documents/OpenXcom/xcom1/_autobattle_.asav";
+	// fullpathtest = "F:/My Documents/Documents/OpenXcom/xcom1/_autobattle_.asav";
 	std::fstream file;
-	file.open(fullpathtest, std::ios_base::in | std::ios_base::binary);
+	// std::stringfilepathfinaltest = Options::getMasterUserFolder() + "_autobattle_.asav";
+	//std::string filepath = Options::getMasterUserFolder() + filename;
+	// std::vector<YAML::Node> filewhat = YAML::LoadAll(*CrossPlatform::readFile(filepath));
+	file.open(filename, std::ios_base::in | std::ios_base::binary);
 	if (file.is_open())
 	{
-		int file_size = std::experimental::filesystem::file_size(fullpathtest) + 1;
+		int file_size = std::experimental::filesystem::file_size(filename) + 1;
 
 		char* bytes = new char[file_size];
 
 		file.read(bytes, file_size);
 
 		std::cout << "size: " << file_size << std::endl;
-		std::cout << "name: " << fullpathtest << std::endl;
+		std::cout << "name: " << filename << std::endl;
 		std::cout << "data: " << bytes << std::endl;
 
 		send(Client, std::to_string(file_size).c_str(), 16, 0);
-		send(Client, fullpathtest.c_str(), 32, 0);
+		send(Client, filename.c_str(), 32, 0);
 		send(Client, bytes, file_size, 0);
 		delete[] bytes;
 	}
 	else
-		std::cout << "Error file open" << std::endl;
+		std::cout << "Error file open" + filename << std::endl;
 	file.close();
 }
 void ServerHost::initiate_s()

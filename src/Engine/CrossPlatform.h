@@ -50,6 +50,8 @@ namespace CrossPlatform
 	/// when given a relative path, like "units/zombie.pck".  returns the passed-in
 	/// filename if the file is not found
 	std::string searchDataFile(const std::string &filename);
+	/// Searches the MasterUserFolder and returns the full path for a AutoSave
+	std::string searchAutoSave(const std::string &filename);
 	/// Searches the data folders and returns the full path for a folder
 	/// when given a relative path, like "common".  returns the passed-in
 	/// dir name if the folder is not found
