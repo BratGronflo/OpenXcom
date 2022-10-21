@@ -1861,7 +1861,7 @@ void BattlescapeState::btnSelectMusicTrackClick(Action *)
  */
 void BattlescapeState::btnPersonalLightingClick(Action *)
 {
-	if (allowButtons())
+	if (allowButtons() && _save->getSide() == FACTION_PLAYER)
 		_save->getTileEngine()->togglePersonalLighting();
 }
 
