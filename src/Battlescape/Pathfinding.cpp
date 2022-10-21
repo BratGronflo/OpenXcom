@@ -476,7 +476,7 @@ PathfindingStep Pathfinding::getTUCost(Position startPosition, int direction, co
 			}
 			if (cost == 0)
 			{
-				// some mods have broken tiles with 0 move cost, as it could be problematic for enginge we override it to default cost.
+				// some mods have broken tiles with 0 move cost, as it could be problematic for the engine, we override it to default cost.
 				cost = DEFAULT_MOVE_COST;
 			}
 			// climbing up a level costs one extra
@@ -635,7 +635,7 @@ PathfindingStep Pathfinding::getTUCost(Position startPosition, int direction, co
 	}
 
 	const auto timeCost = (cost.TimePercent - 1 + (costDiv / 2)) / costDiv;
-	const auto energyCost = cost.EnergyPercent / costDiv;
+	const auto energyCost = (cost.EnergyPercent - 1 + (costDiv / 2)) / costDiv;
 
 	return { { Clamp(timeCost, 1, INVALID_MOVE_COST - 1), Clamp(energyCost, 0, INVALID_MOVE_COST) }, { firePenaltyCost, 0 }, pos };
 }
@@ -672,7 +672,7 @@ void Pathfinding::abortPath()
 }
 
 /**
- * Gets movement type of unit or movment of missile.
+ * Gets movement type of unit or movement of missile.
  * @param unit Unit we check path for.
  * @param missileTarget Target of missile in case of `BAM_MISSILE
  * @return `MT_FLY` if we have `missileTarget` other wise `unit` move type.
