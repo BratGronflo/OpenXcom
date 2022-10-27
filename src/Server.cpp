@@ -77,15 +77,15 @@ void ServerHost::initiate_s()
 	{
 		printf("WSAStartup successful");
 	}
-}
-		void ServerHost::hintstruct_s()
+
+		// void ServerHost::hintstruct_s()
 		{
 			int sizeofaddr = sizeof(hint_s);
 			hint_s.sin_addr.s_addr = inet_addr("127.0.0.1");
 			hint_s.sin_port = htons(30000);
 			hint_s.sin_family = AF_INET;
 		}
-		void ServerHost::socketcreate()
+		// void ServerHost::socketcreate()
 		{
 			s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 			if (s == INVALID_SOCKET)
@@ -98,7 +98,7 @@ void ServerHost::initiate_s()
 				printf("Socket creation successful");
 			}
 		}
-	void ServerHost::binding_s()
+	// void ServerHost::binding_s()
 	{
 		bind(s, (SOCKADDR*)&hint_s, sizeof(hint_s));
 		if (s == INVALID_SOCKET)
@@ -107,7 +107,7 @@ void ServerHost::initiate_s()
 			return;
 		}
 	}
-	void ServerHost::waitforconnection()
+	// void ServerHost::waitforconnection()
 	{
 		// This socket is for listening
 		listen(s, 1); //Wait for a connection
@@ -117,7 +117,7 @@ void ServerHost::initiate_s()
 			_gameHosted = true;
 		}
 	}
-	void ServerHost::acceptclient()
+	// void ServerHost::acceptclient()
 	{
 		sockaddr_in client;
 		int clientsize = sizeof(client);
@@ -134,6 +134,7 @@ void ServerHost::initiate_s()
 			_connectionEstablished == true;
 		}
 	}
+}
 
 bool ServerHost::isClientConnected() const
 	{

@@ -24,7 +24,7 @@ SOCKADDR_IN hint_c;
 bool _connectedToHost;
 
 	void ServerClient::initiate_c()
-	{
+{
 		// Initialize WinSock
 		_connectedToHost = false;
 		WSAData data;
@@ -39,14 +39,14 @@ bool _connectedToHost;
 		{
 			std::cerr << "WSAStartup successfull" << std::endl;
 		}
-	}
-	void ServerClient::hintstruct_c()
+	
+	//void ServerClient::hintstruct_c()
 	{
 		hint_c.sin_addr.s_addr = inet_addr("127.0.0.1");
 		hint_c.sin_port = htons(30000);
 		hint_c.sin_family = AF_INET;
 	}
-	void ServerClient::socketcreate_c()
+	//void ServerClient::socketcreate_c()
 	{
 		SOCKET serv = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (serv == INVALID_SOCKET)
@@ -60,7 +60,7 @@ bool _connectedToHost;
 			std::cerr << "Socket Creation Successfull!" << std::endl;
 		}
 	}
-	void ServerClient::binding_c()
+	//void ServerClient::binding_c()
 	{
 		bind(serv, (SOCKADDR*)&hint_c, sizeof(hint_c));
 		if (serv == INVALID_SOCKET)
@@ -69,7 +69,7 @@ bool _connectedToHost;
 			return;
 		}
 	}
-	void ServerClient::connectiontoserv()
+	// void ServerClient::connectiontoserv()
 	{
 		// Connect to server
 		int Connection = connect(serv, (sockaddr*)&hint_c, sizeof(hint_c));
@@ -87,6 +87,7 @@ bool _connectedToHost;
 		}
 
 	}
+}
 	void ServerClient::recv_file()
 {
 	char file_size_str[16];
