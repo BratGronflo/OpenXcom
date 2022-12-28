@@ -28,7 +28,6 @@
 #include "../Engine/LocalizedText.h"
 #include "../Engine/Timer.h"
 #include "../Engine/Options.h"
-#include "../Engine/CrossPlatform.h"
 #include "../Engine/Unicode.h"
 #include "../Interface/TextButton.h"
 #include "../Interface/Window.h"
@@ -46,7 +45,6 @@
 #include "../Menu/ErrorMessageState.h"
 #include "../Mod/RuleInterface.h"
 #include "../Mod/RuleSoldier.h"
-#include "../Mod/RuleCraftWeapon.h"
 #include "../Mod/Armor.h"
 #include "../Ufopaedia/Ufopaedia.h"
 #include "../Battlescape/CannotReequipState.h"
@@ -708,7 +706,8 @@ void PurchaseState::btnOkClick(Action *)
 					if (time == 0)
 						time = _game->getMod()->getPersonnelTime();
 					t = new Transfer(time);
-					t->setSoldier(_game->getMod()->genSoldier(_game->getSavedGame(), rule->getType()));
+					int nationality = _game->getSavedGame()->selectSoldierNationalityByLocation(_game->getMod(), rule, _base);
+					t->setSoldier(_game->getMod()->genSoldier(_game->getSavedGame(), rule, nationality));
 					_base->getTransfers()->push_back(t);
 				}
 				break;

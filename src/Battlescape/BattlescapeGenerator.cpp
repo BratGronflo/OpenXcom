@@ -51,7 +51,6 @@
 #include "../Mod/RuleInventory.h"
 #include "../Mod/Mod.h"
 #include "../Mod/MapData.h"
-#include "../Mod/MCDPatch.h"
 #include "../Mod/Armor.h"
 #include "../Mod/Unit.h"
 #include "../Mod/AlienRace.h"
@@ -61,7 +60,6 @@
 #include "../Mod/AlienDeployment.h"
 #include "../Mod/RuleBaseFacility.h"
 #include "../Mod/Texture.h"
-#include "BattlescapeState.h"
 #include "Pathfinding.h"
 
 namespace OpenXcom
@@ -1126,6 +1124,24 @@ void BattlescapeGenerator::deployXCOM(const RuleStartingCondition* startingCondi
 
 	// job's done
 	_game->getSavedGame()->setDisableSoldierEquipment(false);
+
+	// Corner case: the base has some soldiers, but nowhere to spawn them (e.g. after a previous base defense destroyed everything but access lift)
+	if (_save->getUnits()->empty() && _save->getMissionType() == "STR_BASE_DEFENSE")
+	{
+		// let's force-spawn a dummy unit and auto-fail the battle
+		std::string firstRace = _game->getMod()->getAlienRacesList().front();
+		AlienRace* raceRule = _game->getMod()->getAlienRace(firstRace);
+		std::string firstUnit = raceRule->getMember(0);
+		Unit* unitRule = _game->getMod()->getUnit(firstUnit);
+		BattleUnit* unit = _save->createTempUnit(unitRule, FACTION_PLAYER, _unitSequence++);
+		unit->setSummonedPlayerUnit(true); // auto-fail battle
+		_save->setSelectedUnit(unit);
+
+		Tile* firstTile = _save->getTile(0);
+		_save->setUnitPosition(unit, firstTile->getPosition());
+		_save->getUnits()->push_back(unit);
+		_craftInventoryTile = firstTile;
+	}
 
 	if (_save->getUnits()->empty())
 	{

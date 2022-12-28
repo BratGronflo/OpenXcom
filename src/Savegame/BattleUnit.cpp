@@ -48,8 +48,6 @@
 #include "SavedGame.h"
 #include "SavedBattleGame.h"
 #include "../Engine/ShaderDraw.h"
-#include "../Engine/ShaderMove.h"
-#include "../Engine/Options.h"
 #include "BattleUnitStatistics.h"
 #include "../fmath.h"
 #include "../fallthrough.h"
@@ -1900,10 +1898,19 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 		if (rand.percent(std::get<arg_specialDamageTransformChance>(args.data)) && specialDamageTransform
 			&& !getSpawnUnit())
 		{
-			// converts the victim to a zombie on death
-			setRespawn(true);
-			setSpawnUnitFaction(FACTION_HOSTILE);
-			setSpawnUnit(save->getMod()->getUnit(specialDamageTransform->getZombieUnit(this)));
+			auto typeName = specialDamageTransform->getZombieUnit(this);
+			auto type = save->getMod()->getUnit(typeName);
+			if (type->getArmor()->getSize() <= getArmor()->getSize())
+			{
+				// converts the victim to a zombie on death
+				setRespawn(true);
+				setSpawnUnitFaction(FACTION_HOSTILE);
+				setSpawnUnit(type);
+			}
+			else
+			{
+				Log(LOG_ERROR) << "Transforming armor type '" << this->getArmor()->getType() << "' to unit type '" << typeName << "' is not allowed because of bigger armor size";
+			}
 		}
 
 		if (rand.percent(std::get<arg_selfDestructChance>(args.data))
@@ -3896,7 +3903,7 @@ bool BattleUnit::postMissionProcedures(const Mod *mod, SavedGame *geoscape, Save
 	if (s->isWounded())
 	{
 		// remove from craft
-		s->setCraft(nullptr);
+		//s->setCraft(nullptr); // Note to self: we need to do this much later (as late as possible), so that we can correctly remove the items too (without side effects)
 
 		// remove from training, but remember to return to training when healed
 		{
