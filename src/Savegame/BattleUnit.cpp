@@ -5117,10 +5117,10 @@ BattleItem *BattleUnit::getSpecialIconWeapon(BattleType &type) const
 /**
  * Recovers a unit's TUs and energy, taking a number of factors into consideration.
  */
-void BattleUnit::recoverTimeUnits()
-{
-	updateUnitStats(true, false);
-}
+//void BattleUnit::recoverTimeUnits()
+//{
+//	updateUnitStats(true, false);
+//}
 
 /**
  * Get the unit's statistics.
