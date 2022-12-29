@@ -23,10 +23,8 @@
 #include "BaseFacility.h"
 #include "../Mod/RuleBaseFacility.h"
 #include "Craft.h"
-#include "CraftWeapon.h"
 #include "SavedGame.h"
 #include "../Mod/RuleCraft.h"
-#include "../Mod/RuleCraftWeapon.h"
 #include "../Mod/Mod.h"
 #include "ItemContainer.h"
 #include "Soldier.h"
@@ -144,7 +142,7 @@ void Base::load(const YAML::Node &node, SavedGame *save, bool newGame, bool newB
 		std::string type = (*i)["type"].as<std::string>(_mod->getSoldiersList().front());
 		if (_mod->getSoldier(type))
 		{
-			Soldier *s = new Soldier(_mod->getSoldier(type), 0);
+			Soldier *s = new Soldier(_mod->getSoldier(type), nullptr, 0 /*nationality*/);
 			s->load(*i, _mod, save, _mod->getScriptGlobal());
 			s->setCraft(0);
 			if (const YAML::Node &craft = (*i)["craft"])
@@ -692,6 +690,20 @@ int Base::getTotalOtherStaffAndInventoryCost(int& staffCount, int& inventoryCoun
 			{
 				inventoryCount += transfer->getQuantity();
 				totalCost += ruleItem->getMonthlyMaintenance() * transfer->getQuantity();
+			}
+		}
+		else if (transfer->getType() == TRANSFER_SOLDIER)
+		{
+			auto ruleItem = transfer->getSoldier()->getArmor()->getStoreItem();
+			if (ruleItem && ruleItem->getMonthlySalary() != 0)
+			{
+				staffCount += 1;
+				totalCost += ruleItem->getMonthlySalary();
+			}
+			if (ruleItem && ruleItem->getMonthlyMaintenance() != 0)
+			{
+				inventoryCount += 1;
+				totalCost += ruleItem->getMonthlyMaintenance();
 			}
 		}
 	}
@@ -1562,6 +1574,7 @@ int Base::getGravShields() const
 
 void Base::setupDefenses(AlienMission* am)
 {
+	// Note: OBJECTIVE_INSTANT_RETALIATION is intentionally ignored here
 	if (am->getRules().getObjective() == OBJECTIVE_RETALIATION)
 	{
 		setRetaliationMission(am);
