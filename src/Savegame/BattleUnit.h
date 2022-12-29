@@ -729,7 +729,7 @@ public:
 	/// Puts the unit in the corner to think about what he's done.
 	void goToTimeOut();
 	/// Recovers the unit's time units and energy.
-	void recoverTimeUnits();
+	//void recoverTimeUnits();
 	/// Get the unit's mission statistics.
 	BattleUnitStatistics* getStatistics();
 	/// Set the unit murderer's id.
