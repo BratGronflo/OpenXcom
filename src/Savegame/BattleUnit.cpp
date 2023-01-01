@@ -867,14 +867,6 @@ YAML::Node BattleUnit::save(const ScriptGlobal *shared) const
 		{
 			_moveCostBaseNormal.save(p, "baseNormalPercent");
 		}
-		if (_moveCostBaseFly != _armor->getMoveCostBaseFly())
-		{
-			_moveCostBaseFly.save(p, "baseFlyPercent");
-		}
-		if (_moveCostBaseNormal != _armor->getMoveCostBaseNormal())
-		{
-			_moveCostBaseNormal.save(p, "baseNormalPercent");
-		}
 		if (!p.IsNull())
 		{
 			p.SetStyle(YAML::EmitterStyle::Flow);
@@ -6060,7 +6052,7 @@ void getListSizeHackScript(BattleUnit* bu, int& i)
 }
 
 
-std::string debugDisplayScript(const BattleUnit* bu) // JOPPER !!!! IMPORTANT SHIT (later note... 
+std::string debugDisplayScript(const BattleUnit * bu) // JOPPER !!!! IMPORTANT SHIT (later note... 
 {
 	if (bu)
 	{

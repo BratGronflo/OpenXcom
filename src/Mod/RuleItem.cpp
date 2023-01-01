@@ -2436,7 +2436,7 @@ int RuleItem::getMeleePower() const
  * Usage #2: checks if a death trap item applies to a given faction.
  * @return True if allowed, false otherwise.
  */
-bool RuleItem::isTargetAllowed(UnitFaction targetFaction) const 
+bool RuleItem::isTargetAllowed(UnitFaction targetFaction) const
 {
 	// HOST
 	if (targetFaction == FACTION_PLAYER)
