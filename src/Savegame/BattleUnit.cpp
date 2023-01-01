@@ -6041,7 +6041,7 @@ void getListSizeHackScript(BattleUnit* bu, int& i)
 }
 
 
-std::string debugDisplayScript(const BattleUnit* bu) // JOPPER !!!! IMPORTANT SHIT (later note... 
+std::string debugDisplayScript(const BattleUnit * bu) // JOPPER !!!! IMPORTANT SHIT (later note... 
 {
 	if (bu)
 	{
