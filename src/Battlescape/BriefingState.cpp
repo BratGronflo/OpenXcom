@@ -41,6 +41,10 @@
 #include "../Menu/CutsceneState.h"
 #include "../Savegame/AlienMission.h"
 #include "../Mod/RuleAlienMission.h"
+#include "../simple_network/stdafx.h"
+#include "../simple_network/ServerGame.h"
+// used for multi-threading
+#include <process.h>
 
 namespace OpenXcom
 {
@@ -296,8 +300,27 @@ void BriefingState::btnOkClick(Action *)
 		_game->pushState(new AliensCrashState);
 	}
 }
+void serverLoop(void *);
+ServerGame *server;
 void BriefingState::btnHostClick(Action *)
-    {
-	return;
-    }
+{
+	{
+
+		// initialize the server
+		server = new ServerGame();
+
+		// create thread with arbitrary argument for the run function
+		_beginthread(serverLoop, 0, (void *)12);
+	}
+
+}
+
+void serverLoop(void *arg)
+{
+	while (true)
+	{
+		server->update();
+	}
+}
+
 }

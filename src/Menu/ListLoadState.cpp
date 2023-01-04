@@ -28,6 +28,9 @@
 #include "ConfirmLoadState.h"
 #include "LoadGameState.h"
 #include "ListLoadOriginalState.h"
+#include "/simple_network/ClientGame.h"
+// used for multi-threading
+#include <process.h>
 
 namespace OpenXcom
 {
@@ -80,9 +83,26 @@ void ListLoadState::btnOldClick(Action *)
  * Switches to Original X-Com saves.
  * @param action Pointer to an action.
  */
+void clientLoop(void);
+
+ClientGame *client;
+
 void ListLoadState::btnConnectClick(Action *)
 {
 
+	// initialize the client
+	client = new ClientGame();
+
+	clientLoop();
+}
+
+void clientLoop()
+{
+	while (true)
+	{
+		//do game stuff
+		client->update();
+	}
 }
 
 /**

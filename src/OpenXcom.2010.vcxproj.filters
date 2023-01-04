@@ -1124,6 +1124,30 @@
     <ClCompile Include="Battlescape\ExtendedInventoryLinksState.cpp">
       <Filter>Battlescape</Filter>
     </ClCompile>
+    <ClCompile Include="simple_network\ClientGame.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\ClientNetwork.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\NetworkServices.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\ServerGame.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\ServerNetwork.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\stdafx.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\MainClient.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\MainServer.cpp">
+      <Filter>simple_network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -2309,6 +2333,30 @@
     <ClInclude Include="Battlescape\ExtendedInventoryLinksState.h">
       <Filter>Battlescape</Filter>
     </ClInclude>
+    <ClInclude Include="simple_network\ClientGame.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\ClientNetwork.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\NetworkData.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\NetworkServices.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\ServerGame.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\ServerNetwork.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\stdafx.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\targetver.h">
+      <Filter>simple_network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geoscape">
@@ -2343,6 +2391,9 @@
     </Filter>
     <Filter Include="Mod">
       <UniqueIdentifier>{ea5b1e9f-9ff1-457d-9a15-5af8773ccb50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simple_network">
+      <UniqueIdentifier>{eee5f407-7285-4056-8ec5-dcf112d3d96b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
