@@ -1125,7 +1125,6 @@
       <Filter>Battlescape</Filter>
     </ClCompile>
     <ClCompile Include="simple_network\ClientGame.cpp">
-<<<<<<< Updated upstream
       <Filter>simple_network</Filter>
     </ClCompile>
     <ClCompile Include="simple_network\ClientNetwork.cpp">
@@ -1148,30 +1147,6 @@
     </ClCompile>
     <ClCompile Include="simple_network\MainServer.cpp">
       <Filter>simple_network</Filter>
-=======
-      <Filter>Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\ClientNetwork.cpp">
-      <Filter>Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\Networkmain.cpp">
-      <Filter>Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\NetworkServices.cpp">
-      <Filter>Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\ServerGame.cpp">
-      <Filter>Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\ServerNetwork.cpp">
-      <Filter>Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\stdafx.cpp">
-      <Filter>Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\MultiplayerMenuState.cpp">
-      <Filter>Multiplayer</Filter>
->>>>>>> Stashed changes
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2359,7 +2334,6 @@
       <Filter>Battlescape</Filter>
     </ClInclude>
     <ClInclude Include="simple_network\ClientGame.h">
-<<<<<<< Updated upstream
       <Filter>simple_network</Filter>
     </ClInclude>
     <ClInclude Include="simple_network\ClientNetwork.h">
@@ -2382,33 +2356,6 @@
     </ClInclude>
     <ClInclude Include="simple_network\targetver.h">
       <Filter>simple_network</Filter>
-=======
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\ClientNetwork.h">
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\NetworkData.h">
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\NetworkServices.h">
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\ServerGame.h">
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\ServerNetwork.h">
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\stdafx.h">
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\targetver.h">
-      <Filter>Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\MultiplayerMenuState.h">
-      <Filter>Multiplayer</Filter>
->>>>>>> Stashed changes
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2445,13 +2392,8 @@
     <Filter Include="Mod">
       <UniqueIdentifier>{ea5b1e9f-9ff1-457d-9a15-5af8773ccb50}</UniqueIdentifier>
     </Filter>
-<<<<<<< Updated upstream
     <Filter Include="simple_network">
       <UniqueIdentifier>{eee5f407-7285-4056-8ec5-dcf112d3d96b}</UniqueIdentifier>
-=======
-    <Filter Include="Multiplayer">
-      <UniqueIdentifier>{df13006f-d6bf-4354-9fbe-2fa468b91340}</UniqueIdentifier>
->>>>>>> Stashed changes
     </Filter>
   </ItemGroup>
   <ItemGroup>

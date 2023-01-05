@@ -74,7 +74,6 @@ MainMenuState::MainMenuState(bool updateCheck)
 	_btnOptions = new TextButton(92, 20, 164, 118);
 	_btnMods = new TextButton(92, 20, 64, 146);
 	_btnQuit = new TextButton(92, 20, 164, 146);
-	_btnMultiplayer = new TextButton(264, 20, 64, 118);
 	_btnUpdate = new TextButton(72, 16, 209, 27);
 	_txtUpdateInfo = new Text(320, 17, 0, 11);
 	_txtTitle = new Text(256, 30, 32, 45);
@@ -89,7 +88,6 @@ MainMenuState::MainMenuState(bool updateCheck)
 	add(_btnOptions, "button", "mainMenu");
 	add(_btnMods, "button", "mainMenu");
 	add(_btnQuit, "button", "mainMenu");
-	add(_btnMultiplayer, "button", "mainMenu");
 	add(_btnUpdate, "button", "mainMenu");
 	add(_txtUpdateInfo, "text", "mainMenu");
 	add(_txtTitle, "text", "mainMenu");
@@ -116,9 +114,6 @@ MainMenuState::MainMenuState(bool updateCheck)
 
 	_btnQuit->setText(tr("STR_QUIT"));
 	_btnQuit->onMouseClick((ActionHandler)&MainMenuState::btnQuitClick);
-
-	_btnMultiplayer->setText(tr("STR_MULTIPLAYER"));
-	_btnMultiplayer->onMouseClick((ActionHandler)&MainMenuState::btnMultiplayerClick);
 
 	_btnUpdate->setText(tr("STR_UPDATE"));
 	_btnUpdate->onMouseClick((ActionHandler)& MainMenuState::btnUpdateClick);
@@ -273,14 +268,6 @@ void MainMenuState::btnQuitClick(Action *)
 	_game->quit();
 }
 
-/**
- * Opens Multiplayer screen in the game.
- * @param action Pointer to an action.
- */
-void MainMenuState::btnMultiplayerClick(Action*)
-{
-	_game->pushState(new ModListState);
-}
 /**
  * Updates OpenXcom to the newest version.
  * @param action Pointer to an action.

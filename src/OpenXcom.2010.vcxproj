@@ -581,13 +581,8 @@
     <ClCompile Include="Savegame\WeightedOptions.cpp" />
     <ClCompile Include="simple_network\ClientGame.cpp" />
     <ClCompile Include="simple_network\ClientNetwork.cpp" />
-<<<<<<< Updated upstream
     <ClCompile Include="simple_network\MainClient.cpp" />
     <ClCompile Include="simple_network\MainServer.cpp" />
-=======
-    <ClCompile Include="simple_network\MultiplayerMenuState.cpp" />
-    <ClCompile Include="simple_network\Networkmain.cpp" />
->>>>>>> Stashed changes
     <ClCompile Include="simple_network\NetworkServices.cpp" />
     <ClCompile Include="simple_network\ServerGame.cpp" />
     <ClCompile Include="simple_network\ServerNetwork.cpp" />
@@ -992,10 +987,6 @@
     <ClInclude Include="Savegame\WeightedOptions.h" />
     <ClInclude Include="simple_network\ClientGame.h" />
     <ClInclude Include="simple_network\ClientNetwork.h" />
-<<<<<<< Updated upstream
-=======
-    <ClInclude Include="simple_network\MultiplayerMenuState.h" />
->>>>>>> Stashed changes
     <ClInclude Include="simple_network\NetworkData.h" />
     <ClInclude Include="simple_network\NetworkServices.h" />
     <ClInclude Include="simple_network\ServerGame.h" />
