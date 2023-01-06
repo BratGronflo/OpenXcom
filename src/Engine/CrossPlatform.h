@@ -55,6 +55,8 @@ namespace CrossPlatform
 	/// when given a relative path, like "common".  returns the passed-in
 	/// dir name if the folder is not found
 	std::string searchDataFolder(const std::string &foldername);
+	// Searches Autosave Jopper
+	std::string searchAutoSave(const std::string &foldername);
 	/// Creates a folder.
 	bool createFolder(const std::string &path);
 	/// Terminates a path.
