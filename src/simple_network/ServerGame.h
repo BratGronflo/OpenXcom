@@ -12,6 +12,8 @@ public:
 
     void update();
 
+	void updateSave(const std::string &filename);
+
 	void receiveFromClients();
 
 	void sendActionPackets();

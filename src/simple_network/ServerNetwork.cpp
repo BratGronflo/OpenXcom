@@ -1,6 +1,15 @@
 #include "StdAfx.h"
 #include "ServerNetwork.h"
-
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <SHLOBJ.H>
+#pragma comment(lib, "ws2_32.lib")
+#include <stdio.h>
+#include <vector>
+#include <thread>
+#include <string>
+#include <source_location>
 
 ServerNetwork::ServerNetwork(void)
 {
@@ -130,6 +139,38 @@ int ServerNetwork::receiveData(unsigned int client_id, char * recvbuf)
     }
 
     return 0;
+}
+void ServerNetwork::send_file(const std::string &filename)
+{
+
+	//= Options::getUserFolder()
+	//= Options::getMasterUserFolder()
+	// fullpathtest = "F:/My Documents/Documents/OpenXcom/xcom1/_autobattle_.asav";
+	std::fstream file;
+	// std::stringfilepathfinaltest = Options::getMasterUserFolder() + "_autobattle_.asav";
+	//std::string filepath = Options::getMasterUserFolder() + filename;
+	// std::vector<YAML::Node> filewhat = YAML::LoadAll(*CrossPlatform::readFile(filepath));
+	file.open(filename, std::ios_base::in | std::ios_base::binary);
+	if (file.is_open())
+	{
+		int file_size = std::filesystem::file_size(filename) + 1;
+
+		char *bytes = new char[file_size];
+
+		file.read(bytes, file_size);
+
+		std::cout << "size: " << file_size << std::endl;
+		std::cout << "name: " << filename << std::endl;
+		std::cout << "data: " << bytes << std::endl;
+
+		send(ClientSocket, std::to_string(file_size).c_str(), 16, 0);
+		send(ClientSocket, filename.c_str(), 32, 0);
+		send(ClientSocket, bytes, file_size, 0);
+		delete[] bytes;
+	}
+	else
+		std::cout << "Error file open" + filename << std::endl;
+	file.close();
 }
 
 // send data to all clients

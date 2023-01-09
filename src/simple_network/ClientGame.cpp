@@ -5,7 +5,7 @@
 ClientGame::ClientGame(void)
 {
 
-    network = new ClientNetwork();
+    network = new ClientNetwork(); //Step 2
 
     // send init packet
     const unsigned int packet_size = sizeof(Packet);
@@ -72,4 +72,9 @@ void ClientGame::update()
                 break;
         }
     }
+}
+
+void ClientGame::updateTheSave()
+{
+	network->recv_file();
 }

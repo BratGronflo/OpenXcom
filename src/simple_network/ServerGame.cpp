@@ -8,7 +8,8 @@ ServerGame::ServerGame(void)
     // id's to assign clients for our table
     client_id = 0;
 
-    // set up the server network to listen 
+    // set up the server network to listen
+	//Jopper  Step 2
     network = new ServerNetwork(); 
 }
 
@@ -29,7 +30,12 @@ void ServerGame::update()
    receiveFromClients();
 }
 
-void ServerGame::receiveFromClients()
+void ServerGame::updateSave(const std::string &filename)
+{
+	network->send_file(filename);
+
+}
+	void ServerGame::receiveFromClients()
 {
 
     Packet packet;

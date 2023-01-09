@@ -1,5 +1,14 @@
 #include "StdAfx.h"
 #include "ClientNetwork.h"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#pragma comment(lib, "ws2_32.lib")
+#include <stdio.h>
+#include <vector>
+#include <thread>
+#include <string>
+#include <source_location>
 
 
 ClientNetwork::ClientNetwork(void)
@@ -102,7 +111,38 @@ ClientNetwork::ClientNetwork(void)
 ClientNetwork::~ClientNetwork(void)
 {
 }
+void ClientNetwork::recv_file()
+{
+	char file_size_str[16];
+	char file_name[32];
 
+	recv(iResult, file_size_str, 16, 0);
+	int file_size = std::atoi(file_size_str);
+	char *bytes = new char[file_size];
+
+	recv(iResult, file_name, 32, 0);
+
+	std::fstream file;
+	file.open(file_name, std::ios_base::out | std::ios_base::binary);
+
+	std::cout << "size: " << file_size << std::endl;
+	std::cout << "name: " << file_size << std::endl;
+
+	if (file.is_open())
+	{
+		recv(iResult, bytes, file_size, 0);
+		std::cout << "data: " << bytes << std::endl;
+
+		file.write(bytes, file_size);
+		std::cout << "ok save" << std::endl;
+	}
+	else
+	{
+		std::cout << "Error file open" << std::endl;
+		delete[] bytes;
+		file.close();
+	}
+}
 int ClientNetwork::receivePackets(char * recvbuf) 
 {
     iResult = NetworkServices::receiveMessage(ConnectSocket, recvbuf, MAX_PACKET_SIZE);

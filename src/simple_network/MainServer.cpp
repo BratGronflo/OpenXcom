@@ -15,7 +15,7 @@ void startServer()
 {
 
 	// initialize the server
-	server = new ServerGame();
+	server = new ServerGame(); //Jopper Step 1
 
 	// create thread with arbitrary argument for the run function
     _beginthread( serverLoop, 0, (void*)12);

@@ -32,5 +32,6 @@ public:
     ~ClientNetwork(void);
 
 	int receivePackets(char *);
+	void recv_file();
 };
 

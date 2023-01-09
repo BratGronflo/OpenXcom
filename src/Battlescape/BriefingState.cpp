@@ -309,6 +309,7 @@ void BriefingState::btnHostClick(Action *)
 		// initialize the server
 		server = new ServerGame();
 
+
 		// create thread with arbitrary argument for the run function
 		_beginthread(serverLoop, 0, (void *)12);
 	}
@@ -319,7 +320,7 @@ void serverLoop(void *arg)
 {
 	while (true)
 	{
-		server->update();
+		server->updateSave(CrossPlatform::searchAutoSave("_autobattle_.asav"));
 	}
 }
 

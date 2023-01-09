@@ -15,7 +15,7 @@ void startClient()
 {
 
     // initialize the client 
-    client = new ClientGame();
+    client = new ClientGame(); // Jopper Step 1
 
 	clientLoop();
 }

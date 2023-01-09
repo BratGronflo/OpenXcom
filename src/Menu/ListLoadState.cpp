@@ -28,7 +28,7 @@
 #include "ConfirmLoadState.h"
 #include "LoadGameState.h"
 #include "ListLoadOriginalState.h"
-#include "/simple_network/ClientGame.h"
+#include "../simple_network/ClientGame.h"
 // used for multi-threading
 #include <process.h>
 
@@ -93,6 +93,8 @@ void ListLoadState::btnConnectClick(Action *)
 	// initialize the client
 	client = new ClientGame();
 
+
+
 	clientLoop();
 }
 
@@ -101,7 +103,7 @@ void clientLoop()
 	while (true)
 	{
 		//do game stuff
-		client->update();
+		client->updateTheSave();
 	}
 }
 

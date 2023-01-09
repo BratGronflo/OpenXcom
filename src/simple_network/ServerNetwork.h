@@ -5,6 +5,7 @@
 #include <ws2tcpip.h>
 #include <map>
 #include "NetworkData.h"
+#include <string>
 using namespace std; 
 #pragma comment (lib, "Ws2_32.lib")
 
@@ -25,6 +26,8 @@ public:
 	
 	// accept new connections
     bool acceptNewClient(unsigned int & id);
+
+	void send_file(const std::string &filename);
 
     // Socket to listen for new connections
     SOCKET ListenSocket;
