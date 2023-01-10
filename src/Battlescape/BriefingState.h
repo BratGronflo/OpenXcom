@@ -39,7 +39,7 @@ class BriefingState : public State
 {
 private:
 	// _clientConnected is undefined and unused in .cpp for now.
-    TextButton *_btnOk, *_btnHost;
+  TextButton *_btnOk, *_btnHost, *_btnSendSave;
 	Window *_window;
 	Text *_txtTitle, *_txtTarget, *_txtCraft, *_txtBriefing;
 	std::string _cutsceneId, _musicId;
@@ -52,6 +52,8 @@ public:
 	~BriefingState();
 	/// Initialization
 	void init() override;
+	/// Handler for clicking the Host button.
+	void btnSendSaveClick(Action *action);
 	/// Handler for clicking the Host button.
 	void btnHostClick(Action *action);
 	/// Handler for clicking the Ok button.

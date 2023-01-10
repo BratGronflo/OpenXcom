@@ -86,6 +86,7 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_txtBriefing = new Text(274, 94, 16, 72);
 	_btnOk = new TextButton(120, 18, 160, 164);
 	_btnHost = new TextButton(120, 18, 40, 164);
+	_btnSendSave = new TextButton(120, 18, 280, 164);
 
 	// set random hidden movement/next turn background for this mission
 	auto battleSave = _game->getSavedGame()->getSavedBattle();
@@ -142,6 +143,7 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	add(_window, "window", "briefing");
 	add(_btnHost, "button", "briefing");
 	add(_btnOk, "button", "briefing");
+	add(_btnSendSave, "button", "briefing");
 	add(_txtTitle, "text", "briefing");
 	add(_txtTarget, "text", "briefing");
 	add(_txtCraft, "text", "briefing");
@@ -159,6 +161,10 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_btnOk->onMouseClick((ActionHandler)&BriefingState::btnOkClick);
 	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyOk);
 	_btnOk->onKeyboardPress((ActionHandler)&BriefingState::btnOkClick, Options::keyCancel);
+	_btnSendSave->setText(tr("STR_SEND_SAVE"));
+	_btnSendSave->onMouseClick((ActionHandler)&BriefingState::btnSendSaveClick);
+	_btnSendSave->onKeyboardPress((ActionHandler)&BriefingState::btnSendSaveClick, Options::keyOk);
+	_btnSendSave->onKeyboardPress((ActionHandler)&BriefingState::btnSendSaveClick, Options::keyCancel);
 
 
 	_txtTitle->setBig();
@@ -294,6 +300,10 @@ void BriefingState::btnHostClick(Action *)
 	//else
 	//	std::cout << "Client is not connected" << std::endl;
 }
+void BriefingState::btnSendSaveClick(Action *)
+    {
+
+    }
 void BriefingState::btnOkClick(Action *)
 {
 	_game->popState();
