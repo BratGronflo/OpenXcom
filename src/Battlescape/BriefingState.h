@@ -36,7 +36,7 @@ struct BriefingData;
 class BriefingState : public State
 {
 private:
-	TextButton *_btnOk, *_btnHost;
+	TextButton *_btnOk, *_btnHost, *_btnSendSave;
 	Window *_window;
 	Text *_txtTitle, *_txtTarget, *_txtCraft, *_txtBriefing;
 	std::string _cutsceneId, _musicId;
@@ -53,6 +53,8 @@ public:
 	void btnOkClick(Action *action);
 	/// Handler for clicking the Host button.
 	void btnHostClick(Action *action);
+	/// Handler for clicking the SendSave button.
+	void btnSendSaveClick(Action *action);
 };
 
 }
