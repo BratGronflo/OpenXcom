@@ -25,7 +25,7 @@ public:
    void setIFileName(const std::string &filename);
 
    void setOFileName(std::vector<char> extension);
-   void setOFileName(char* extension, std::string fName);
+   void setOFileName(std::string fName);
 
    void findFileSize();
    void findNumChunks();

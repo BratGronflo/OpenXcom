@@ -89,7 +89,8 @@ void ListLoadState::btnConnectClick(Action *)
 {
 
 	// initialize the client
-	Client c;
+	Client *c= new Client;
+	c->start(Options::getMasterUserFolder());
 	if (&Client::receiveData)
 	{
 		std::cout << "--->File received!\n";

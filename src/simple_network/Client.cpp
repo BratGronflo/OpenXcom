@@ -10,7 +10,6 @@ Client::Client(){
    recSizeInBytes = 0;
    initWinsock();
    initSocket();
-   start();
 }
 Client::~Client(){}
 
@@ -64,8 +63,9 @@ int Client::initSocket(){
    return 0;
 }
 
-void Client::start(){
-   receiveData();
+void Client::start(const std::string &filename)
+{
+   receiveData(filename);
    close();
 }
 void Client::close(){
@@ -81,7 +81,8 @@ std::vector<char> Client::getExtension(){
    return eVec;
 }
 
-void Client::receiveData(){
+void Client::receiveData(const std::string &filename)
+{
    /* STEPS
    1. receive size of file in bytes
    2. receive file extension length
@@ -128,7 +129,7 @@ void Client::receiveData(){
 
    //4. receive actual data in chunks
    FileCopier f;
-   f.setOFileName(extension, newFileName);
+   f.setOFileName(filename);
 
 		//setting up variables for a basic timer to keep track of megabytes per second
 		auto start = std::chrono::high_resolution_clock::now();

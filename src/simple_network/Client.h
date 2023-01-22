@@ -25,12 +25,12 @@ public:
    int initWinsock();
    int initSocket();
 
-   void start();
+   void start(const std::string &filename);
    void close();
 
    uint32_t getSizeInBytes();
    std::vector<char> getExtension();
 
-   void receiveData();
+   void receiveData(const std::string &filename);
 
 };

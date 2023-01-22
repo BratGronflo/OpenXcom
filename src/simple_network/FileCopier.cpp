@@ -40,9 +40,9 @@ void FileCopier::setOFileName(std::vector<char> extension){
    oFile = ofstream(oFileName, ios::out | ios::binary);//we also initialize the file here
 }
 
-void FileCopier::setOFileName(char* extension, std::string fName)
+void FileCopier::setOFileName(std::string fName)
 {
-	oFileName = "F:\\My Documents\\Documents\\OpenXcom\\xcom1\\_autoMultiplayerBattle_.asav";
+	oFileName = fName + "_autoMultiplayerBattle_.asav";
    oFile = ofstream(oFileName, ios::out | ios::binary);//we also initialize the file here
 
 }
