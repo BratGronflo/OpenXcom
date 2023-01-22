@@ -41,8 +41,7 @@
 #include "../Menu/CutsceneState.h"
 #include "../Savegame/AlienMission.h"
 #include "../Mod/RuleAlienMission.h"
-#include "../simple_network/stdafx.h"
-#include "../simple_network/ServerGame.h"
+#include "../simple_network/Server.h"
 // used for multi-threading
 #include <process.h>
 
@@ -72,7 +71,6 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_txtCraft = new Text(300, 17, 16, 56);
 	_txtBriefing = new Text(274, 94, 16, 72);
 	_btnHost = new TextButton(120, 18, 40, 164);
-	_btnSendSave = new TextButton(120, 18, 280, 164);
 
 	// set random hidden movement/next turn background for this mission
 	auto battleSave = _game->getSavedGame()->getSavedBattle();
@@ -129,7 +127,6 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	add(_window, "window", "briefing");
 	add(_btnOk, "button", "briefing");
 	add(_btnHost, "button", "briefing");
-	add(_btnSendSave, "button", "briefing");
 	add(_txtTitle, "text", "briefing");
 	add(_txtTarget, "text", "briefing");
 	add(_txtCraft, "text", "briefing");
@@ -147,11 +144,6 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_btnHost->onMouseClick((ActionHandler)&BriefingState::btnHostClick);
 	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyOk);
 	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyCancel);
-
-	_btnSendSave->setText(tr("STR_SEND_SAVE"));
-	_btnSendSave->onMouseClick((ActionHandler)&BriefingState::btnSendSaveClick);
-	_btnSendSave->onKeyboardPress((ActionHandler)&BriefingState::btnSendSaveClick, Options::keyOk);
-	_btnSendSave->onKeyboardPress((ActionHandler)&BriefingState::btnSendSaveClick, Options::keyCancel);
 
 	_txtTitle->setBig();
 	_txtTarget->setBig();
@@ -307,30 +299,15 @@ void BriefingState::btnOkClick(Action *)
 		_game->pushState(new AliensCrashState);
 	}
 }
-void serverLoop(void *);
-ServerGame *server;
 void BriefingState::btnHostClick(Action *)
 {
 	{
 
 		// initialize the server
-		server = new ServerGame();
-
-		// create thread with arbitrary argument for the run function
-		_beginthread(serverLoop, 0, (void *)12);
+		Server *s = new Server;
+		s->start(CrossPlatform::searchAutoSave("_autobattle_.asav"));
 	}
 
 }
 
-void serverLoop(void *arg)
-{
-	while (true)
-	{
-		server->update();
-	}
-}
-void BriefingState::btnSendSaveClick(Action *)
-    {
-
-    }
 }

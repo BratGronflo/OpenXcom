@@ -28,7 +28,8 @@
 #include "ConfirmLoadState.h"
 #include "LoadGameState.h"
 #include "ListLoadOriginalState.h"
-#include "/simple_network/ClientGame.h"
+#include "../simple_network/Client.h"
+#include <iostream>
 // used for multi-threading
 #include <process.h>
 
@@ -83,25 +84,16 @@ void ListLoadState::btnOldClick(Action *)
  * Switches to Original X-Com saves.
  * @param action Pointer to an action.
  */
-void clientLoop(void);
-
-ClientGame *client;
 
 void ListLoadState::btnConnectClick(Action *)
 {
 
 	// initialize the client
-	client = new ClientGame();
-
-	clientLoop();
-}
-
-void clientLoop()
-{
-	while (true)
+	Client c;
+	if (&Client::receiveData)
 	{
-		//do game stuff
-		client->update();
+		std::cout << "--->File received!\n";
+		_game->pushState(new LoadGameState(_origin, ("_autoMultiplayerBattle_.asav"), _palette));
 	}
 }
 

@@ -1124,28 +1124,13 @@
     <ClCompile Include="Battlescape\ExtendedInventoryLinksState.cpp">
       <Filter>Battlescape</Filter>
     </ClCompile>
-    <ClCompile Include="simple_network\ClientGame.cpp">
+    <ClCompile Include="simple_network\Client.cpp">
       <Filter>simple_network</Filter>
     </ClCompile>
-    <ClCompile Include="simple_network\ClientNetwork.cpp">
+    <ClCompile Include="simple_network\FileCopier.cpp">
       <Filter>simple_network</Filter>
     </ClCompile>
-    <ClCompile Include="simple_network\NetworkServices.cpp">
-      <Filter>simple_network</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\ServerGame.cpp">
-      <Filter>simple_network</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\ServerNetwork.cpp">
-      <Filter>simple_network</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\stdafx.cpp">
-      <Filter>simple_network</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\MainClient.cpp">
-      <Filter>simple_network</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\MainServer.cpp">
+    <ClCompile Include="simple_network\Server.cpp">
       <Filter>simple_network</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2333,28 +2318,13 @@
     <ClInclude Include="Battlescape\ExtendedInventoryLinksState.h">
       <Filter>Battlescape</Filter>
     </ClInclude>
-    <ClInclude Include="simple_network\ClientGame.h">
+    <ClInclude Include="simple_network\Client.h">
       <Filter>simple_network</Filter>
     </ClInclude>
-    <ClInclude Include="simple_network\ClientNetwork.h">
+    <ClInclude Include="simple_network\FileCopier.h">
       <Filter>simple_network</Filter>
     </ClInclude>
-    <ClInclude Include="simple_network\NetworkData.h">
-      <Filter>simple_network</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\NetworkServices.h">
-      <Filter>simple_network</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\ServerGame.h">
-      <Filter>simple_network</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\ServerNetwork.h">
-      <Filter>simple_network</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\stdafx.h">
-      <Filter>simple_network</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\targetver.h">
+    <ClInclude Include="simple_network\Server.h">
       <Filter>simple_network</Filter>
     </ClInclude>
   </ItemGroup>
