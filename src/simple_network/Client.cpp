@@ -6,7 +6,9 @@
 #include <iomanip>
 #pragma warning(disable : 4996)
 
-Client::Client(){
+Client::Client()
+{
+	std::cout << "Starting client\n";
    recSizeInBytes = 0;
    initWinsock();
    initSocket();
@@ -183,7 +185,11 @@ void Client::receiveData(const std::string &filename)
 
 	  //output current status of file transfer
 	  std::cout << "\rReceiving file..." << allBytesRec / 1000000 << "/" << fileSize / 1000000 << "MB" << "(" << std::fixed << std::setprecision(2) << MBPS << " MB/s)";
-
+		if (allBytesRec = fileSize)
+	  {
+			std::cout << "\r receiving file is complete";
+		  break;
+      }
    }
    delete[] currentChunk;
    std::cout << "--->File successfully received!\n";

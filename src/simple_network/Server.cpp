@@ -3,7 +3,9 @@
 #include <iostream>
 #include <sstream>
 
-Server::Server(){
+Server::Server()
+{
+	std::cout << "Starting server\n";
    initWinsock();
    initSocket();
 }
@@ -136,6 +138,11 @@ void Server::sendData(FileCopier& f){
       chunksSent++;
 
 	  std::cout << "\rSent: " << totalBytesSent / 1000000 << "/" << fileSize / 1000000 << " MB";
+	  if (totalBytesSent = fileSize)
+	  {
+		  std::cout << "\r sending file is complete";
+		  break;
+	  }
 
    }
    delete[] currentChunk;
