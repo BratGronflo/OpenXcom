@@ -40,7 +40,7 @@ int Server::initSocket(){
 void Server::start(const std::string &filename)
 {
    FileCopier f;
-	f.setIFileName(filename);
+   f.setIFileName(filename);
    f.findFileSize();
    f.findNumChunks();
 
@@ -86,28 +86,28 @@ void Server::sendData(FileCopier& f){
    }
 
    //2. send file extension length
-   uint32_t extensionLength = strlen(f.getExtension());
-   bytesSent = 0;//reset variable for use with next send
+   //uint32_t extensionLength = strlen(f.getExtension());
+   //bytesSent = 0;//reset variable for use with next send
 
-   std::cout << "Sending file extension length... ";
-   while (bytesSent != sizeof(extensionLength)){
-      bytesSent = send(Socket, (char*)(&extensionLength), sizeof(extensionLength), 0);
-      if (bytesSent == sizeof(extensionLength)){
-         std::cout << "--->File extension length successfuly sent!\n";
-      }
-   }
+   //std::cout << "Sending file extension length... ";
+   //while (bytesSent != sizeof(extensionLength)){
+   //   bytesSent = send(Socket, (char*)(&extensionLength), sizeof(extensionLength), 0);
+   //   if (bytesSent == sizeof(extensionLength)){
+   //      std::cout << "--->File extension length successfuly sent!\n";
+   //   }
+   //}
 
    //3. send actual extension as c-style string!
-   const char* extension = f.getExtension();
-   bytesSent = 0;
-
-   std::cout << "Sending file extension... ";
-   while (bytesSent != sizeof(extension)){
-      bytesSent = send(Socket, extension, sizeof(extension), 0);
-      if (bytesSent == sizeof(extension)){
-         std::cout << "--->File extension successfully sent!\n";
-      }
-   }
+   //const char* extension = f.getExtension();
+   //bytesSent = 0;
+   //
+   //std::cout << "Sending file extension... ";
+   //while (bytesSent != sizeof(extension)){
+   //   bytesSent = send(Socket, extension, sizeof(extension), 0);
+   //   if (bytesSent == sizeof(extension)){
+   //      std::cout << "--->File extension successfully sent!\n";
+   //   }
+   //}
 
    //4. send data in chunks
 

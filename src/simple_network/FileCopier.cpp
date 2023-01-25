@@ -25,9 +25,8 @@ FileCopier::~FileCopier(){}
 void FileCopier::setIFileName(const std::string &filename)
 {
    //get input file name
-  // cout << "File name: ";
-  // cin >> iFileName;
-   iFileName = (filename);
+	iFileName = filename;
+    cout << iFileName;
 }
 
 void FileCopier::setOFileName(std::vector<char> extension){
@@ -40,11 +39,10 @@ void FileCopier::setOFileName(std::vector<char> extension){
    oFile = ofstream(oFileName, ios::out | ios::binary);//we also initialize the file here
 }
 
-void FileCopier::setOFileName(std::string fName)
-{
-	oFileName = fName + "_autoMultiplayerBattle_.asav";
+void FileCopier::setOFileName(std::string newfilename){
+   oFileName = newfilename;
+	std::cout << oFileName;
    oFile = ofstream(oFileName, ios::out | ios::binary);//we also initialize the file here
-
 }
 
 

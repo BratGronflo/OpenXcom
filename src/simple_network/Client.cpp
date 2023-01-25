@@ -4,7 +4,6 @@
 #include "FileCopier.h"
 #include <chrono>
 #include <iomanip>
-#pragma warning(disable : 4996)
 
 Client::Client(){
    recSizeInBytes = 0;
@@ -30,12 +29,11 @@ int Client::initSocket(){
    }
 
   // std::cout << "Please enter new filename: ";
-   //std::cin >> newFileName;
-   newFileName = ("_autobattle_");
+  // std::cin >> newFileName;
 
-  // std::cout << "Please enter server's hostname or IP address: ";
+   //std::cout << "Please enter server's hostname or IP address: ";
    std::string s;
- //  std::cin >> s;
+   //  std::cin >> s;
    s = ("26.77.117.4");
    char const* hostName = s.c_str();
    if ((host = gethostbyname(hostName)) == NULL){
@@ -44,7 +42,7 @@ int Client::initSocket(){
       return 2;
    }
 
- //  std::cout << "Please enter server's port number: ";
+   std::cout << "Please enter server's port number: ";
    int portNum;
    //std::cin >> portNum;
    portNum = 4444;
@@ -65,7 +63,9 @@ int Client::initSocket(){
 
 void Client::start(const std::string &filename)
 {
-   receiveData(filename);
+	newFileName = filename;
+	std::cout << filename;
+   receiveData();
    close();
 }
 void Client::close(){
@@ -81,8 +81,7 @@ std::vector<char> Client::getExtension(){
    return eVec;
 }
 
-void Client::receiveData(const std::string &filename)
-{
+void Client::receiveData(){
    /* STEPS
    1. receive size of file in bytes
    2. receive file extension length
@@ -103,33 +102,34 @@ void Client::receiveData(const std::string &filename)
    }
 
    //2. receive file extension length
-   uint32_t extensionLength = 0;
-   bytesReceived = 0;//reset variable for use with next recv
+  // uint32_t extensionLength = 0;
+  // bytesReceived = 0;//reset variable for use with next recv
 
-   std::cout << "Receiving file extension length... ";
-   while (bytesReceived != sizeof(fileSize)){
-      bytesReceived = recv(Socket, (char*)(&extensionLength), sizeof(extensionLength), 0);
-      if (bytesReceived == sizeof(extensionLength)){
-         std::cout << "--->File extension length successfully received!\n";
-      }
-   }
+   //std::cout << "Receiving file extension length... ";
+   //while (bytesReceived != sizeof(fileSize)){
+   //   bytesReceived = recv(Socket, (char*)(&extensionLength), sizeof(extensionLength), 0);
+   //   if (bytesReceived == sizeof(extensionLength)){
+   //      std::cout << "--->File extension length successfully received!\n";
+   //   }
+   //}
 
    //3. receive actual extension as c-style string
-   char* extension = new char[extensionLength];
-   bytesReceived = 0;
+  // char* extension = new char[extensionLength];
+  // bytesReceived = 0;
 
-   std::cout << "Receiving file extension... ";
-   while (bytesReceived != sizeof(extension)){
-      bytesReceived = recv(Socket, extension, sizeof(extension), 0);
-      if (bytesReceived == sizeof(extension)){
-         std::cout << "--->File extension successfully received!\n";
-         extension[extensionLength] = '\0';//null terminating string if extension was successfully received
-      }
-   }
+   //std::cout << "Receiving file extension... ";
+   //while (bytesReceived != sizeof(extension)){
+  //    bytesReceived = recv(Socket, extension, sizeof(extension), 0);
+   //   if (bytesReceived == sizeof(extension)){
+   //      std::cout << "--->File extension successfully received!\n";
+   //      extension[extensionLength] = '\0';//null terminating string if extension was successfully received
+   //   }
+   //}
 
    //4. receive actual data in chunks
    FileCopier f;
-   f.setOFileName(filename);
+   //f.setOFileName(extension, newFileName);
+   f.setOFileName(newFileName);
 
 		//setting up variables for a basic timer to keep track of megabytes per second
 		auto start = std::chrono::high_resolution_clock::now();
