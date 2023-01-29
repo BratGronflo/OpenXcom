@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <vector>
 
-#define CHUNK_BYTES 1024;
+#define CHUNK_BYTES 20;
 
 class FileCopier{
 private:
