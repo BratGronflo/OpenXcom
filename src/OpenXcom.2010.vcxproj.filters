@@ -1133,6 +1133,30 @@
     <ClCompile Include="simple_network\Server.cpp">
       <Filter>simple_network</Filter>
     </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\ClientGame.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\ClientNetwork.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\MainClient.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\MainServer.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\NetworkServices.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\ServerGame.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\ServerNetwork.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_network\PacketCode\stdafx.cpp">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -2327,6 +2351,30 @@
     <ClInclude Include="simple_network\Server.h">
       <Filter>simple_network</Filter>
     </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\ClientGame.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\ClientNetwork.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\NetworkData.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\NetworkServices.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\ServerGame.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\ServerNetwork.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\stdafx.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_network\PacketCode\targetver.h">
+      <Filter>simple_network\PacketCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geoscape">
@@ -2364,6 +2412,9 @@
     </Filter>
     <Filter Include="simple_network">
       <UniqueIdentifier>{eee5f407-7285-4056-8ec5-dcf112d3d96b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simple_network\PacketCode">
+      <UniqueIdentifier>{8b6b08c8-62c8-46d6-ac6b-1a17963394ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

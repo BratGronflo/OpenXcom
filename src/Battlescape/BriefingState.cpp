@@ -42,6 +42,9 @@
 #include "../Savegame/AlienMission.h"
 #include "../Mod/RuleAlienMission.h"
 #include "../simple_network/Server.h"
+#include "../simple_network/PacketCode/stdafx.h"
+#include "../simple_network/PacketCode/ServerGame.h"
+#include "../simple_network/PacketCode/ClientGame.h"
 // used for multi-threading
 #include <process.h>
 
@@ -71,6 +74,7 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_txtCraft = new Text(300, 17, 16, 56);
 	_txtBriefing = new Text(274, 94, 16, 72);
 	_btnHost = new TextButton(120, 18, 40, 164);
+	_btnClient	= new TextButton(120, 18, 40, 124);
 	_btnSendSave = new TextButton(120, 18, 280, 164);
 
 	// set random hidden movement/next turn background for this mission
@@ -128,6 +132,7 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	add(_window, "window", "briefing");
 	add(_btnOk, "button", "briefing");
 	add(_btnHost, "button", "briefing");
+	add(_btnClient, "button", "briefing");
 	add(_btnSendSave, "button", "briefing");
 	add(_txtTitle, "text", "briefing");
 	add(_txtTarget, "text", "briefing");
@@ -146,6 +151,11 @@ BriefingState::BriefingState(Craft *craft, Base *base, bool infoOnly, BriefingDa
 	_btnHost->onMouseClick((ActionHandler)&BriefingState::btnHostClick);
 	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyOk);
 	_btnHost->onKeyboardPress((ActionHandler)&BriefingState::btnHostClick, Options::keyCancel);
+
+	_btnClient->setText(tr("STR_CLIENT"));
+	_btnClient->onMouseClick((ActionHandler)&BriefingState::btnClientClick);
+	_btnClient->onKeyboardPress((ActionHandler)&BriefingState::btnClientClick, Options::keyOk);
+	_btnClient->onKeyboardPress((ActionHandler)&BriefingState::btnClientClick, Options::keyCancel);
 
 	_btnSendSave->setText(tr("STR_SEND_SAVE"));
 	_btnSendSave->onMouseClick((ActionHandler)&BriefingState::btnSendSaveClick);
@@ -306,18 +316,58 @@ void BriefingState::btnOkClick(Action *)
 		_game->pushState(new AliensCrashState);
 	}
 }
+// Host stuff
+void serverLoop(void *);
+
+ServerGame *server;
+
 void BriefingState::btnHostClick(Action *)
 {
 	{
 
-		// initialize the server
-		Server *s = new Server;
-		s->start(CrossPlatform::searchAutoSave("_autobattle_.asav"));
+	// initialize the server
+		server = new ServerGame();
+
+		// create thread with arbitrary argument for the run function
+		_beginthread(serverLoop, 0, (void *)12);
 	}
 
 }
+void serverLoop(void *arg)
+{
+	while (true)
+	{
+		server->update();
+	}
+}
 void BriefingState::btnSendSaveClick(Action *)
     {
-
+			// initialize the server
+		Server *s = new Server;
+		s->start(CrossPlatform::searchAutoSave("_autobattle_.asav"));
     }
+
+// Client Stuff
+
+void clientLoop(void);
+
+ClientGame * client;
+
+void BriefingState::btnClientClick(Action *)
+	{
+
+
+    // initialize the client
+		client = new ClientGame();
+
+		//clientLoop();
+	}
+void clientLoop()
+{
+    while(true)
+    {
+        //do game stuff
+        client->update();
+    }
+}
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "ServerNetwork.h"
 #include "NetworkData.h"
+//#include "../../src/Savegame/BattleUnit.h"
 
 class ServerGame
 {
@@ -15,6 +16,8 @@ public:
 	void receiveFromClients();
 
 	void sendActionPackets();
+
+	//void sendKneelPackets(BattleUnit *bu);
 
 private:
 

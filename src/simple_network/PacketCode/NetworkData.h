@@ -9,6 +9,8 @@ enum PacketTypes {
 
     ACTION_EVENT = 1,
 
+	KNEEL_EVENT = 2,
+
 };
 
 struct Packet {

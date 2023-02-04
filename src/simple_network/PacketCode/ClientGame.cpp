@@ -57,11 +57,19 @@ void ClientGame::update()
 
         switch (packet.packet_type) {
 
+			case INIT_CONNECTION:
+
+			printf("client received INIT event packet from server\n");
+
+			//sendActionPackets();
+
+			break;
+
             case ACTION_EVENT:
 
                 printf("client received action event packet from server\n");
 
-                sendActionPackets();
+                //sendActionPackets();
 
                 break;
 
