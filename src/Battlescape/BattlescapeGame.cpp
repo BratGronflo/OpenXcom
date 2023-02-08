@@ -493,6 +493,8 @@ bool BattlescapeGame::kneel(BattleUnit *bu)
 		{
 			_parentState->warning("STR_NOT_ENOUGH_TIME_UNITS");
 		}
+		ServerGame *sg = new ServerGame;
+		sg->sendKneelPackets(kneel.actor);
 	}
 	return false;
 }

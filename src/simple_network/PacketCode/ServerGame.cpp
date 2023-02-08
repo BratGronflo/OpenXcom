@@ -106,16 +106,16 @@ void ServerGame::sendActionPackets()
     network->sendToAll(packet_data,packet_size);
 }
 
-//void ServerGame::sendKneelPackets(BattleUnit *bu)
-//{
-//	// send action packet
-//	const unsigned int packet_size = sizeof(Packet);
-//	char packet_data[packet_size];
-//
-//	Packet packet;
-//	packet.packet_type = KNEEL_EVENT;
-//
-//	packet.serialize(packet_data);
-//
-//	network->sendToAll(packet_data, packet_size);
-//}
+void ServerGame::sendKneelPackets(OpenXcom::BattleUnit *bu)
+{
+	// send action packet
+	const unsigned int packet_size = sizeof(Packet);
+	char packet_data[packet_size];
+
+	Packet packet;
+	packet.packet_type = KNEEL_EVENT;
+
+	packet.serialize(packet_data);
+
+	network->sendToAll(packet_data, packet_size);
+}

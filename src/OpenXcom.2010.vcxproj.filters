@@ -1139,12 +1139,6 @@
     <ClCompile Include="simple_network\PacketCode\ClientNetwork.cpp">
       <Filter>simple_network\PacketCode</Filter>
     </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\MainClient.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\MainServer.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
     <ClCompile Include="simple_network\PacketCode\NetworkServices.cpp">
       <Filter>simple_network\PacketCode</Filter>
     </ClCompile>

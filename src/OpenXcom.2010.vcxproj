@@ -583,8 +583,6 @@
     <ClCompile Include="simple_network\FileCopier.cpp" />
     <ClCompile Include="simple_network\PacketCode\ClientGame.cpp" />
     <ClCompile Include="simple_network\PacketCode\ClientNetwork.cpp" />
-    <ClCompile Include="simple_network\PacketCode\MainClient.cpp" />
-    <ClCompile Include="simple_network\PacketCode\MainServer.cpp" />
     <ClCompile Include="simple_network\PacketCode\NetworkServices.cpp" />
     <ClCompile Include="simple_network\PacketCode\ServerGame.cpp" />
     <ClCompile Include="simple_network\PacketCode\ServerNetwork.cpp" />
