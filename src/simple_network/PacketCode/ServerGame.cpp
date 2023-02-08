@@ -1,5 +1,7 @@
+#define NOMINMAX
 #include "StdAfx.h"
 #include "ServerGame.h"
+#include "../../Savegame/BattleUnit.h"
 
 unsigned int ServerGame::client_id; 
 
