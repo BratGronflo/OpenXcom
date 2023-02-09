@@ -6,6 +6,7 @@
 #include <ws2tcpip.h>
 #include <stdio.h> 
 #include "NetworkData.h"
+#include "../../Savegame/BattleUnit.h"
 
 // size of our buffer
 #define DEFAULT_BUFLEN 512

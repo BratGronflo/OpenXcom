@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include "ClientNetwork.h"
 #include "NetworkData.h"
+#include "../../Savegame/BattleUnit.h"
 
 class ClientGame
 {

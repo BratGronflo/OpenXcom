@@ -1,5 +1,7 @@
+#define NOMINMAX
 #include "StdAfx.h"
 #include "NetworkServices.h"
+#include "../../Savegame/BattleUnit.h"
 
 int NetworkServices::sendMessage(SOCKET curSocket, char * message, int messageSize)
 {

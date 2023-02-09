@@ -5,6 +5,7 @@
 #include <ws2tcpip.h>
 #include <map>
 #include "NetworkData.h"
+#include "../../Savegame/BattleUnit.h"
 using namespace std; 
 #pragma comment (lib, "Ws2_32.lib")
 

@@ -1,5 +1,8 @@
+#define NOMINMAX
 #include "StdAfx.h"
 #include "ServerNetwork.h"
+#include "../../Savegame/BattleUnit.h"
+
 
 
 ServerNetwork::ServerNetwork(void)
@@ -62,7 +65,8 @@ ServerNetwork::ServerNetwork(void)
     }
 
     // Setup the TCP listening socket
-    iResult = bind( ListenSocket, result->ai_addr, (int)result->ai_addrlen);
+    iResult = ::bind( ListenSocket, result->ai_addr, (int)result->ai_addrlen);
+
 
     if (iResult == SOCKET_ERROR) {
         printf("bind failed with error: %d\n", WSAGetLastError());

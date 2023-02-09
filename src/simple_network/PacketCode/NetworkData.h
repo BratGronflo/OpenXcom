@@ -1,5 +1,6 @@
 #pragma once
 #include <string.h>
+#include "../../Savegame/BattleUnit.h"
 
 #define MAX_PACKET_SIZE 1000000
 

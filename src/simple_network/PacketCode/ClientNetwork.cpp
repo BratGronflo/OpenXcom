@@ -1,5 +1,7 @@
+#define NOMINMAX
 #include "StdAfx.h"
 #include "ClientNetwork.h"
+#include "../../Savegame/BattleUnit.h"
 
 
 ClientNetwork::ClientNetwork(void)
