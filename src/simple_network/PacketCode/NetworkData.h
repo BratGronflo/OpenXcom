@@ -13,16 +13,44 @@ enum PacketTypes {
 	KNEEL_EVENT = 2,
 
 };
+struct Packet
+{
 
-struct Packet {
-
+	char data[100000];
+	int cur, size;
     unsigned int packet_type;
 
-    void serialize(char * data) {
+    void serialize(char * data)
+	{
         memcpy(data, this, sizeof(Packet));
     }
-
-    void deserialize(char * data) {
+    //void serializeBU(OpenXcom::BattleUnit *bu)
+	//{
+    //    memcpy(bu, this, sizeof(Packet));
+    //}
+    void deserialize(char * data)
+	{
         memcpy(this, data, sizeof(Packet));
     }
+	//void deserializeBU(OpenXcom::BattleUnit *bu)
+	//{
+    //    memcpy(this, bu, sizeof(Packet));
+    //}
+Packet &operator<<(OpenXcom::BattleUnit *bu)
+	{
+		int len = sprintf(data + size, "%d_", bu);
+		size += len;
+		return *this;
+	}
+Packet &operator>>(OpenXcom::BattleUnit *bu)
+	{
+		sscanf(data + cur, "%d_", &bu);
+
+		int len = 0;
+		while (data[cur + len] != '_')
+			len++;
+
+		cur += len + 1;
+		return *this;
+	}
 };

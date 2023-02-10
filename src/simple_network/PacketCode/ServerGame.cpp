@@ -2,6 +2,7 @@
 #include "StdAfx.h"
 #include "ServerGame.h"
 #include "../../Savegame/BattleUnit.h"
+#include "../../Battlescape/BattlescapeGame.h"
 
 unsigned int ServerGame::client_id; 
 
@@ -34,8 +35,8 @@ void ServerGame::update()
 void ServerGame::receiveFromClients()
 {
 
-    Packet packet;
-
+    Packet packet{};
+	OpenXcom::BattleUnit *bu{};
     // go through all clients
     std::map<unsigned int, SOCKET>::iterator iter;
 
@@ -52,17 +53,20 @@ void ServerGame::receiveFromClients()
         int i = 0;
         while (i < (unsigned int)data_length) 
         {
+
             packet.deserialize(&(network_data[i]));
             i += sizeof(Packet);
 
             switch (packet.packet_type) {
 
 				 case KNEEL_EVENT:
-
+				unpackKneelPacket(packet, bu);
+				OpenXcom::BattlescapeGame *BG;
+				BG->ClientKneel(bu);
 				printf("server received Kneel packet from client\n");
 
 				//sendActionPackets();
-
+			
 				break;
 
                 case INIT_CONNECTION:
@@ -114,8 +118,13 @@ void ServerGame::sendKneelPackets(OpenXcom::BattleUnit *bu)
 
 	Packet packet;
 	packet.packet_type = KNEEL_EVENT;
-
+	packet << bu;
 	packet.serialize(packet_data);
 
 	network->sendToAll(packet_data, packet_size);
+}
+
+void ServerGame::unpackKneelPacket(Packet KneelPacket,OpenXcom::BattleUnit *bu)
+{
+	KneelPacket >> bu;
 }
