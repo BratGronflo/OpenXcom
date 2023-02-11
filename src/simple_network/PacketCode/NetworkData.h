@@ -38,13 +38,13 @@ struct Packet
     //}
 Packet &operator<<(OpenXcom::BattleUnit *bu)
 	{
-		int len = sprintf(data + size, "%d_", bu);
+		int len = sprintf(data + size, "%p", bu);
 		size += len;
 		return *this;
 	}
 Packet &operator>>(OpenXcom::BattleUnit *bu)
 	{
-		sscanf(data + cur, "%d_", &bu);
+		sscanf(data + cur, "%p", &bu);
 
 		int len = 0;
 		while (data[cur + len] != '_')
