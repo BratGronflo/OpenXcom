@@ -473,6 +473,7 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
  */
 bool BattlescapeGame::kneel(BattleUnit *bu)
 {
+	Game *game = _parentState->getGame();
 	int tu = bu->getKneelChangeCost();
 	if (bu->getArmor()->allowsKneeling(bu->getType() == "SOLDIER") && !bu->isFloating() && ((!bu->isKneeled() && _save->getKneelReserved()) || checkReservedTU(bu, tu, 0)))
 	{
@@ -480,6 +481,7 @@ bool BattlescapeGame::kneel(BattleUnit *bu)
 		kneel.type = BA_KNEEL;
 		kneel.actor = bu;
 		kneel.Time = tu;
+		int id = bu->getId();
 		if (kneel.spendTU())
 		{
 			bu->kneel(!bu->isKneeled());
@@ -488,13 +490,14 @@ bool BattlescapeGame::kneel(BattleUnit *bu)
 			_parentState->updateSoldierInfo(); //This also updates the tile FOV of the unit, hence why it's skipped above.
 			getTileEngine()->checkReactionFire(bu, kneel);
 			return true;
+			ServerGame *sg = new ServerGame;
+			sg->sendKneelPackets(id);
 		}
 		else
 		{
 			_parentState->warning("STR_NOT_ENOUGH_TIME_UNITS");
 		}
-		ServerGame *sg = new ServerGame;
-		sg->sendKneelPackets(kneel.actor);
+
 	}
 	return false;
 }

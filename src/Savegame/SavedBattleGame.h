@@ -366,6 +366,8 @@ public:
 	BattleUnit *selectNextPlayerUnit(bool checkReselect = false, bool setReselect = false, bool checkInventory = false);
 	/// Selects the unit with position on map.
 	BattleUnit *selectUnit(Position pos);
+	/// Locate Unit by his ID
+	BattleUnit *findTheMofa(int Id);
 	/// Gets the pathfinding object.
 	Pathfinding *getPathfinding() const;
 	/// Gets a pointer to the tile engine.
@@ -637,6 +639,7 @@ public:
 	const HitLog *getHitLog() const;
 	/// Reset all the unit hit state flags.
 	void resetUnitHitStates();
+
 };
 
 }

@@ -3380,6 +3380,17 @@ void SavedBattleGame::resetUnitHitStates()
 		(*i)->resetHitState();
 	}
 }
+BattleUnit *SavedBattleGame::findTheMofa(int Id)
+{
+	for (std::vector<BattleUnit *>::iterator j =  _units.begin(); j != _units.end(); ++j)
+
+	{
+		if ((*j)->getId() == Id)
+	    {
+			return *j;
+	    }
+	}
+}
 
 ////////////////////////////////////////////////////////////
 //					Script binding
@@ -3530,8 +3541,7 @@ std::string debugDisplayScript(const SavedBattleGame* p)
 }
 
 } // namespace
-
-/**
+	/**
  * Register Armor in script parser.
  * @param parser Script parser.
  */

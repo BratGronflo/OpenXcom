@@ -17,9 +17,9 @@ public:
 
 	void sendActionPackets();
 
-	void unpackKneelPacket(Packet KneelPacket, OpenXcom::BattleUnit *bu);
+	void unpackKneelPacket(Packet KneelPacket, int id);
 
-	void sendKneelPackets(OpenXcom::BattleUnit *bu);
+	void sendKneelPackets(int id);
 
 private:
 

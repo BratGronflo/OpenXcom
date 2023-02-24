@@ -1,7 +1,6 @@
 #define NOMINMAX
 #include "StdAfx.h"
 #include "ServerGame.h"
-#include "../../Savegame/BattleUnit.h"
 #include "../../Battlescape/BattlescapeGame.h"
 
 unsigned int ServerGame::client_id; 
@@ -35,8 +34,8 @@ void ServerGame::update()
 void ServerGame::receiveFromClients()
 {
 
-    Packet packet{};
-	OpenXcom::BattleUnit *bu{};
+    Packet packet;
+	int id;
     // go through all clients
     std::map<unsigned int, SOCKET>::iterator iter;
 
@@ -57,12 +56,13 @@ void ServerGame::receiveFromClients()
             packet.deserialize(&(network_data[i]));
             i += sizeof(Packet);
 
-            switch (packet.packet_type) {
+            switch (packet.packet_type)
+{
 
 				 case KNEEL_EVENT:
-				unpackKneelPacket(packet, bu);
-				OpenXcom::BattlescapeGame *BG;
-				BG->ClientKneel(bu);
+				unpackKneelPacket(packet, id);
+				//OpenXcom::BattlescapeGame *BG;
+				//BG->ClientKneel(bu);
 				printf("server received Kneel packet from client\n");
 
 				//sendActionPackets();
@@ -110,7 +110,7 @@ void ServerGame::sendActionPackets()
     network->sendToAll(packet_data,packet_size);
 }
 
-void ServerGame::sendKneelPackets(OpenXcom::BattleUnit *bu)
+void ServerGame::sendKneelPackets(int id)
 {
 	// send action packet
 	const unsigned int packet_size = sizeof(Packet);
@@ -118,13 +118,13 @@ void ServerGame::sendKneelPackets(OpenXcom::BattleUnit *bu)
 
 	Packet packet;
 	packet.packet_type = KNEEL_EVENT;
-	packet << bu;
+	packet << id;
 	packet.serialize(packet_data);
 
 	network->sendToAll(packet_data, packet_size);
 }
 
-void ServerGame::unpackKneelPacket(Packet KneelPacket,OpenXcom::BattleUnit *bu)
+void ServerGame::unpackKneelPacket(Packet KneelPacket, int id)
 {
-	KneelPacket >> bu;
-}
+	KneelPacket >> id;
+}	

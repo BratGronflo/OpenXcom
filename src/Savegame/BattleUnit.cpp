@@ -922,7 +922,11 @@ int BattleUnit::getId() const
 {
 	return _id;
 }
-
+bool BattleUnit::getBattleUnit(int id) const
+{
+	return 0;
+	//return bu;
+}
 /**
  * Calculates the distance squared between the unit and a given position.
  * @param pos The position.
