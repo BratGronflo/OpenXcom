@@ -1,7 +1,7 @@
 #pragma once
 #include "ServerNetwork.h"
 #include "NetworkData.h"
-#include "../../src/Savegame/BattleUnit.h"
+//#include "../../src/Savegame/BattleUnit.h"
 
 class ServerGame
 {
@@ -17,7 +17,7 @@ public:
 
 	void sendActionPackets();
 
-	void unpackKneelPacket(Packet KneelPacket, int id);
+	void unpackKneelPacket(Packet KneelPacket);
 
 	void sendKneelPackets(int id);
 

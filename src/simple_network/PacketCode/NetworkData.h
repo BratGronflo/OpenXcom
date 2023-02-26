@@ -17,7 +17,7 @@ enum PacketTypes
 class Packet
 {
 private:
-	char data[10000];// BUG: possible buffer overflow
+	char data[10000];// BUG: possible buffer overflow //jopper: when set to "char data[100000]"
 	int cur, size;
  public:
 	unsigned int packet_type;

@@ -11,12 +11,18 @@ public:
 	ClientGame(void);
 	~ClientGame(void);
 
-	ClientNetwork* network;
-
 	void sendActionPackets();
 
-    char network_data[MAX_PACKET_SIZE];
-
     void update();
+
+	void unpackKneelPacket(Packet KneelPacket);
+
+	void sendKneelPackets(int id);
+
+  private:
+
+	ClientNetwork *network;
+
+	char network_data[MAX_PACKET_SIZE];
 };
 

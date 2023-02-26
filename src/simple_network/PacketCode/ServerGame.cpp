@@ -35,7 +35,6 @@ void ServerGame::receiveFromClients()
 {
 
     Packet packet;
-	int id;
     // go through all clients
     std::map<unsigned int, SOCKET>::iterator iter;
 
@@ -59,15 +58,13 @@ void ServerGame::receiveFromClients()
             switch (packet.packet_type)
 {
 
-				 case KNEEL_EVENT:
-				unpackKneelPacket(packet, id);
-				//OpenXcom::BattlescapeGame *BG;
-				//BG->ClientKneel(bu);
-				printf("server received Kneel packet from client\n");
-
+				case KNEEL_EVENT:
+				printf("server RECEIVED Kneel packet from client\n");
+				unpackKneelPacket(packet);
+				printf("server UNPACKED Kneel packet from client\n");
 				//sendActionPackets();
 			
-				break;
+				    break;
 
                 case INIT_CONNECTION:
 
@@ -124,7 +121,11 @@ void ServerGame::sendKneelPackets(int id)
 	network->sendToAll(packet_data, packet_size);
 }
 
-void ServerGame::unpackKneelPacket(Packet KneelPacket, int id)
+void ServerGame::unpackKneelPacket(Packet KneelPacket)
 {
+	int id;
+	id = 0;
 	KneelPacket >> id;
+	OpenXcom::BattlescapeGame *BG = {};
+	BG->ClientKneel(id);
 }	

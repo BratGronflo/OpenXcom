@@ -241,7 +241,7 @@ public:
 	/// Handles kneeling action.
 	bool kneel(BattleUnit *bu);
 	/// Handles Clientkneeling action.
-	bool ClientKneel(BattleUnit *bu);
+	bool ClientKneel(int id);
 	/// Cancels the current action.
 	bool cancelCurrentAction(bool bForce = false);
 	/// Cancels all actions.
