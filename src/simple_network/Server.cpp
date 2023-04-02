@@ -3,13 +3,15 @@
 #include <iostream>
 #include <sstream>
 
-Server::Server(){
+FileServer::FileServer()
+{
    initWinsock();
    initSocket();
 }
-Server::~Server(){}
+FileServer::~FileServer() {}
 
-int Server::initWinsock(){
+int FileServer::initWinsock()
+{
    if (WSAStartup(MAKEWORD(2, 2), &WsaData) != 0){
       std::cout << "Winsock could not initialize!\n";
       WSACleanup();
@@ -18,7 +20,8 @@ int Server::initWinsock(){
    return 0;
 }
 
-int Server::initSocket(){
+int FileServer::initSocket()
+{
    Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
    if (Socket == INVALID_SOCKET){
       std::cout << "Socket creation failed!";
@@ -37,7 +40,7 @@ int Server::initSocket(){
    return 0;
 }
 
-void Server::start(const std::string &filename)
+void FileServer::start(const std::string &filename)
 {
    FileCopier f;
    f.setIFileName(filename);
@@ -59,13 +62,15 @@ void Server::start(const std::string &filename)
    close();
 }
 
-void Server::close(){
+void FileServer::close()
+{
    shutdown(Socket, SD_SEND);
    closesocket(Socket);
    WSACleanup();
 }
 
-void Server::sendData(FileCopier& f){
+void FileServer::sendData(FileCopier &f)
+{
    /* STEPS
    1. send size of file in bytes
    2. send file extension length

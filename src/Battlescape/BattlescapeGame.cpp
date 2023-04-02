@@ -60,7 +60,7 @@
 #include "../Savegame/BattleUnitStatistics.h"
 #include "ConfirmEndMissionState.h"
 #include "../fmath.h"
-#include "../simple_network/PacketCode/ServerGame.h"
+//#include "../simple_network/PacketCode/ServerGame.h"
 
 namespace OpenXcom
 {
@@ -489,8 +489,8 @@ bool BattlescapeGame::kneel(BattleUnit *bu)
 			getTileEngine()->calculateFOV(bu->getPosition(), 1, false); //Update unit FOV for everyone through this position, skip tiles.
 			_parentState->updateSoldierInfo(); //This also updates the tile FOV of the unit, hence why it's skipped above.
 			getTileEngine()->checkReactionFire(bu, kneel);
-			ServerGame *sg = {};
-			sg->sendKneelPackets(id);
+	//		ServerGame *sg = {};
+	//		sg->sendKneelPackets(id);
 			return true;
 		}
 		else

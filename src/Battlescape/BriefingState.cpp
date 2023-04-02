@@ -41,10 +41,9 @@
 #include "../Menu/CutsceneState.h"
 #include "../Savegame/AlienMission.h"
 #include "../Mod/RuleAlienMission.h"
+#include "../Server/MyServer.h"
+#include "../Client/MyClient.h"
 #include "../simple_network/Server.h"
-#include "../simple_network/PacketCode/stdafx.h"
-#include "../simple_network/PacketCode/ServerGame.h"
-#include "../simple_network/PacketCode/ClientGame.h"
 // used for multi-threading
 #include <process.h>
 
@@ -316,58 +315,53 @@ void BriefingState::btnOkClick(Action *)
 		_game->pushState(new AliensCrashState);
 	}
 }
-// Host stuff
-void serverLoop(void *);
-
-ServerGame *server;
 
 void BriefingState::btnHostClick(Action *)
 {
 	{
-
-	// initialize the server
-		server = new ServerGame();
-
-		// create thread with arbitrary argument for the run function
-		_beginthread(serverLoop, 0, (void *)12);
+		if (Network::Initialize())
+		{
+			MyServer server;
+			if (server.Initialize(IPEndpoint("::", 6112)))
+			{
+				while (true)
+				{
+					server.Frame();
+				}
+			}
+		}
+		Network::Shutdown();
+		system("pause");
+		return;
 	}
 
-}
-void serverLoop(void *arg)
-{
-	while (true)
-	{
-		server->update();
-	}
 }
 void BriefingState::btnSendSaveClick(Action *)
     {
-			// initialize the server
-		Server *s = new Server;
+		// initialize the server
+		FileServer *s = new FileServer;
 		s->start(CrossPlatform::searchAutoSave("_autobattle_.asav"));
     }
 
 // Client Stuff
 
-void clientLoop(void);
-
-ClientGame * client;
-
 void BriefingState::btnClientClick(Action *)
 	{
 
+	if (Network::Initialize())
+		{
+			MyClient client;
+			if (client.Connect(IPEndpoint("::1", 6112)))
+			{
+				while (client.IsConnected())
+				{
+					client.Frame();
+				}
+			}
+		}
+		Network::Shutdown();
+		system("pause");
 
-    // initialize the client
-		client = new ClientGame();
-
-		//clientLoop();
 	}
-void clientLoop()
-{
-    while(true)
-    {
-        //do game stuff
-        client->update();
-    }
-}
+
 }

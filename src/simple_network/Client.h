@@ -5,7 +5,7 @@
 #include <string>
 #pragma comment(lib, "ws2_32.lib")
 
-class Client{
+class FileClient{
 private:
    WSADATA WsaData;
    SOCKET Socket;
@@ -19,8 +19,8 @@ private:
    std::string newFileName;//this will locally store whatever the user wants to name new file
 
 public:
-   Client();
-   virtual ~Client();
+   FileClient();
+   virtual ~FileClient();
 
    int initWinsock();
    int initSocket();

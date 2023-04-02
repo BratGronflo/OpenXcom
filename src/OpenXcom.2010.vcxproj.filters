@@ -1124,35 +1124,20 @@
     <ClCompile Include="Battlescape\ExtendedInventoryLinksState.cpp">
       <Filter>Battlescape</Filter>
     </ClCompile>
+    <ClCompile Include="Server\MyServer.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Client\MyClient.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
     <ClCompile Include="simple_network\Client.cpp">
-      <Filter>simple_network</Filter>
+      <Filter>Simple_network</Filter>
     </ClCompile>
     <ClCompile Include="simple_network\FileCopier.cpp">
-      <Filter>simple_network</Filter>
+      <Filter>Simple_network</Filter>
     </ClCompile>
     <ClCompile Include="simple_network\Server.cpp">
-      <Filter>simple_network</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\ClientGame.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\ClientNetwork.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\NetworkServices.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\ServerGame.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\ServerNetwork.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\stdafx.cpp">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_network\PacketCode\NetworkData.cpp">
-      <Filter>simple_network\PacketCode</Filter>
+      <Filter>Simple_network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2339,38 +2324,20 @@
     <ClInclude Include="Battlescape\ExtendedInventoryLinksState.h">
       <Filter>Battlescape</Filter>
     </ClInclude>
+    <ClInclude Include="Server\MyServer.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Client\MyClient.h">
+      <Filter>Client</Filter>
+    </ClInclude>
     <ClInclude Include="simple_network\Client.h">
-      <Filter>simple_network</Filter>
+      <Filter>Simple_network</Filter>
     </ClInclude>
     <ClInclude Include="simple_network\FileCopier.h">
-      <Filter>simple_network</Filter>
+      <Filter>Simple_network</Filter>
     </ClInclude>
     <ClInclude Include="simple_network\Server.h">
-      <Filter>simple_network</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\ClientGame.h">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\ClientNetwork.h">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\NetworkData.h">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\NetworkServices.h">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\ServerGame.h">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\ServerNetwork.h">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\stdafx.h">
-      <Filter>simple_network\PacketCode</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_network\PacketCode\targetver.h">
-      <Filter>simple_network\PacketCode</Filter>
+      <Filter>Simple_network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2407,11 +2374,14 @@
     <Filter Include="Mod">
       <UniqueIdentifier>{ea5b1e9f-9ff1-457d-9a15-5af8773ccb50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="simple_network">
-      <UniqueIdentifier>{eee5f407-7285-4056-8ec5-dcf112d3d96b}</UniqueIdentifier>
+    <Filter Include="Server">
+      <UniqueIdentifier>{71855f25-66f8-4881-bc20-295909a3a092}</UniqueIdentifier>
     </Filter>
-    <Filter Include="simple_network\PacketCode">
-      <UniqueIdentifier>{8b6b08c8-62c8-46d6-ac6b-1a17963394ce}</UniqueIdentifier>
+    <Filter Include="Client">
+      <UniqueIdentifier>{c66b5dba-10bf-4033-99b4-dd4c2f5dc157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Simple_network">
+      <UniqueIdentifier>{22f9d94c-4c30-4d7c-aaae-2af96c40d297}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

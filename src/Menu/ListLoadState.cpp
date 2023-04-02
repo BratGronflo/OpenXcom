@@ -89,10 +89,10 @@ void ListLoadState::btnConnectClick(Action *)
 {
 
 	// initialize the client
-	Client *c= new Client;
+	FileClient *c = new FileClient;
 	std::cout << Options::getMasterUserFolder() + "multiplayerBattle.sav";
 	c->start(Options::getMasterUserFolder() + "multiplayerBattle.sav");
-	if (&Client::receiveData)
+	if (&FileClient::receiveData)
 	{
 		std::cout << "--->File received!\n";
 		_game->pushState(new LoadGameState(_origin, ("multiplayerBattle.sav"), _palette));

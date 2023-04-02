@@ -5,14 +5,17 @@
 #include <chrono>
 #include <iomanip>
 
-Client::Client(){
+FileClient::FileClient()
+{
    recSizeInBytes = 0;
    initWinsock();
    initSocket();
 }
-Client::~Client(){}
+FileClient::~FileClient()
+{
+}
 
-int Client::initWinsock(){
+int FileClient::initWinsock(){
    if (WSAStartup(MAKEWORD(2, 2), &WsaData) != 0){
       std::cout << "Winsock initialization failed!\n";
       WSACleanup();
@@ -20,7 +23,7 @@ int Client::initWinsock(){
    }
    return 0;
 }
-int Client::initSocket(){
+int FileClient::initSocket(){
    Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
    if (Socket == INVALID_SOCKET){
       std::cout << "Socket creation failed!\n";
@@ -61,27 +64,27 @@ int Client::initSocket(){
    return 0;
 }
 
-void Client::start(const std::string &filename)
+void FileClient::start(const std::string &filename)
 {
 	newFileName = filename;
 	std::cout << filename;
    receiveData();
    close();
 }
-void Client::close(){
+void FileClient::close(){
    shutdown(Socket, SD_SEND);
    closesocket(Socket);
    WSACleanup();
 }
 
-uint32_t Client::getSizeInBytes(){
+uint32_t FileClient::getSizeInBytes(){
    return recSizeInBytes;
 }
-std::vector<char> Client::getExtension(){
+std::vector<char> FileClient::getExtension(){
    return eVec;
 }
 
-void Client::receiveData(){
+void FileClient::receiveData(){
    /* STEPS
    1. receive size of file in bytes
    2. receive file extension length

@@ -3,14 +3,14 @@
 #include "winsock2.h"
 #pragma comment(lib, "ws2_32.lib")
 
-class Server{
+class FileServer{
 private:
    WSADATA WsaData;
    SOCKET Socket;
    SOCKADDR_IN serverInfo;
 public:
-   Server();
-   virtual ~Server();
+   FileServer();
+  virtual ~FileServer();
 
    int initWinsock();
    int initSocket();
