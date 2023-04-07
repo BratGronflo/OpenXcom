@@ -2,14 +2,15 @@
 #include <iostream>
 #include <string> 
 
-void MyServer::sendIntPacket()
+void MyServer::sendIntPacket(int id)
 {
-	std::string UnitId = std::to_string(1211);
+	std::string UnitId = std::to_string(id);
 
 	std::shared_ptr<Packet>UnitIdPacket = std::make_shared<Packet>(PacketType::PT_UnitID);
 	*UnitIdPacket << std::string(UnitId);
 	for (auto& connection : connections)
 	connection.pm_outgoing.Append(UnitIdPacket);
+	std::cout << "Unit Id: " << UnitId << " Int packet was sent sucessfully" << std::endl;
 }
 
 void MyServer::OnConnect(TCPConnection & newConnection)
@@ -19,7 +20,6 @@ void MyServer::OnConnect(TCPConnection & newConnection)
 	std::shared_ptr<Packet> welcomeMessagePacket = std::make_shared<Packet>(PacketType::PT_ChatMessage);
 	*welcomeMessagePacket << std::string("Welcome!");
 	newConnection.pm_outgoing.Append(welcomeMessagePacket);
-	sendIntPacket();
 	std::shared_ptr<Packet> newUserMessagePacket = std::make_shared<Packet>(PacketType::PT_ChatMessage);
 	*newUserMessagePacket << std::string("New user connected!");
 	for (auto & connection : connections)
@@ -75,8 +75,12 @@ bool MyServer::ProcessPacket(std::shared_ptr<Packet> packet)
 		std::string strUnitId;
 		*packet >> strUnitId;
 		int UnitId = stoi(strUnitId); // Jopper if error occurs, then the int is too long, use std::stol intsead;
+		OpenXcom::BattlescapeState ServerBattleState;
+		ServerBattleState.kneelDamnIt(UnitId);
 		std::string checkUnitId = std::to_string(UnitId);
 		std::cout << "Unit Id: " << UnitId << std::endl;
+
+
 		break;
 
 	}

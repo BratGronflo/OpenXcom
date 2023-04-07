@@ -286,6 +286,8 @@ public:
 	/// Autosave next turn.
 	void autosave(int currentTurn);
 	/// Is busy?
+	void kneelDamnIt(int id);
+	/// Is busy?
 	bool isBusy() const;
 };
 

@@ -1125,10 +1125,10 @@
       <Filter>Battlescape</Filter>
     </ClCompile>
     <ClCompile Include="Server\MyServer.cpp">
-      <Filter>Server</Filter>
+      <Filter>PacketCode\Server</Filter>
     </ClCompile>
     <ClCompile Include="Client\MyClient.cpp">
-      <Filter>Client</Filter>
+      <Filter>PacketCode\Client</Filter>
     </ClCompile>
     <ClCompile Include="simple_network\Client.cpp">
       <Filter>Simple_network</Filter>
@@ -2325,10 +2325,10 @@
       <Filter>Battlescape</Filter>
     </ClInclude>
     <ClInclude Include="Server\MyServer.h">
-      <Filter>Server</Filter>
+      <Filter>PacketCode\Server</Filter>
     </ClInclude>
     <ClInclude Include="Client\MyClient.h">
-      <Filter>Client</Filter>
+      <Filter>PacketCode\Client</Filter>
     </ClInclude>
     <ClInclude Include="simple_network\Client.h">
       <Filter>Simple_network</Filter>
@@ -2374,14 +2374,17 @@
     <Filter Include="Mod">
       <UniqueIdentifier>{ea5b1e9f-9ff1-457d-9a15-5af8773ccb50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Server">
-      <UniqueIdentifier>{71855f25-66f8-4881-bc20-295909a3a092}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Client">
-      <UniqueIdentifier>{c66b5dba-10bf-4033-99b4-dd4c2f5dc157}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Simple_network">
       <UniqueIdentifier>{22f9d94c-4c30-4d7c-aaae-2af96c40d297}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketCode">
+      <UniqueIdentifier>{63136576-f103-46e2-9929-9814dbae4299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketCode\Server">
+      <UniqueIdentifier>{71855f25-66f8-4881-bc20-295909a3a092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketCode\Client">
+      <UniqueIdentifier>{c66b5dba-10bf-4033-99b4-dd4c2f5dc157}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

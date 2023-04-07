@@ -315,26 +315,32 @@ void BriefingState::btnOkClick(Action *)
 		_game->pushState(new AliensCrashState);
 	}
 }
-
+MyServer server;
+void serverLoop(void *arg);
 void BriefingState::btnHostClick(Action *)
 {
 	{
 		if (Network::Initialize())
 		{
-			MyServer server;
+
 			if (server.Initialize(IPEndpoint("::", 6112)))
 			{
-				while (true)
-				{
-					server.Frame();
-				}
+				_beginthread(serverLoop, 0, (void *)12);
 			}
 		}
-		Network::Shutdown();
-		system("pause");
+		//Network::Shutdown();
+		//system("pause");
 		return;
 	}
 
+}
+
+void serverLoop(void *arg)
+{
+	while (true)
+	{
+		server.Frame();
+	}
 }
 void BriefingState::btnSendSaveClick(Action *)
     {
@@ -344,24 +350,31 @@ void BriefingState::btnSendSaveClick(Action *)
     }
 
 // Client Stuff
+MyClient client;
+void clientLoop(void *arg);
 
 void BriefingState::btnClientClick(Action *)
 	{
 
 	if (Network::Initialize())
 		{
-			MyClient client;
+
 			if (client.Connect(IPEndpoint("::1", 6112)))
 			{
-				while (client.IsConnected())
 				{
-					client.Frame();
+					_beginthread(clientLoop, 0, (void *)12);
 				}
 			}
 		}
-		Network::Shutdown();
-		system("pause");
+		//Network::Shutdown();
+		//system("pause");
 
 	}
-
+void clientLoop(void *arg)
+{
+	while (client.IsConnected())
+	{
+		client.Frame();
+	}
+}
 }

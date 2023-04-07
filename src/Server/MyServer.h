@@ -1,12 +1,14 @@
 #pragma once
+#define NOMINMAX
 #include <PNet/IncludeMe.h>
+#include "../Battlescape/BattlescapeState.h"
 
-using namespace std;
 
 class MyServer : public Server
+
 {
 public:
-	void sendIntPacket();
+	void sendIntPacket(int id);
 private:
 	void OnConnect(TCPConnection & newConnection) override;
 	void OnDisconnect(TCPConnection & lostConnection, std::string reason) override;

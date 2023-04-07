@@ -3804,6 +3804,11 @@ void BattlescapeState::autosave(int currentTurn)
 	_autosave = currentTurn;
 }
 
+void BattlescapeState::kneelDamnIt(int id)
+{
+	_battleGame->ClientKneel(id);
+}
+
 /**
  * Is busy?
  */

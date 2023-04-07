@@ -1,9 +1,14 @@
 #pragma once
-#include "../PNet/IncludeMe.h"
+#define NOMINMAX
+#include <PNet/IncludeMe.h>
+#include "../Battlescape/BattlescapeState.h"
+
 
 class MyClient : public Client
 {
-	void sendIntPacket();
+public:
+	void sendIntPacket(int id);
+private:
 	bool ProcessPacket(std::shared_ptr<Packet> packet) override;
 	void OnConnect() override;
 	//void OnConnectFail() override;

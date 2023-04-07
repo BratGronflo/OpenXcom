@@ -31,8 +31,11 @@ bool MyClient::ProcessPacket(std::shared_ptr<Packet> packet)
 		std::string strUnitId;
 		*packet >> strUnitId;
 		int UnitId = stoi(strUnitId); // Jopper if error occurs, then the int is too long, use std::stol intsead;
+		OpenXcom::BattlescapeState clientBattleState;
+		clientBattleState.kneelDamnIt(UnitId);
 		std::string checkUnitId = std::to_string(UnitId);
 		std::cout << "Unit Id: " << UnitId << std::endl;
+
 		break;
 
 	}
@@ -51,11 +54,10 @@ void MyClient::OnConnect()
 	std::shared_ptr<Packet> helloPacket = std::make_shared<Packet>(PacketType::PT_ChatMessage);
 	*helloPacket << std::string("Hello from the client!");
 	connection.pm_outgoing.Append(helloPacket);
-	sendIntPacket();
 }
-void MyClient::sendIntPacket()
+void MyClient::sendIntPacket(int id)
 {
-	std::string UnitId = std::to_string(1211);
+	std::string UnitId = std::to_string(id);
 
 	std::shared_ptr<Packet>UnitIdPacket = std::make_shared<Packet>(PacketType::PT_UnitID);
 	*UnitIdPacket << std::string(UnitId);
