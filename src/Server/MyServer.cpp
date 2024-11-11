@@ -1,6 +1,12 @@
 #include "MyServer.h"
 #include <iostream>
-#include <string> 
+#include <string>
+
+void MyServer::SetGame(OpenXcom::Game* game)
+{
+	_game = nullptr;
+	_game = game;
+}
 
 void MyServer::sendIntPacket(int id)
 {
@@ -75,8 +81,9 @@ bool MyServer::ProcessPacket(std::shared_ptr<Packet> packet)
 		std::string strUnitId;
 		*packet >> strUnitId;
 		int UnitId = stoi(strUnitId); // Jopper if error occurs, then the int is too long, use std::stol intsead;
-		OpenXcom::BattlescapeState ServerBattleState;
-		ServerBattleState.kneelDamnIt(UnitId);
+		_game->getSavedGame()->getSavedBattle()->getBattleGame()->ClientKneel(UnitId);
+		//OpenXcom::BattlescapeState ServerBattleState;
+		//ServerBattleState.kneelDamnIt(UnitId);
 		std::string checkUnitId = std::to_string(UnitId);
 		std::cout << "Unit Id: " << UnitId << std::endl;
 

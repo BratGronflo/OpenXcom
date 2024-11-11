@@ -2,6 +2,11 @@
 #include <iostream>
 #include <string> 
 
+void MyClient::SetGame(OpenXcom::Game *game)
+{
+	_game = game;
+}
+
 bool MyClient::ProcessPacket(std::shared_ptr<Packet> packet)
 {
 	switch (packet->GetPacketType())
@@ -31,8 +36,8 @@ bool MyClient::ProcessPacket(std::shared_ptr<Packet> packet)
 		std::string strUnitId;
 		*packet >> strUnitId;
 		int UnitId = stoi(strUnitId); // Jopper if error occurs, then the int is too long, use std::stol intsead;
-		OpenXcom::BattlescapeState clientBattleState;
-		clientBattleState.kneelDamnIt(UnitId);
+		/*OpenXcom::BattlescapeState clientBattleState;
+		clientBattleState.kneelDamnIt(UnitId);*/
 		std::string checkUnitId = std::to_string(UnitId);
 		std::cout << "Unit Id: " << UnitId << std::endl;
 

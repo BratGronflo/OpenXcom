@@ -319,6 +319,7 @@ MyServer server;
 void serverLoop(void *arg);
 void BriefingState::btnHostClick(Action *)
 {
+	server.SetGame(_game);
 	{
 		if (Network::Initialize())
 		{
@@ -354,8 +355,8 @@ MyClient client;
 void clientLoop(void *arg);
 
 void BriefingState::btnClientClick(Action *)
-	{
-
+{
+	client.SetGame(_game);
 	if (Network::Initialize())
 		{
 
@@ -372,6 +373,7 @@ void BriefingState::btnClientClick(Action *)
 	}
 void clientLoop(void *arg)
 {
+	client.sendIntPacket(2);
 	while (client.IsConnected())
 	{
 		client.Frame();
